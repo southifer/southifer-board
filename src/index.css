@@ -83,7 +83,7 @@ body {
     max-height: 1500px;
 }
 .swal2-executor {
-    width: 40%;
+    width: 50%;
     height: 90%;
     max-height: 2500px;
 }
@@ -112,4 +112,40 @@ body {
 /* Adjust the initial opacity in the parent div to prevent instant rendering */
 .opacity-0 {
     opacity: 0;
+}
+
+/* Default for mobile (small screens) */
+.swal2-addbot {
+    width: 80%;
+    height: 90%;
+}
+
+.swal2-addbot .swal2-addbot-input {
+    border: 1px solid #ccc;
+    padding: 8px;
+    width: 100%;
+    padding: 5%;
+    background-color: #181A20;
+}
+
+.swal2-addbot .swal2-addbot-input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* For larger screens (desktops and tablets) */
+@media (min-width: 768px) {
+    .swal2-addbot {
+        width: 70%; /* Reduce width for larger screens */
+        height: auto; /* Adjust height based on content */
+    }
+}
+
+/* For very large screens (e.g., desktops >1200px) */
+@media (min-width: 1200px) {
+    .swal2-addbot {
+        width: 40%; /* Smaller width for large screens */
+        height: auto;
+    }
 }

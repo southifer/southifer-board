@@ -49,7 +49,7 @@ const Table = ({ data, previousData  }) => {
                             <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Position</th>
                             <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Gems</th>
                             <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Obtained Gems</th>
-                            <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider text-center">Actions</th>
+                            {/* <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider text-center">Actions</th> */}
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-700" style={{ marginTop: '8px' }}>
@@ -71,8 +71,11 @@ const Table = ({ data, previousData  }) => {
 
                             return (
                                 <tr key={index} className="border-t">
-                                    <td className={`px-4 py-2 whitespace-nowrap text-sm text-gray-300 glow ${isLevelUpdated ? 'glow-update' : ''} text-center`}>
-                                        {item.details.index}
+                                    <td className={`flex items-center gap-4 px-4 py-2 whitespace-nowrap text-sm text-gray-300 glow ${isLevelUpdated ? 'glow-update' : ''}`}>
+                                        <ShowModal item={data[index]}></ShowModal>
+                                        <div className='bold text-white px-2 py-2 rounded'>
+                                            {item.details.index}
+                                        </div>
                                     </td>
                                     <td className={`px-4 py-2 whitespace-nowrap text-sm text-gray-300 glow ${isLevelUpdated ? 'glow-update' : ''}`}>
                                         {item.details.name}
@@ -129,9 +132,9 @@ const Table = ({ data, previousData  }) => {
                                     <td className={`px-4 py-2 whitespace-nowrap text-sm text-gray-300 glow ${isObtainedGemsUpdated ? 'glow-update' : ''}`}>
                                         ⚜️ {FormatNumber(item.details.obtained_gems)}
                                     </td>
-                                    <td className={`px-4 py-2 whitespace-nowrap text-sm text-gray-300 glow text-center`}>
+                                    {/* <td className={`px-4 py-2 whitespace-nowrap text-sm text-gray-300 glow text-center`}>
                                         <ShowModal item={data[index]}></ShowModal>
-                                    </td>
+                                    </td> */}
                                 </tr>
                             );
                         })}

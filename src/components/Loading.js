@@ -4,7 +4,7 @@ const LoadingSpinner = ({ loading }) => {
     return (
         <>
             {loading && (
-                <div className="flex items-center justify-center h-screen opacity-0 transition-opacity duration-500 ease-in-out animate-fadeIn">
+                <div className="flex items-center justify-center h-screen opacity-0 transition duration-2500 ease-in-out animate-fadeIn">
                     {/* Loading spinner SVG */}
                     <svg
                         aria-hidden="true"

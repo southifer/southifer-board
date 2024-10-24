@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import NavigationBar from './components/NavigationBar';
 import Config from './components/Config';
+import DataBot from './components/DataBot';
+import CodeEditor from './components/Executor'
 
 function App() {
     return (
@@ -14,6 +16,8 @@ function App() {
                         <Routes>
                             <Route path="/dashboard" element={<Dashboard />} />
                             <Route path="/config" element={<Config />} />
+                            <Route path="/bot" element={<DataBot />} />
+                            <Route path="/script" element={<CodeEditor />} />
                         </Routes>
                     </div>
                 </div>
