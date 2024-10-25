@@ -34,7 +34,7 @@ const Table = ({ data, previousData  }) => {
                 <table className="min-w-full divide-y divide-gray-700 ">
                     <thead className='border-b-2 border-[#181A20]' style={{ position: 'sticky', top: 0, backgroundColor: '#181A20', zIndex: 10, marginBottom: '50px' }}>
                         <tr>
-                            <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider text-center">#</th>
+                            <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">#</th>
                             <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Name</th>
                             <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Level</th>
                             <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Age</th>
@@ -93,7 +93,7 @@ const Table = ({ data, previousData  }) => {
                                         <span>
                                             {item.details.status} 
                                             {item.details.is_script_run && (
-                                                <span>[&lt;/&gt;]</span>
+                                                <span style={{ color: 'text-green-500' }}>[&lt;/&gt;]</span>
                                             )}
 
                                             {item.details.is_resting && (

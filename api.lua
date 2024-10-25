@@ -123,7 +123,9 @@ server:get("/bot/get", function(request, response)
                 online_time = bot:getActiveTime(),
                 age = bot:getAge(),
                 is_resting = bot:isResting(),
-                is_script_run = bot:isRunningScript()
+                is_script_run = bot:isRunningScript(),
+                mac = bot:getLogin().mac,
+                rid = bot:getLogin().rid
             },
             inventory = botInventory,
             console = consoleLog
@@ -257,7 +259,7 @@ end)
 
 server:get("/bot/bot-backup", function(request, response)
     response.headers["Access-Control-Allow-Origin"] = "*"  -- Allow all origins (use specific origin in production)
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"  -- Allow methods
+    response.headers["Access-Control-Allow-Methods"] = "GET"  -- Allow methods
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"  -- Allow headers
 
     local backupData = read("C:\\Users\\Administrator\\Desktop\\bot-backup.json")  -- Adjust the path if necessary
@@ -268,9 +270,9 @@ server:get("/bot/bot-backup", function(request, response)
     end
 end)
 
-server:post("/bot/config", function(request, response)
+server:post("/bot/bot-backup", function(request, response)
     response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    response.headers["Access-Control-Allow-Methods"] = "POST"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
 
     local body = request.body -- Get the request body

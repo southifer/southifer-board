@@ -32,9 +32,9 @@ const InventoryTable = ({ data }) => {
                 <thead className='border-b-2 border-[#181A20]'>
                     <tr>
                         <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Name</th>
-                        <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider text-center">Id</th>
-                        <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider text-center">Amount</th>
-                        <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider text-right">Actions</th>
+                        <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Id</th>
+                        <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Amount</th>
+                        <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody className='divide-y divide-gray-700 text-left'>
@@ -313,7 +313,7 @@ const parseDisplayName = (displayName) => {
         '`ì': '#ffe119',
     };
 
-    const regex = /(`[0-9!@#^&wobpqertascì])([^\`]*)/g;
+    const regex = /(`[0-9!@#^&wobpqertascì])([^`]*)/g;
 
     const parsed = displayName.replace(regex, (match, colorCode, text) => {
         const color = growtopiaColors[colorCode];

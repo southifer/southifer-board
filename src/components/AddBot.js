@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import axios from 'axios';
@@ -6,17 +6,7 @@ import axios from 'axios';
 const MySwal = withReactContent(Swal);
 
 const InputModal = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        password: '',
-        recovery: '',
-        mac: '',
-        rid: '',
-        proxy: ''
-    });
-
-    // To validate and handle form submission
-    const handleSubmit = async (data) => {  // Accept data as a parameter
+    const handleSubmit = async (data) => {
         const { name, password, recovery, mac, rid, proxy } = data;
 
         if (!name || !password) {
@@ -31,7 +21,7 @@ const InputModal = () => {
         try {
             const response = await axios.post(
                 "http://64.72.205.239:8000/bot/add",
-                null,  // No request body, just query params
+                null,
                 {
                     params: {
                         name: name,

@@ -4,7 +4,6 @@ import LoadingSpinner from './Loading';
 import Swal from 'sweetalert2';
 
 const Config = () => {
-    const [inputValues, setInputValues] = useState([]);
     const [config, setConfig] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -35,17 +34,6 @@ const Config = () => {
     if (error) {
         return <div className="text-center text-red-500">{error}</div>;
     }
-
-    const handleChange = (index, field, value) => {
-        const updatedValues = [...inputValues];
-        updatedValues[index][field] = value; // Update specific field for the corresponding object
-        setInputValues(updatedValues);
-    };
-
-    const handleRemove = (index) => {
-        const updatedValues = inputValues.filter((_, i) => i !== index); // Remove item by index
-        setInputValues(updatedValues);
-    };
 
     const updateConfig = async (sc) => {
         const newScript = `${JSON.stringify(sc, null, 2)}`; // Convert config object to JSON string
