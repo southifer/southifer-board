@@ -13,7 +13,6 @@ import ChickenFeetSprites from './img/chicken-feet.png'
 import BrainwormsSprites from './img/brain-worms.png'
 import ClearSprites from './img/moyai.png'
 import FormatNumber from './FormatNumber';
-import Canvas from './OffCanvas';
 
 const MaladySprites = (malady) => {
     switch (malady) {
@@ -191,7 +190,7 @@ const Controller = () => {
         if (columnDefsFromStorage) {
             gridRef.current.api.setColumnState(JSON.parse(columnDefsFromStorage));
         }
-    }, [gridRef]);
+    }, [gridRef, columnDefsFromStorage]);
 
     const rowSelection = useMemo(() => { 
         return {
