@@ -1,4 +1,4 @@
-import React, {useMemo, useState, useEffect} from 'react';
+import React, {useMemo, useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
@@ -45,16 +45,12 @@ const GetExactTime = (second) => {
 
 const Controller = () => {
     const [rowData, setRowData] = useState([]);
-    const [previousData, setPreviousData] = useState([]);
+    const gridRef = useRef(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get("http://64.72.205.239:8000/bot/get");
-                
-                setPreviousData((prevRowData) => {
-                    return rowData;
-                });
                 setRowData(response.data);
 
             } catch (error) {
@@ -68,6 +64,7 @@ const Controller = () => {
         return () => clearInterval(interval);
     }, [rowData]);
 
+    const columnDefsFromStorage = localStorage.getItem('columnDefs');
     const columnDefs = [
         { 
             field: 'name', 
@@ -186,6 +183,16 @@ const Controller = () => {
         },
     ];
 
+    const onColumnStateChanged = (event) => {
+        const columnState = event.columnApi.getColumnState();
+        localStorage.setItem('columnDefs', JSON.stringify(columnState));
+    };
+    useEffect(() => {
+        if (columnDefsFromStorage) {
+            gridRef.current.api.setColumnState(JSON.parse(columnDefsFromStorage));
+        }
+    }, [gridRef]);
+
     const rowSelection = useMemo(() => { 
         return {
             mode: 'multiRow',
@@ -230,8 +237,8 @@ const Controller = () => {
     return (
         <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
             <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
-                <div className="bg-widgetBg p-5 rounded-lg shadow-md w-full h-[800px] ag-theme-quartz-dark">
-                    <div className="bg-[#28313E] p-5 rounded-lg shadow-md mb-4 border border-[#434B56]">
+                <div className="bg-widgetBg p-5 rounded-lg shadow-md">
+                    <div className="bg-[#28313E] p-5 rounded-lg shadow-mdborder border-[#434B56]">
                         <p className="flex-grow text-xs font-bold text-gray-200 mb-2 uppercase">USER STATISTIC</p>
                         <p className='text-lg'>⌐ Online: {FormatNumber(totalOnline)}</p>
                         <p className='text-lg'>⌐ Offline: {FormatNumber(totalOffline)}</p>
@@ -239,6 +246,8 @@ const Controller = () => {
                         <p className='text-lg'>⌐ Gems: {FormatNumber(totalGems)}</p>
                         <p className='text-lg'>⌐ Obtained Gems: {FormatNumber(totalObtained)}</p>
                     </div>
+                </div>
+                <div className="bg-widgetBg p-5 rounded-lg shadow-md w-full h-[800px] ag-theme-quartz-dark">
                     <AgGridReact
                         gridOptions={gridOptions}
                         rowData={rowData.map((item, index) => ({
@@ -249,6 +258,7 @@ const Controller = () => {
                         columnDefs={columnDefs} 
                         rowSelection={rowSelection}
                         getRowId={getRowId}
+                        onColumnStateChanged={onColumnStateChanged}
                     />
                 </div>
             </div>
