@@ -25,7 +25,7 @@ const Dashboard = () => {
         };
 
         fetchData(); // Initial fetch
-        const interval = setInterval(fetchData, 2500);
+        const interval = setInterval(fetchData, 2000);
 
         return () => clearInterval(interval); // Clear interval on unmount
     }, [data]);

@@ -254,11 +254,12 @@ const DataBot = () => {
             proxy: formData.proxy,
             id: rows.length // Assuming you want to keep it sequential
         };
-    
+        
         // Update the rows state using a functional update
         setRows(prevRows => {
             const updatedData = [...prevRows, NewData]; // Append the new data
-            sendDataToServer(updatedData, 'bot added'); // Send updated data to server
+            console.table(updatedData);
+            sendDataToServer(updatedData, 'bot added success'); // Send updated data to server
             return updatedData; // Return updated state
         });
     };
@@ -313,7 +314,6 @@ const DataBot = () => {
         <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
 
             <div className="bg-widgetBg p-4 rounded-lg shadow-md mb-4">
-                <p className="flex-grow text-xs font-bold text-gray-200 mb-2 uppercase">ADD BOT credentials</p>
                 <form className='grid grid-cols-1 md:grid-cols-2 gap-4' onSubmit={handleSubmit}>
                     <input
                         type="text"

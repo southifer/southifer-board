@@ -8,7 +8,7 @@ const NavigationBar = () => {
     const toggleNav = () => setIsNavOpen(!isNavOpen);
 
     return (
-        <nav className="bg-[#0F1015] border-b-2 border-[#181A20] text-white p-4 flex items-center justify-between lg:justify-between flex-col lg:flex-row top-0 left-0 right-0 z-50 max-w-screen">
+        <nav className="bg-[#28313E] border-b-2 border-[#434B56] text-white p-4 flex items-center justify-between lg:justify-between flex-col lg:flex-row top-0 left-0 right-0 z-50 max-w-screen">
         <button
             className="lg:hidden absolute right-4 top-4 p-2 rounded-lg text-white focus:outline-none"
             onClick={toggleNav}

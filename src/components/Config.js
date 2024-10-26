@@ -3,6 +3,9 @@ import React, { useEffect, useState } from 'react';
 import LoadingSpinner from './Loading';
 import Swal from 'sweetalert2';
 
+import Button from 'react-bootstrap/Button';
+import Offcanvas from 'react-bootstrap/Offcanvas';
+
 const Config = () => {
     const [config, setConfig] = useState({});
     const [loading, setLoading] = useState(true);

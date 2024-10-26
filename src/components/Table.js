@@ -10,23 +10,35 @@ import BrainwormsSprites from './img/brain-worms.png'
 import ClearSprites from './img/moyai.png'
 
 
+const MaladySprites = (malady) => {
+    switch (malady) {
+        case 'Torn Punching Muscle':
+            return <img src={TornSprites} alt="Torn" />;
+        case 'Gem Cuts':
+            return <img src={GemsCutSprites} alt="Gems Cut" />;
+        case 'Grumbleteeth':
+            return <img src={GrumbleTeethSprites} alt="Grumble Teeth" />;
+        case 'Chicken Feet':
+            return <img src={ChickenFeetSprites} alt="Chicken Feet" />;
+        case 'Brainworms':
+            return <img src={BrainwormsSprites} alt="Chicken Feet" />;
+        default:
+            return <img src={ClearSprites} alt="Clear" />;
+    }
+};
+
+const GetExactTime = (second) => {
+    if (second === 0) {
+        return '';
+    }
+    const hours = Math.floor(second / 3600);
+    const minutes = Math.floor((second % 3600) / 60);
+    const secs = second % 60;
+
+    return `${hours} hours ${minutes} minutes ${secs} seconds`;
+};
+
 const Table = ({ data, previousData  }) => {
-    const MaladySprites = (malady) => {
-        switch (malady) {
-            case 'Torn Punching Muscle':
-                return <img src={TornSprites} alt="Torn" />;
-            case 'Gem Cuts':
-                return <img src={GemsCutSprites} alt="Gems Cut" />;
-            case 'Grumbleteeth':
-                return <img src={GrumbleTeethSprites} alt="Grumble Teeth" />;
-            case 'Chicken Feet':
-                return <img src={ChickenFeetSprites} alt="Chicken Feet" />;
-            case 'Brainworms':
-                return <img src={BrainwormsSprites} alt="Chicken Feet" />;
-            default:
-                return <img src={ClearSprites} alt="Clear" />;
-        }
-    };
 
     return (
         <div>
@@ -42,6 +54,7 @@ const Table = ({ data, previousData  }) => {
                             <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
                             <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Google Status</th>
                             <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Malady</th>
+                            <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Expiration Malady</th>
                             <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Proxy</th>
                             <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">World</th>
                             <th className="px-2 py-1 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Uptime</th>
@@ -62,6 +75,7 @@ const Table = ({ data, previousData  }) => {
                             const isStatusUpdated = item.details.status !== previousItem.details?.status;
                             const isGoogleStatusUpdated = item.details.google_status !== previousItem.details?.google_status;
                             const isMaladyUpdated = item.details.malady !== previousItem.details?.malady;
+                            const isMaladyExpirationUpdated = item.details.malady_expiration !== previousItem.details?.malady_expiration;
                             const isProxyUpdated = item.details.proxy !== previousItem.details?.proxy;
                             const isWorldUpdated = item.details.world !== previousItem.details?.world;
                             const isUptimeUpdated = item.details.online_time !== previousItem.details?.online_time;
@@ -111,6 +125,9 @@ const Table = ({ data, previousData  }) => {
                                         </div>
                                     </td>
 
+                                    <td className={`px-4 py-2 whitespace-nowrap text-sm text-gray-300 glow ${isMaladyExpirationUpdated ? 'glow-update' : ''}`}>
+                                        {GetExactTime(item.details.malady_expiration)}
+                                    </td>
                                     <td className={`px-4 py-2 whitespace-nowrap text-sm text-gray-300 glow ${isProxyUpdated ? 'glow-update' : ''}`}>
                                         {item.details.proxy}
                                     </td>

@@ -6,6 +6,7 @@ import NavigationBar from './components/NavigationBar';
 import Config from './components/Config';
 import DataBot from './components/DataBot';
 import CodeEditor from './components/Executor';
+import Controller from './components/Controller';
 
 // Create a dark theme
 const darkTheme = createTheme({
@@ -23,10 +24,12 @@ function App() {
                     <div className="flex flex-1">
                         <div className="flex-1 flex flex-col">
                             <Routes>
-                                <Route path="/dashboard" element={<Dashboard />} />
+                                <Route path="/"/>
+                                <Route path="/dashboard" element={<Controller />} />
                                 <Route path="/config" element={<Config />} />
                                 <Route path="/bot" element={<DataBot />} />
                                 <Route path="/script" element={<CodeEditor />} />
+                                <Route path="/hidden-thing" element={<Dashboard />} />
                             </Routes>
                         </div>
                     </div>

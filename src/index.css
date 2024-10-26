@@ -42,11 +42,11 @@ body {
 }
 
 .glow {
-    transition: background-color 0.5s ease-out;
+    transition: background-color 1s ease;
 }
 
 .glow-update {
-    background-color: rgba(255, 255, 255, 0.372); /* Semi-transparent yellow for glowing effect */
+    background-color: rgba(125, 125, 125, 0.372); /* Semi-transparent yellow for glowing effect */
 }
 
 

@@ -31,49 +31,49 @@ server:get("/bot/get", function(request, response)
 
     local function getBotStatus(status)
         local statusNaming = {
-            [BotStatus.offline] = "Offline",
-            [BotStatus.online] = "Online",
-            [BotStatus.account_banned] = "Account Banned",
-            [BotStatus.location_banned] = "Location Banned",
-            [BotStatus.server_overload] = "Server Overload",
-            [BotStatus.too_many_login] = "Too Many Login",
-            [BotStatus.maintenance] = "Maintenance",
-            [BotStatus.version_update] = "Version Update",
-            [BotStatus.server_busy] = "Server Busy",
-            [BotStatus.error_connecting] = "Error Connecting",
-            [BotStatus.logon_fail] = "Login Failed",
-            [BotStatus.http_block] = "HTTP Blocked",
-            [BotStatus.wrong_password] = "Wrong Password",
-            [BotStatus.advanced_account_protection] = "Advanced Account Protection",
-            [BotStatus.bad_name_length] = "Bad Name Length",
-            [BotStatus.invalid_account] = "Invalid Account",
-            [BotStatus.guest_limit] = "Guest Limit",
-            [BotStatus.changing_subserver] = "Changing Subserver",
-            [BotStatus.captcha_requested] = "Captcha",
-            [BotStatus.mod_entered] = "Mod Entered",
-            [BotStatus.high_load] = "High Load",
-            [BotStatus.bad_gateway] = "Bad Gateway",
-            [BotStatus.server_issue] = "Server Issue",
-            [BotStatus.retrieving_token] = "Retrieving Token",
-            [BotStatus.player_entered] = "Player Entered",
-            [BotStatus.getting_server_data] = "Getting Server Data",
-            [BotStatus.bypassing_server_data] = "Bypassing Server Data",
+            [BotStatus.offline] = "disconnected",
+            [BotStatus.online] = "connected",
+            [BotStatus.account_banned] = "account_banned",
+            [BotStatus.location_banned] = "location_banned",
+            [BotStatus.server_overload] = "server_overload",
+            [BotStatus.too_many_login] = "too_many_login",
+            [BotStatus.maintenance] = "maintenance",
+            [BotStatus.version_update] = "version_update",
+            [BotStatus.server_busy] = "server_busy",
+            [BotStatus.error_connecting] = "error_connecting",
+            [BotStatus.logon_fail] = "logon_fail",
+            [BotStatus.http_block] = "http_block",
+            [BotStatus.wrong_password] = "wrong_password",
+            [BotStatus.advanced_account_protection] = "advanced_account_protection",
+            [BotStatus.bad_name_length] = "bad_name_length",
+            [BotStatus.invalid_account] = "invalid_account",
+            [BotStatus.guest_limit] = "guest_limit",
+            [BotStatus.changing_subserver] = "changing_subserver",
+            [BotStatus.captcha_requested] = "captcha_requested",
+            [BotStatus.mod_entered] = "mod_entered",
+            [BotStatus.high_load] = "high_load",
+            [BotStatus.bad_gateway] = "bad_gateway",
+            [BotStatus.server_issue] = "server_issue",
+            [BotStatus.retrieving_token] = "retrieving_token",
+            [BotStatus.player_entered] = "player_entered",
+            [BotStatus.getting_server_data] = "getting_server_data",
+            [BotStatus.bypassing_server_data] = "bypassing_server_data",
         }
-        return statusNaming[status] or "Loading"
+        return statusNaming[status] or "unknown"
     end
 
     local function getGoogleStatus(googleStatus)
         local googleStatusNaming = {
-            [GoogleStatus.idle] = "Idle",
-            [GoogleStatus.processing] = "Processing",
-            [GoogleStatus.init_error] = "Init Error",
-            [GoogleStatus.invalid_credentials] = "Invalid Credentials",
-            [GoogleStatus.account_disabled] = "Account Disabled",
-            [GoogleStatus.captcha_required] = "Captcha Required",
-            [GoogleStatus.phone_required] = "Phone Required",
-            [GoogleStatus.recovery_required] = "Recovery Required",
-            [GoogleStatus.couldnt_verify] = "Couldn't Verify",
-            [GoogleStatus.unknown_url] = "Unknown URL"
+            [GoogleStatus.idle] = "idle",
+            [GoogleStatus.processing] = "processing",
+            [GoogleStatus.init_error] = "init_error",
+            [GoogleStatus.invalid_credentials] = "invalid_credentials",
+            [GoogleStatus.account_disabled] = "account_disabled",
+            [GoogleStatus.captcha_required] = "captcha_required",
+            [GoogleStatus.phone_required] = "phone_required",
+            [GoogleStatus.recovery_required] = "recovery_required",
+            [GoogleStatus.couldnt_verify] = "couldnt_verify",
+            [GoogleStatus.unknown_url] = "unknown_url",
         }
         return googleStatusNaming[googleStatus] or "UNKNOWN"
     end
@@ -104,7 +104,6 @@ server:get("/bot/get", function(request, response)
 
         -- Add bot details to the bot list
         table.insert(botList, {
-            id = index,
             details = {
                 index = i,
                 name = bot.name,
@@ -116,6 +115,7 @@ server:get("/bot/get", function(request, response)
                 proxy = bot:getProxy().ip .. ':' .. bot:getProxy().port,
                 world = bot:getWorld().name or "N/A",
                 malady = maladyStatus(bot.malady),
+                malady_expiration = bot:getMaladyDuration(),
                 position = bot.x .. ':' .. bot.y,
                 gems = bot.gem_count,
                 obtained_gems = bot.obtained_gem_count or 0,
@@ -124,11 +124,13 @@ server:get("/bot/get", function(request, response)
                 age = bot:getAge(),
                 is_resting = bot:isResting(),
                 is_script_run = bot:isRunningScript(),
+                is_account_secured = bot.is_account_secured,
                 mac = bot:getLogin().mac,
                 rid = bot:getLogin().rid
             },
             inventory = botInventory,
-            console = consoleLog
+            console = consoleLog,
+            index = i,
         })
     end
 
