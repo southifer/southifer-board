@@ -52,8 +52,9 @@ body {
 
 
 .swal2-popup {
-    background-color: #181A20; /* Background color for the SweetAlert */
+    background-color: #28313E; /* Background color for the SweetAlert */
     color: white; /* Text color */
+    border: '1px solid #434B56';
 }
 
 .swal2-title {
@@ -61,8 +62,9 @@ body {
 }
 
 .swal2-input {
-    background-color: #181A20; /* Input background color */
+    background-color: #28313E; /* Input background color */
     color: white; /* Input text color */
+    border: 1px solid #434B56;
 }
 
 .swal2-confirm {
@@ -86,7 +88,9 @@ body {
     max-height: 1500px;
 }
 .swal2-executor {
-    width: 50%;
+    background-color: #1C1C1C;
+    border: #424242 1px solid;
+    width: 75%;
     height: 90%;
     max-height: 2500px;
 }
@@ -151,4 +155,8 @@ body {
         width: 40%; /* Smaller width for large screens */
         height: auto;
     }
+}
+
+.selected-row {
+    background-color: #ff7979; /* Change this to your desired color */
 }

@@ -15,7 +15,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get("http://64.72.205.239:8000/bot/get");
+                const response = await axios.get("http://191.96.94.35:8000/bot/get");
                 setPreviousData(data); // Store current data as previous data
                 setData(response.data);
                 setLoading(false);
@@ -54,7 +54,7 @@ const Dashboard = () => {
         const script = `local script = read("rotasi-luci-json.lua")\nfor _,bot in pairs(getBots()) do\nif not bot:isRunningScript() then\nbot:runScript(script)\nsleep(8000)\nend\nend`;
         setUploading(true);
         try {
-            const response = await axios.post('http://64.72.205.239:8000/bot/runScript', script, {
+            const response = await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
                 headers: {
                     'Content-Type': 'text/plain',
                 },
@@ -81,7 +81,7 @@ const Dashboard = () => {
         const script = 'local script = read("rotasi-luci-json.lua")\nfor _,bot in pairs(getBots()) do\nif bot:isRunningScript() then\nbot:stopScript()\nsleep(100)\nend\nend';
         setUploading(true);
         try {
-            const response = await axios.post('http://64.72.205.239:8000/bot/runScript', script, {
+            const response = await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
                 headers: {
                     'Content-Type': 'text/plain',
                 },
@@ -160,7 +160,7 @@ const Dashboard = () => {
                                             return;
                                         }
                                         try {
-                                            const response = await axios.post('http://64.72.205.239:8000/bot/runScript', script, {
+                                            const response = await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
                                                 headers: {
                                                     'Content-Type': 'text/plain',
                                                 },

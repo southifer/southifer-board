@@ -7,6 +7,7 @@ import Config from './components/Config';
 import DataBot from './components/DataBot';
 import CodeEditor from './components/Executor';
 import Controller from './components/Controller';
+import FarmTable from './components/FarmTable';
 
 // Create a dark theme
 const darkTheme = createTheme({
@@ -24,12 +25,13 @@ function App() {
                     <div className="flex flex-1">
                         <div className="flex-1 flex flex-col">
                             <Routes>
-                                <Route path="/"/>
+                                <Route path="/*" element={<Controller />} />
                                 <Route path="/dashboard" element={<Controller />} />
                                 <Route path="/config" element={<Config />} />
                                 <Route path="/bot" element={<DataBot />} />
+                                <Route path="/farm" element={<FarmTable />} />
                                 <Route path="/script" element={<CodeEditor />} />
-                                <Route path="/hidden-thing" element={<Dashboard />} />
+                                <Route path="/hidden" element={<Dashboard />} />
                             </Routes>
                         </div>
                     </div>

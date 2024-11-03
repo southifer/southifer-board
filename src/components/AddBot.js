@@ -20,7 +20,7 @@ const InputModal = () => {
 
         try {
             const response = await axios.post(
-                "http://64.72.205.239:8000/bot/add",
+                "http://191.96.94.35:8000/bot/add",
                 null,
                 {
                     params: {
@@ -100,17 +100,6 @@ const InputModal = () => {
             }
         });
     };
-
-    return (
-        <div className="App">
-            <button
-                onClick={showModal}
-                className='mb-2 text-white bg-red-500 hover:bg-red-800 focus:ring-1 focus:outline-none font-medium rounded text-sm w-full px-2.5 py-2.5 text-center'
-            >
-                Add Bot
-            </button>
-        </div>
-    );
 };
 
 export default InputModal;

@@ -6,7 +6,7 @@ end)
 
 server:get("/bot/get", function(request, response)
     response.headers["Access-Control-Allow-Origin"] = "*"  -- Allow all origins (use specific origin in production)
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"  -- Allow methods
+    response.headers["Access-Control-Allow-Methods"] = "GET"  -- Allow methods
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"  -- Allow headers
 
     local json = require("json")
@@ -126,10 +126,10 @@ server:get("/bot/get", function(request, response)
                 is_script_run = bot:isRunningScript(),
                 is_account_secured = bot.is_account_secured,
                 mac = bot:getLogin().mac,
-                rid = bot:getLogin().rid
+                rid = bot:getLogin().rid,
+                inventory = botInventory,
+                console = consoleLog
             },
-            inventory = botInventory,
-            console = consoleLog,
             index = i,
         })
     end
@@ -139,23 +139,20 @@ server:get("/bot/get", function(request, response)
 end)
 
 server:post("/bot/runScript", function(request, response)
-    response.headers["Access-Control-Allow-Origin"] = "*"  -- Allow all origins (use specific origin in production)
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"  -- Allow methods
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"  -- Allow headers
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "POST"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
 
-    local script = request.body  -- Get the Lua script from the request body
+    local script = request.body
 
-    -- Attempt to load the script without a custom environment
     local func, err = load(script, "runScript")
     if not func then
         response:setContent("Failed to load script:\n" .. tostring(err), "text/plain")
         return
     end
 
-    -- Attempt to execute the script with pcall for safe execution
     local success, result = pcall(func)
     if success then
-        -- Return the result of the script execution
         response:setContent(tostring(result), "text/plain")
     else
         response:setContent(tostring(result), "text/plain")
@@ -164,7 +161,7 @@ end)
 
 server:get("/bot/config", function(request, response)
     response.headers["Access-Control-Allow-Origin"] = "*"  -- Allow all origins (use specific origin in production)
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"  -- Allow methods
+    response.headers["Access-Control-Allow-Methods"] = "GET"  -- Allow methods
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"  -- Allow headers
 
     local configData = read("C:\\Users\\Administrator\\Desktop\\config.json")  -- Use the inbuilt read function to get the file contents
@@ -178,7 +175,7 @@ end)
 
 server:post("/bot/config", function(request, response)
     response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    response.headers["Access-Control-Allow-Methods"] = "POST"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
 
     local body = request.body -- Get the request body
@@ -193,10 +190,41 @@ server:post("/bot/config", function(request, response)
     end
 end)
 
+server:get("/bot/farm", function(request, response)
+    response.headers["Access-Control-Allow-Origin"] = "*"  -- Allow all origins (use specific origin in production)
+    response.headers["Access-Control-Allow-Methods"] = "GET"  -- Allow methods
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"  -- Allow headers
+
+    local configData = read("C:\\Users\\Administrator\\Desktop\\FARM.json")  -- Use the inbuilt read function to get the file contents
+  
+    if configData then
+        response:setContent(configData, "application/json")  -- Respond with JSON content
+    else
+        response:setContent("config.json not found.", "text/plain")
+    end
+end)
+
+server:post("/bot/farm", function(request, response)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "POST"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+
+    local body = request.body -- Get the request body
+
+    -- Validate and write the JSON data to the config file
+    local success = write("C:\\Users\\Administrator\\Desktop\\FARM.json", body) -- Assuming write is a function you have to write data to a file
+
+    if success then
+        response:setContent("Farm updated successfully.", "text/plain")
+    else
+        response:setContent("Failed to update config.", "text/plain")
+    end
+end)
+
 server:post("/bot/remove", function(request, response)
     -- Set CORS headers
     response:setHeader("Access-Control-Allow-Origin", "*")  -- Allow all origins (use specific origin in production)
-    response:setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS")  -- Allow methods
+    response:setHeader("Access-Control-Allow-Methods", "POST")  -- Allow methods
     response:setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization")  -- Allow headers
 
     -- Get the name parameter from the request
@@ -230,7 +258,7 @@ end)
 
 server:post("/bot/add", function(request, response)
     response.headers["Access-Control-Allow-Origin"] = "*"  -- Allow all origins (use specific origin in production)
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"  -- Allow methods
+    response.headers["Access-Control-Allow-Methods"] = "POST"  -- Allow methods
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"  -- Allow headers
 
     local json = require("json")
@@ -248,8 +276,11 @@ server:post("/bot/add", function(request, response)
 
     -- Check if the required fields are present
     if botInfo.name and botInfo.password then
-        -- Attempt to add the bot
-        if addBot(botInfo) then
+        local success = addBot(botInfo)
+        if success then
+            success.reconnect_on_unknown_url = true
+            success:getConsole().enabled = true
+            
             response:setContent("Bot has been added.", "text/plain")
         else
             response:setContent("Failed to add bot.", "text/plain")
@@ -306,7 +337,7 @@ end)
 
 server:post("/bot/rotasi-script", function(request, response)
     response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    response.headers["Access-Control-Allow-Methods"] = "POST"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
 
     local body = request.body -- Get the request body

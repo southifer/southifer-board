@@ -14,7 +14,7 @@ const Config = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://64.72.205.239:8000/bot/config');
+                const response = await axios.get('http://191.96.94.35:8000/bot/config');
                 setConfig(response.data);  // Store JSON data as config
             } catch (error) {
                 setError('Error fetching config data');
@@ -41,7 +41,7 @@ const Config = () => {
     const updateConfig = async (sc) => {
         const newScript = `${JSON.stringify(sc, null, 2)}`; // Convert config object to JSON string
         try {
-            const response = await axios.post("http://64.72.205.239:8000/bot/config", newScript);
+            const response = await axios.post("http://191.96.94.35:8000/bot/config", newScript);
             
             // Show success notification when the response is returned
             Swal.fire({
@@ -64,11 +64,11 @@ const Config = () => {
     return (
         <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
             <div className="gap-6 mb-4 flex items-center justify-center ">
-                <div className="bg-widgetBg p-5 rounded-lg shadow-md">
+                <div className="bg-[#28313E] p-5 rounded-lg shadow-md">
                     <form className="">
 
                         {/* Farming settings div */}
-                        <div className='mb-10 p-6 bg-mainBg text-white  overflow-x-hidden rounded-lg'>
+                        <div className='mb-10 p-6 bg-[#28313E] border border-[#434B56] text-white  overflow-x-hidden rounded-lg'>
                             <p className="text-center text-lg font-bold text-gray-300 uppercase">farming settings</p>
                             <div className="flex mb-4 gap-4">
                                 <div className="flex-1">
@@ -78,7 +78,7 @@ const Config = () => {
                                         type="text"
                                         value={config.world_list}
                                         onChange={(e) => setConfig({ ...config, world_list: e.target.value })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -91,7 +91,7 @@ const Config = () => {
                                         type="number"
                                         value={config.move_interval}
                                         onChange={(e) => setConfig({ ...config, move_interval: parseInt(e.target.value) })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -102,7 +102,7 @@ const Config = () => {
                                         type="number"
                                         value={config.move_range}
                                         onChange={(e) => setConfig({ ...config, move_range: parseInt(e.target.value) })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -115,7 +115,7 @@ const Config = () => {
                                         type="number"
                                         value={config.item_id}
                                         onChange={(e) => setConfig({ ...config, item_id: parseInt(e.target.value) })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -126,7 +126,7 @@ const Config = () => {
                                         type="number"
                                         value={config.item_seed}
                                         onChange={(e) => setConfig({ ...config, item_seed: parseInt(e.target.value) })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -141,7 +141,7 @@ const Config = () => {
                                                 type="checkbox" 
                                                 checked={config.show_animation}
                                                 onChange={(e) => setConfig({ ...config, show_animation: e.target.checked })}
-                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-red-700 checked:border-slate-800" 
+                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-700 checked:border-slate-800" 
                                                 id="check"
                                             />
                                             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
@@ -160,7 +160,7 @@ const Config = () => {
                                                 type="checkbox" 
                                                 checked={config.fresh_bot}
                                                 onChange={(e) => setConfig({ ...config, fresh_bot: e.target.checked })}
-                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-red-700 checked:border-slate-800" 
+                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-700 checked:border-slate-800" 
                                                 id="check"
                                             />
                                             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
@@ -179,7 +179,7 @@ const Config = () => {
                                                 type="checkbox" 
                                                 checked={config.auto_fill}
                                                 onChange={(e) => setConfig({ ...config, auto_fill: e.target.checked })}
-                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-red-700 checked:border-slate-800" 
+                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-700 checked:border-slate-800" 
                                                 id="check"
                                             />
                                             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
@@ -198,7 +198,7 @@ const Config = () => {
                                                 type="checkbox" 
                                                 checked={config.take_pickaxe}
                                                 onChange={(e) => setConfig({ ...config, take_pickaxe: e.target.checked })}
-                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-red-700 checked:border-slate-800" 
+                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-700 checked:border-slate-800" 
                                                 id="check"
                                             />
                                             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
@@ -222,7 +222,7 @@ const Config = () => {
                                                 const newList = e.target.value.split('\r\n'); // Split the textarea value into an array
                                                 setConfig({ ...config, storage_seed_list: newList }); // Update the state
                                             }}
-                                            className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                                            className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
                                         />
                                     </div>
                                 </div>
@@ -238,7 +238,7 @@ const Config = () => {
                                                 const newList = e.target.value.split('\r\n'); // Split the textarea value into an array
                                                 setConfig({ ...config, storage_pack_list: newList }); // Update the state
                                             }}
-                                            className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                                            className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
                                         />
                                     </div>
                                 </div>
@@ -254,7 +254,7 @@ const Config = () => {
                                                 const newList = e.target.value.split('\r\n'); // Split the textarea value into an array
                                                 setConfig({ ...config, storage_item_list: newList }); // Update the state
                                             }}
-                                            className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                                            className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
                                         />
                                     </div>
                                 </div>
@@ -268,7 +268,7 @@ const Config = () => {
                                                 const newList = e.target.value.split('\r\n'); // Split the textarea value into an array
                                                 setConfig({ ...config, storage_vile_list: newList }); // Update the state
                                             }}
-                                            className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                                            className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
                                         />
                                     </div>
                                 </div>
@@ -287,7 +287,7 @@ const Config = () => {
                                                 harvest: parseInt(e.target.value) // or use parseFloat for decimal values
                                             }
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -304,7 +304,7 @@ const Config = () => {
                                                 plant: parseInt(e.target.value) // or use parseFloat for decimal values
                                             }
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -321,7 +321,7 @@ const Config = () => {
                                                 punch: parseInt(e.target.value) // or use parseFloat for decimal values
                                             }
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -338,7 +338,7 @@ const Config = () => {
                                                 place: parseInt(e.target.value) // or use parseFloat for decimal values
                                             }
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -357,7 +357,7 @@ const Config = () => {
                                                 warp: parseInt(e.target.value) // or use parseFloat for decimal values
                                             }
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -374,7 +374,7 @@ const Config = () => {
                                                 connect: parseInt(e.target.value) // or use parseFloat for decimal values
                                             }
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -391,7 +391,7 @@ const Config = () => {
                                                 execute: parseInt(e.target.value) // or use parseFloat for decimal values
                                             }
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -405,7 +405,7 @@ const Config = () => {
                                                 type="checkbox" 
                                                 checked={config.custom_tile}
                                                 onChange={(e) => setConfig({ ...config, custom_tile: e.target.checked })}
-                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-red-700 checked:border-slate-800" 
+                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-700 checked:border-slate-800" 
                                                 id="check"
                                             />
                                             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
@@ -424,7 +424,7 @@ const Config = () => {
                                                 type="checkbox" 
                                                 checked={config.pnb_home_world}
                                                 onChange={(e) => setConfig({ ...config, pnb_home_world: e.target.checked })}
-                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-red-700 checked:border-slate-800" 
+                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-700 checked:border-slate-800" 
                                                 id="check"
                                             />
                                             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
@@ -443,7 +443,7 @@ const Config = () => {
                                                 type="checkbox" 
                                                 checked={config.pnb_other_world}
                                                 onChange={(e) => setConfig({ ...config, pnb_other_world: e.target.checked })}
-                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-red-700 checked:border-slate-800" 
+                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-700 checked:border-slate-800" 
                                                 id="check"
                                             />
                                             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
@@ -464,7 +464,7 @@ const Config = () => {
                                         type="text"
                                         value={config.world_list_pnb}
                                         onChange={(e) => setConfig({ ...config, world_list_pnb: e.target.checked })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -478,7 +478,7 @@ const Config = () => {
                                         type="number"
                                         value={config.custom_x}
                                         onChange={(e) => setConfig({ ...config, custom_x: parseInt(e.target.checked) })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -489,7 +489,7 @@ const Config = () => {
                                         type="number"
                                         value={config.custom_y}
                                         onChange={(e) => setConfig({ ...config, custom_y: parseInt(e.target.checked) })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -500,7 +500,7 @@ const Config = () => {
                                         type="number"
                                         value={config.tile_number}
                                         onChange={(e) => setConfig({ ...config, tile_number: parseInt(e.target.checked) })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -508,7 +508,7 @@ const Config = () => {
                         </div>
 
                         {/* Malady settings */}
-                        <div className='mb-10 p-6 bg-mainBg text-white overflow-x-hidden rounded-lg'>
+                        <div className='mb-10 p-6 bg-[#28313E] border border-[#434B56] text-white overflow-x-hidden rounded-lg'>
                             <p className="text-center text-lg font-bold text-gray-300 mb-4 uppercase">malady settings</p>
                             <div className="flex mb-4 gap-4">
                                 <div className="flex-1">
@@ -519,7 +519,7 @@ const Config = () => {
                                                 type="checkbox" 
                                                 checked={config.malady.enable}
                                                 onChange={(e) => setConfig({ ...config, malady: { ...config.malady, enable: e.target.checked } })}
-                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-red-700 checked:border-slate-800" 
+                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-700 checked:border-slate-800" 
                                                 id="check"
                                             />
                                             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
@@ -538,7 +538,7 @@ const Config = () => {
                                                 type="checkbox" 
                                                 checked={config.malady.infect}
                                                 onChange={(e) => setConfig({ ...config, malady: { ...config.malady, infect: e.target.checked } })}
-                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-red-700 checked:border-slate-800" 
+                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-700 checked:border-slate-800" 
                                                 id="check"
                                             />
                                             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
@@ -556,7 +556,7 @@ const Config = () => {
                                             type="number"
                                             value={config.malady.id}
                                             onChange={(e) => setConfig({ ...config, malady: { ...config.malady, id: parseInt(e.target.checked) } })}
-                                            className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                            className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -579,7 +579,7 @@ const Config = () => {
                                                 }
                                             }
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -599,7 +599,7 @@ const Config = () => {
                                                 }
                                             }
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -627,7 +627,7 @@ const Config = () => {
                                                 }
                                             }
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -650,7 +650,7 @@ const Config = () => {
                                                 }
                                             }
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -673,7 +673,7 @@ const Config = () => {
                                                 }
                                             }
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -701,7 +701,7 @@ const Config = () => {
                                                 }
                                             }
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -724,7 +724,7 @@ const Config = () => {
                                                 }
                                             }
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -747,7 +747,7 @@ const Config = () => {
                                                 }
                                             }
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -755,7 +755,7 @@ const Config = () => {
                         </div>
 
                         {/* Auto rest settings */}
-                        <div className='mb-10 p-6 bg-mainBg text-white overflow-x-hidden rounded-lg'>
+                        <div className='mb-10 p-6 bg-[#28313E] border border-[#434B56] text-white overflow-x-hidden rounded-lg'>
                             <p className="text-center text-lg font-bold text-gray-300 mb-4 uppercase">auto rest settings</p>
                             <div className="flex mb-4 gap-4">
                                 <div className="flex-1">
@@ -772,7 +772,7 @@ const Config = () => {
                                                         enable: e.target.checked 
                                                     } 
                                                 })}
-                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-red-700 checked:border-slate-800" 
+                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-700 checked:border-slate-800" 
                                                 id="check"
                                             />
                                             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
@@ -797,7 +797,7 @@ const Config = () => {
                                                         disconnect_rest: e.target.checked 
                                                     } 
                                                 })}
-                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-red-700 checked:border-slate-800" 
+                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-700 checked:border-slate-800" 
                                                 id="check"
                                             />
                                             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
@@ -821,7 +821,7 @@ const Config = () => {
                                                 duration: parseInt(e.target.value )
                                             } 
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -838,7 +838,7 @@ const Config = () => {
                                                 interval: parseInt(e.target.value)
                                             } 
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -846,7 +846,7 @@ const Config = () => {
                         </div>
                         
                         {/* Auto wear settings */}
-                        <div className='mb-10 p-6 bg-mainBg text-white overflow-x-hidden rounded-lg'>
+                        <div className='mb-10 p-6 bg-[#28313E] border border-[#434B56] text-white overflow-x-hidden rounded-lg'>
                             <p className="text-center text-lg font-bold text-gray-300 mb-4 uppercase">auto wear settings</p>
                             <div className="flex mb-4 gap-4">
                                 <div className="flex-1">
@@ -863,7 +863,7 @@ const Config = () => {
                                                         enable: e.target.checked // Update id directly under auto_wear
                                                     } 
                                                 })}
-                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-red-700 checked:border-slate-800" 
+                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-700 checked:border-slate-800" 
                                                 id="check"
                                             />
                                             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
@@ -891,7 +891,7 @@ const Config = () => {
                                                         } 
                                                     } 
                                                 })}
-                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-red-700 checked:border-slate-800" 
+                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-700 checked:border-slate-800" 
                                                 id="check"
                                             />
                                             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
@@ -918,7 +918,7 @@ const Config = () => {
                                                 } 
                                             } 
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -935,7 +935,7 @@ const Config = () => {
                                                 id: parseInt(e.target.value)
                                             } 
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -943,7 +943,7 @@ const Config = () => {
                         </div>
 
                         {/* Purchase settings */}
-                        <div className='mb-10 p-6 bg-mainBg text-white overflow-x-hidden rounded-lg'>
+                        <div className='mb-10 p-6 bg-[#28313E] border border-[#434B56] text-white overflow-x-hidden rounded-lg'>
                             <p className="text-center text-lg font-bold text-gray-300 mb-4 uppercase">purchase settings</p>
                             <div className="flex mb-4 gap-4">
                                 <div className="flex-1">
@@ -959,7 +959,7 @@ const Config = () => {
                                                 name: e.target.value // Update the name directly
                                             } 
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -979,7 +979,7 @@ const Config = () => {
                                                 } 
                                             }); 
                                         }}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -996,7 +996,7 @@ const Config = () => {
                                                 price: parseInt(e.target.value)
                                             } 
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -1013,7 +1013,7 @@ const Config = () => {
                                                 minimum_gem: parseInt(e.target.value) // Update the name directly
                                             } 
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -1021,7 +1021,7 @@ const Config = () => {
                         </div>
 
                         {/* Auto event settings */}
-                        <div className='mb-10 p-6 bg-mainBg text-white overflow-x-hidden rounded-lg'>
+                        <div className='mb-10 p-6 bg-[#28313E] border border-[#434B56] text-white overflow-x-hidden rounded-lg'>
                             <p className="text-center text-lg font-bold text-gray-300 mb-4 uppercase">auto event settings</p>
                             <div className="flex mb-4 gap-4">
                                 <div className="flex-1">
@@ -1038,7 +1038,7 @@ const Config = () => {
                                                         enable: e.target.checked // Update the name directly
                                                     } 
                                                 })}
-                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-red-700 checked:border-slate-800" 
+                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-700 checked:border-slate-800" 
                                                 id="check"
                                             />
                                             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
@@ -1062,7 +1062,7 @@ const Config = () => {
                                                 world: e.target.value // Update the name directly
                                             } 
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -1084,7 +1084,7 @@ const Config = () => {
                                                 } 
                                             } 
                                         })} 
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -1104,7 +1104,7 @@ const Config = () => {
                                                 } 
                                             } 
                                         })} 
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -1116,7 +1116,7 @@ const Config = () => {
                                     <button 
                                         type="button"
                                         onClick={() => setIsCollapsed(!isCollapsed)} // Toggle collapse state
-                                        className="flex items-center mb-4 text-white bg-red-700 hover:bg-red-800 focus:ring-1 focus:outline-none font-medium rounded text-sm w-full px-2.5 py-2.5 text-center"
+                                        className="flex items-center mb-4 text-white bg-blue-600 hover:bg-blue-700 focus:ring-1 focus:outline-none font-medium rounded text-sm w-full px-2.5 py-2.5 text-center"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-5 mr-2">
                                             <path fillRule="evenodd" d="M11.47 4.72a.75.75 0 0 1 1.06 0l3.75 3.75a.75.75 0 0 1-1.06 1.06L12 6.31 8.78 9.53a.75.75 0 0 1-1.06-1.06l3.75-3.75Zm-3.75 9.75a.75.75 0 0 1 1.06 0L12 17.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-3.75 3.75a.75.75 0 0 1-1.06 0l-3.75-3.75a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
@@ -1145,7 +1145,7 @@ const Config = () => {
                                 </div>
                                 {!isCollapsed && config.event.list.map((item, index) => (
                                     <div key={item.id} className="flex mb-2 items-center gap-2">
-                                        <div className='w-5px bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow'>
+                                        <div className='w-5px bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow'>
                                             {index + 1}
                                         </div>
                                         :
@@ -1158,7 +1158,7 @@ const Config = () => {
                                                 newList[index] = { ...newList[index], id: newId }; // Update the specific item's id
                                                 setConfig({ ...config, event: { ...config.event, list: newList } }); // Update the state
                                             }}
-                                            className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                                            className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
                                         />
                                         <input 
                                             type="number"
@@ -1169,11 +1169,11 @@ const Config = () => {
                                                 newList[index] = { ...newList[index], count: newCount }; // Update the specific item's count
                                                 setConfig({ ...config, event: { ...config.event, list: newList } }); // Update the state
                                             }}
-                                            className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                                            className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
                                         />
                                         <button 
                                             type="button"
-                                            className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded text-sm w-full sm:w-auto px-2.5 py-2.5 text-center"
+                                            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded text-sm w-full sm:w-auto px-2.5 py-2.5 text-center"
                                             onClick={() => {
                                                 const newList = config.event.list.filter((_, i) => i !== index); // Remove the item at the current index
                                                 setConfig({ ...config, event: { ...config.event, list: newList } }); // Update the state with the new list
@@ -1189,7 +1189,7 @@ const Config = () => {
                         </div>
 
                         {/* Webhook settings */}
-                        <div className='mb-10 p-6 bg-mainBg text-white overflow-x-hidden rounded-lg'>
+                        <div className='mb-10 p-6 bg-[#28313E] border border-[#434B56] text-white overflow-x-hidden rounded-lg'>
                             <p className="text-center text-lg font-bold text-gray-300 mb-4 uppercase">webhook settings</p>
                             <div className="flex mb-4 gap-4">
                                 <div className="flex-1">
@@ -1205,7 +1205,7 @@ const Config = () => {
                                                 info: e.target.value // Update the name directly
                                             } 
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -1224,7 +1224,7 @@ const Config = () => {
                                                 pack: e.target.value // Update the name directly
                                             } 
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -1243,7 +1243,7 @@ const Config = () => {
                                                 logs: e.target.value // Update the name directly
                                             } 
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -1262,7 +1262,7 @@ const Config = () => {
                                                 world: e.target.value // Update the name directly
                                             } 
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -1287,7 +1287,7 @@ const Config = () => {
                                                 }
                                             });
                                         }}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -1310,7 +1310,7 @@ const Config = () => {
                                                 }
                                             });
                                         }}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -1318,7 +1318,7 @@ const Config = () => {
                         </div>
 
                         {/* Method settings */}
-                        <div className='mb-10 p-6 bg-mainBg text-white overflow-x-hidden rounded-lg'>
+                        <div className='mb-10 p-6 bg-[#28313E] border border-[#434B56] text-white overflow-x-hidden rounded-lg'>
                             <p className="text-center text-lg font-bold text-gray-300 mb-4 uppercase">Method settings</p>
                             <div className="flex mb-4 gap-4">
                                 <div className="flex-1">
@@ -1329,7 +1329,7 @@ const Config = () => {
                                                 type="checkbox" 
                                                 checked={config.buy_clothes}
                                                 onChange={(e) => setConfig({ ...config, buy_clothes: e.target.checked })}
-                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-red-700 checked:border-slate-800" 
+                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-700 checked:border-slate-800" 
                                                 id="check"
                                             />
                                             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
@@ -1348,7 +1348,7 @@ const Config = () => {
                                                 type="checkbox" 
                                                 checked={config.edit_note_profile}
                                                 onChange={(e) => setConfig({ ...config, edit_note_profile: e.target.checked })}
-                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-red-700 checked:border-slate-800" 
+                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-700 checked:border-slate-800" 
                                                 id="check"
                                             />
                                             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
@@ -1367,7 +1367,7 @@ const Config = () => {
                                                 type="checkbox" 
                                                 checked={config.random_chat}
                                                 onChange={(e) => setConfig({ ...config, random_chat: e.target.checked })}
-                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-red-700 checked:border-slate-800" 
+                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-700 checked:border-slate-800" 
                                                 id="check"
                                             />
                                             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
@@ -1386,7 +1386,7 @@ const Config = () => {
                                                 type="checkbox" 
                                                 checked={config.random_world}
                                                 onChange={(e) => setConfig({ ...config, random_world: e.target.checked })}
-                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-red-700 checked:border-slate-800" 
+                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-700 checked:border-slate-800" 
                                                 id="check"
                                             />
                                             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
@@ -1414,7 +1414,7 @@ const Config = () => {
                                                     } 
                                                 })}
                                                 
-                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-red-700 checked:border-slate-800" 
+                                                className="peer h-7 w-7 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-700 checked:border-slate-800" 
                                                 id="check"
                                             />
                                             <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
@@ -1440,7 +1440,7 @@ const Config = () => {
                                                         world: e.target.value // Update the enable property
                                                     } 
                                                 })}
-                                                className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                                className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                                 />
                                             </div>
                                         </div>
@@ -1461,7 +1461,7 @@ const Config = () => {
                                                         doorId: e.target.value // Update the enable property
                                                     } 
                                                 })}
-                                                className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                                className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                                 />
                                             </div>
                                         </div>
@@ -1484,7 +1484,7 @@ const Config = () => {
                                                         world: e.target.value // Update the enable property
                                                     } 
                                                 })}
-                                                className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                                className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                                 />
                                             </div>
                                         </div>
@@ -1505,7 +1505,7 @@ const Config = () => {
                                                         doorId: e.target.value // Update the enable property
                                                     } 
                                                 })}
-                                                className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                                className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                                 />
                                             </div>
                                         </div>
@@ -1526,7 +1526,7 @@ const Config = () => {
                                                         x: parseInt(e.target.value) // Update the enable property
                                                     } 
                                                 })}
-                                                className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                                className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                                 />
                                             </div>
                                         </div>
@@ -1547,7 +1547,7 @@ const Config = () => {
                                                         y: parseInt(e.target.value) // Update the enable property
                                                     } 
                                                 })}
-                                                className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                                className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                                 />
                                             </div>
                                         </div>
@@ -1556,7 +1556,7 @@ const Config = () => {
                             </div>
                         </div>
 
-                        <div className='mb-10 p-6 bg-mainBg text-white overflow-x-hidden rounded-lg'>
+                        <div className='mb-10 p-6 bg-[#28313E] border border-[#434B56] text-white overflow-x-hidden rounded-lg'>
                             <p className="text-center text-lg font-bold text-gray-300 mb-4 uppercase">essential settings</p>
                             <div className="flex mb-4 gap-4">
                                 <div className="flex-1">
@@ -1569,7 +1569,7 @@ const Config = () => {
                                             ...config, 
                                             whitelist: e.target.value.split(',').map(item => item.trim()) // Split input by commas and trim whitespace
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -1584,7 +1584,7 @@ const Config = () => {
                                             ...config, 
                                             chat_list: e.target.value.split(',').map(item => item.trim()) // Split by commas and trim whitespace
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -1599,7 +1599,7 @@ const Config = () => {
                                             ...config, 
                                             emote_list: e.target.value.split(',').map(item => item.trim()) // Split by commas and trim whitespace
                                         })}
-                                        className="w-full bg-[#1B1D1E] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
+                                        className="w-full bg-[#1F2936] text-sm border border-gray-600 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow" 
                                         />
                                     </div>
                                 </div>
@@ -1609,7 +1609,7 @@ const Config = () => {
                         <button 
                             onClick={() => updateConfig(config)} 
                             type="button" 
-                            className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                         >
                              Save
                         </button>

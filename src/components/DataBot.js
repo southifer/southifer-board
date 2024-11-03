@@ -1,103 +1,94 @@
-import React, { useState, useEffect } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
-import { styled } from '@mui/material/styles';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { AgGridReact } from 'ag-grid-react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
+import 'ag-grid-enterprise';
 
-// Custom DataGrid styles with #181A20 color, border, and white text
-const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
-    height: '760px',
-    color: 'white',
-    backgroundColor: '#181D1F',
-    WebkitFontSmoothing: 'auto',
-    letterSpacing: '0.7px',
-    border: 'none',
-    boxShadow: 'none',
 
-    // Row styles
-    '& .MuiDataGrid-row': {
-        color: 'white',
-        backgroundColor: '#181A20', // Row background color
-        '&:hover': {
-            backgroundColor: '#2A2E35', // Row hover background color
-        },
-    },
-    '& .MuiDataGrid-footerContainer': {
-        borderTop: '1px solid #56575C',
-        color: 'white',
-        backgroundColor: '#222628'
-    },
-    '& .even-row': {
-        backgroundColor: '#222628', // Color for even rows
-    },
-    '& .odd-row': {
-        backgroundColor: '#181A20', // Color for odd rows
-    },
+// Your showModal function as defined earlier
+const showModal = (data) => {
+    Swal.fire({
+        icon: 'info',
+        title: 'Confirm Adding Bot',
+        html: `
+            Are you sure you want to add the following bot?
+            <br>Name: <strong>${data.username}</strong>
+            <br>Password: <strong>${data.password}</strong>
+            <br>MAC: <strong>${data.mac}</strong>
+            <br>Recovery: <strong>${data.recovery}</strong>
+            <br>RID: <strong>${data.rid}</strong>
+            <br>Proxy: <strong>${data.proxy}</strong>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Add Bot',
+        customClass: {
+            popup: 'swal2-addbot' // Apply custom class to the modal
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            handleSubmit(data);  // Pass the collected data to handleSubmit
+        }
+    });
+};
 
-    // Column header styles
-    '& .MuiDataGrid-columnHeader': {
-        backgroundColor: '#222628',
-        color: 'white',
-        borderBottom: '10px solid #56575C',
-    },
+// Your handleSubmit function as defined earlier
+const handleSubmit = async (data) => {
 
-    '& .MuiDataGrid-main': {
-        backgroundColor: '#0F1015',
-        color: 'white',
-    },
-    
-    '& .MuiDataGrid-editInputCell': {
-        color: 'white',
-        backgroundColor: '#21232d',
-        border: 'none',
-        outline: 'none',
-        
-        // Default styles for larger screens
-        '@media (max-width:600px)': {
-            color: 'yellow', // Change color for mobile
-            backgroundColor: 'red', // Change background for mobile
-            border: '1px solid red', // Example border change for mobile
-            outline: 'solid',
-        },
-    },
-    
-    // Improve visibility for header cells
-    '& .MuiDataGrid-columnHeaderTitle': {
-        textAlign: 'center', // Center-align header titles
-    },
+    if (!data.username || !data.password) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Name and Password are required fields!'
+        });
+        return;
+    }
 
-    // Cell styles
-    '& .MuiDataGrid-cell': {
-        color: 'white',
-        borderBottom: '1px solid #64646A',
-        borderTop: 'none',
-        '&:focus': {
-            outline: 'none', // Remove focus outline for cleaner look
-        },
-    },
+    try {
+        const response = await axios.post(
+            "http://191.96.94.35:8000/bot/add",
+            null,
+            {
+                params: {
+                    name: data.username,
+                    password: data.password,
+                    recovery: data.recovery || "",
+                    mac: data.mac || "",
+                    rid: data.rid || "",
+                    proxy: data.proxy || ""
+                }
+            }
+        );
 
-    // Checkbox styles
-    '& .MuiCheckbox-root': {
-        color: '#868787', // Custom color for unchecked state
-        '&.Mui-checked': {
-            color: '#1976D2', // Custom color for checked state
-        },
-    },
-
-    // Menu item styles
-    '& .MuiMenuItem-root': {
-        backgroundColor: '#2A2E35',
-        color: 'white', // Change menu item text color
-        '&:hover': {
-            backgroundColor: '#1976D2', // Change hover background color
-        },
-    },
-}));
+        // Show success or failure message
+        if (response.status === 200) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Bot Added!',
+                text: response.data
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: response.data
+            });
+        }
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'API Error',
+            text: 'Failed to connect to the server.'
+        });
+        console.error('Error adding bot:', error);
+    }
+};
 
 const DataBot = () => {
-    const [rows, setRows] = useState([]);
-    const [selectedCell, setSelectedCell] = useState('');
-    const [copiedCell, setCopiedCell] = useState(null);
+    const [rowData, setRowData] = useState([]);
+    const [selectedRowIds, setSelectedRowIds] = useState([]);
+    const [selectedCount, setSelectedCount] = useState(0);
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -106,34 +97,115 @@ const DataBot = () => {
         rid: '',
         proxy: '',
     });
-    const [selectedRow, setSelectedRow] = useState([]);
+    const [fileContent, setFileContent] = useState('');
 
-    const ProcessSelectionRow = (newSelectionModel) => {
-        setSelectedRow(newSelectionModel);
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+    
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const content = e.target.result;
+                const isValidFormat = validateFileContent(content);
+        
+                if (isValidFormat) {
+                    setFileContent(content);
+
+                    const newRows = processFileContent(content);
+                    setRowData(prevRows => [...prevRows, ...newRows]);
+                } else {
+                    Swal.fire({
+                        title: "The Internet?",
+                        text: 'File format is invalid. Please ensure it follows the format: USERNAME|PASSWORD|RECOVERY|MAC|RID|PROXY',
+                        icon: "warning"
+                    });
+                }
+            };
+            reader.readAsText(file);
+        }
+    };
+
+    const validateFileContent = (content) => {
+        const lines = content.split('\n');
+        return lines.every(line => {
+            const parts = line.split('|');
+            return parts.length >= 3 && parts.length <= 6; // Check for 3 to 6 parts
+        });
+    };
+    
+    const processFileContent = (content) => {
+        const lines = content.split('\n');
+        return lines.map((line, index) => {
+            const parts = line.split('|');
+            return {
+                username: parts[0],
+                password: parts[1],
+                recovery: parts[2],
+                mac: parts[3] || '', // Fallback to empty string if not present
+                rid: parts[4] || '', // Fallback to empty string if not present
+                proxy: parts[5] || '', // Fallback to empty string if not present
+                id: rowData.length + index + 1, // Generate a unique ID
+            };
+        });
+    };
+
+    const countProxies = (rowData) => {
+        const proxyCount = rowData.reduce((acc, user) => {
+            const proxy = user.proxy;
+            if (user.proxy !== '') {
+                acc[proxy] = (acc[proxy] || 0) + 1;
+            } else {
+                acc[proxy] = 0;
+            }
+            
+            return acc;
+        }, {});
+    
+        // Map the original rowData to include the user count in the proxy field
+        return rowData.map(user => ({
+            ...user,
+            proxyCount: `x${proxyCount[user.proxy]}` // Update the proxy field to include count
+        }));
     };
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://64.72.205.239:8000/bot/bot-backup');
+                const response = await axios.get('http://191.96.94.35:8000/bot/bot-backup');
                 const dataWithIds = response.data.map((item, index) => ({ ...item, id: index }));
-                setRows(dataWithIds);
+                const dataWithProxyCount = countProxies(dataWithIds); // Count proxies here
+                setRowData(dataWithProxyCount);
             } catch (error) {
                 console.error(error);
             }
         };
-
+    
         fetchData();
     }, []);
 
+    // Define AG Grid columns
     const columns = [
-        { field: 'username', headerName: 'Name', minWidth: 300, editable: true, sortable: false },
-        { field: 'password', headerName: 'Password', minWidth: 200, editable: true, sortable: false },
-        { field: 'recovery', headerName: 'Recovery', minWidth: 300, editable: true, sortable: false },
-        { field: 'mac', headerName: 'MAC', minWidth: 200, editable: true, sortable: false },
-        { field: 'rid', headerName: 'RID', minWidth: 350, editable: true, sortable: false },
-        { field: 'proxy', headerName: 'Proxy', minWidth: 400, editable: true },
+        { headerName: 'Name', field: 'username', editable: true, minWidth: 300, filter: "agTextColumnFilter"},
+        { headerName: 'Password', field: 'password', editable: true, minWidth: 200, filter: "agTextColumnFilter"},
+        { headerName: 'Recovery', field: 'recovery', editable: true, minWidth: 300, filter: "agTextColumnFilter"},
+        { headerName: 'MAC', field: 'mac', editable: true, minWidth: 200, filter: "agTextColumnFilter"},
+        { headerName: 'RID', field: 'rid', editable: true, minWidth: 350, filter: "agTextColumnFilter"},
+        { headerName: 'Proxy', field: 'proxy', editable: true, minWidth: 250, filter: "agTextColumnFilter"},
+        { headerName: 'Proxy', field: 'proxyCount', editable: true, minWidth: 100, filter: "agNumberColumnFilter"},
     ];
+
+    const onSelectionChanged = useCallback((event) => {
+        const selectedIds = event.api.getSelectedRows().map(row => row.id);
+        setSelectedRowIds(selectedIds);
+        setSelectedCount(selectedIds.length); // Update selected count
+    }, []);
+
+    const handleCellEditingStopped = useCallback((event) => {
+        const updatedData = rowData.map(row => 
+            row.id === event.data.id ? { ...row, [event.column.colId]: event.value } : row
+        );
+        setRowData(updatedData);
+    }, [rowData]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -141,105 +213,6 @@ const DataBot = () => {
             ...prevData,
             [name]: value,
         }));
-    };
-
-    const getRowClassName = (params) => {
-        return params.indexRelativeToCurrentPage % 2 === 1 ? 'even-row' : 'odd-row';
-    };
-
-    const handleProcessRowUpdate = (newRow) => {
-        console.table(newRow); // Log the updated row for debugging
-
-        // Update the rows without mutating state
-        const updatedRows = rows.map((row) =>
-            row.id === newRow.id ? { ...row, ...newRow } : row // Ensure the correct row is updated
-        );
-
-        // Check if the updatedRows length is correct
-        console.table(updatedRows);
-
-        setRows(updatedRows); // Set the updated rows
-        return newRow; // Return the updated row
-    };
-
-    const handleCellClick = (params) => {
-        const { field, row } = params;
-
-        // Save the current selected cell content for later copying
-        switch (field) {
-            case 'username':
-                setSelectedCell(row.username);
-                break;
-            case 'password':
-                setSelectedCell(row.password);
-                break;
-            case 'recovery':
-                setSelectedCell(row.recovery);
-                break;
-            case 'mac':
-                setSelectedCell(row.mac);
-                break;
-            case 'rid':
-                setSelectedCell(row.rid);
-                break;
-            case 'proxy':
-                setSelectedCell(row.proxy);
-                break;
-            default:
-                setSelectedCell('');
-        }
-    };
-
-    useEffect(() => {
-        const handleCopy = (event) => {
-            if (event.ctrlKey && event.key === 'c' && selectedCell) { // Check if Ctrl is pressed and a cell is selected
-                navigator.clipboard.writeText(selectedCell) // Copy the cell value to clipboard
-                    .then(() => {
-                        // Set the copied cell for glowing effect
-                        const cellIndex = rows.findIndex(row => 
-                            row.username === selectedCell || 
-                            row.password === selectedCell || 
-                            row.recovery === selectedCell || 
-                            row.mac === selectedCell || 
-                            row.rid === selectedCell || 
-                            row.proxy === selectedCell
-                        );
-
-                        if (cellIndex !== -1) {
-                            const copiedRow = rows[cellIndex];
-                            setCopiedCell({ id: copiedRow.id, field: event.target.dataset.field }); // Capture the correct field
-                        }
-
-                        // Reset copied cell glow after 1 second
-                        setTimeout(() => {
-                            setCopiedCell(null);
-                        }, 1000);
-                    })
-                    .catch((err) => {
-                        console.error('Failed to copy: ', err);
-                    });
-            }
-        };
-
-        window.addEventListener('keydown', handleCopy); // Add event listener for keydown
-
-        return () => {
-            window.removeEventListener('keydown', handleCopy); // Cleanup on unmount
-        };
-    }, [selectedCell, rows]); // Depend on selectedCell and rows
-
-    const getCellClassName = (params) => {
-        const { row, field } = params;
-        const isGlowing = copiedCell && copiedCell.id === row.id && copiedCell.field === field;
-        return isGlowing ? 'glow glow-update' : '';
-    };
-
-    const handleCellEditCommit = (params) => {
-        const updatedRow = { ...params.row, [params.field]: params.value };
-        const updatedRows = rows.map((row) =>
-            row.username === params.row.username ? updatedRow : row
-        );
-        setRows(updatedRows);
     };
 
     const handleSubmit = async (e) => {
@@ -252,11 +225,11 @@ const DataBot = () => {
             mac: formData.mac,
             rid: formData.rid,
             proxy: formData.proxy,
-            id: rows.length // Assuming you want to keep it sequential
+            id: rowData.length // Assuming you want to keep it sequential
         };
         
         // Update the rows state using a functional update
-        setRows(prevRows => {
+        setRowData(prevRows => {
             const updatedData = [...prevRows, NewData]; // Append the new data
             console.table(updatedData);
             sendDataToServer(updatedData, 'bot added success'); // Send updated data to server
@@ -267,7 +240,7 @@ const DataBot = () => {
     const sendDataToServer = async (updatedData, titleText) => {
         try {
             const newScript = `${JSON.stringify(updatedData, null, 2)}`; // Convert updated data to JSON
-            const response = await axios.post('http://64.72.205.239:8000/bot/bot-backup', newScript, {
+            const response = await axios.post('http://191.96.94.35:8000/bot/bot-backup', newScript, {
                 headers: {
                     'Content-Type': 'text/plain', // Change this as needed
                 },
@@ -289,7 +262,7 @@ const DataBot = () => {
     };
 
     const RemoveDataAPI = async () => {
-        if (selectedRow.length === 0) {
+        if (selectedRowIds.length === 0) {
             Swal.fire({
                 title: "info",
                 text: 'No data selected!',
@@ -297,117 +270,160 @@ const DataBot = () => {
             });
             return;
         }
-
-        const selectedLogRow = selectedRow.length;
-        setRows(rows => {
-            const updatedData = rows.filter(row => !selectedRow.includes(row.id));
-            sendDataToServer(updatedData, `deleted x${selectedLogRow} bots`);
+    
+        const selectedLogRow = selectedRowIds.length;
+        setRowData(rows => {
+            const updatedData = rows.filter(row => !selectedRowIds.includes(row.id)); // Corrected from setSelectedRowIds to selectedRowIds
+            sendDataToServer(updatedData, `deleted x${selectedLogRow} bot`);
             return updatedData;
         });
     };
+    
 
     const SaveDataAPI = async () => {
-        sendDataToServer(rows, 'all data saved!')
+        sendDataToServer(rowData, 'all data saved!')
     };
+
+    const rowSelection = useMemo(() => ({
+        mode: 'multiRow',
+        checkboxes: true,
+        headerCheckbox: true,
+        enableClickSelection: true,
+    }), []);
     
+    const gridOptions = {
+        columnDefs: columns,
+        defaultColDef: {
+            flex: 1,
+            filter: true,
+            floatingFilter: true,
+            menuTabs: ['generalMenuTab', 'filterMenuTab', 'columnsMenuTab'],
+            enableCellChangeFlash: true,
+        },
+        columnMenu: 'legacy',
+        suppressMenuHide: true,
+    };
+
+    const getRowClass = useCallback((params) => {
+        return selectedRowIds.includes(params.data.id) ? 'selected-row' : '';
+    }, [selectedRowIds]);
+
+    const getContextMenuItems = (params) => [
+        {
+            name: 'Save Data',
+            action: () => {
+                SaveDataAPI();
+            }
+        },
+        {
+            name: 'Add Bot',
+            action: () => {
+                showModal(params.node.data);
+            }
+        },
+        {
+            name: 'Remove',
+            action: () => {
+                RemoveDataAPI();
+            }
+        },
+        "separator",
+        "copy",
+    ]
+
     return (
-        <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
+        <div className="ag-theme-quartz-dark" style={{ height: 760, width: '100%' }}>
+            <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
+                <div className="bg-[#1C1C1C] p-4 rounded-lg shadow-md mb-4 border border-[#424242]">
+                    <form className='grid grid-cols-1 md:grid-cols-2 gap-4' onSubmit={handleSubmit}>
+                        <input
+                            type="text"
+                            name="username"
+                            placeholder="username"
+                            value={formData.username}
+                            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                            className="w-full h-[60px] text-white bg-[#222628] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded px-2.5 py-2.5"
+                            required
+                        />
+                        <input
+                            type="text"
+                            name="password"
+                            placeholder="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            className="w-full h-[60px] text-white bg-[#222628] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
+                            required
+                        />
+                        <input
+                            type="text"
+                            name="recovery"
+                            placeholder="recovery"
+                            value={formData.recovery}
+                            onChange={handleChange}
+                            className="w-full h-[60px] text-white bg-[#222628] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
+                        />
+                        <input
+                            type="text"
+                            name="mac"
+                            placeholder="mac"
+                            value={formData.mac}
+                            onChange={handleChange}
+                            className="w-full h-[60px] text-white bg-[#222628] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
+                        />
+                        <input
+                            type="text"
+                            name="rid"
+                            placeholder="rid"
+                            value={formData.rid}
+                            onChange={handleChange}
+                            className="w-full h-[60px] text-white bg-[#222628] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
+                        />
+                        <input
+                            type="text"
+                            name="proxy"
+                            placeholder="proxy"
+                            value={formData.proxy}
+                            onChange={handleChange}
+                            className="w-full h-[60px] text-white bg-[#222628] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
+                        />
+                        <div className="flex items-center">
+                            <button type="submit" className="flex items-center gap-2 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                                    <path d="M5.25 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM2.25 19.125a7.125 7.125 0 0 1 14.25 0v.003l-.001.119a.75.75 0 0 1-.363.63 13.067 13.067 0 0 1-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 0 1-.364-.63l-.001-.122ZM18.75 7.5a.75.75 0 0 0-1.5 0v2.25H15a.75.75 0 0 0 0 1.5h2.25v2.25a.75.75 0 0 0 1.5 0v-2.25H21a.75.75 0 0 0 0-1.5h-2.25V7.5Z" />
+                                </svg>
+                                add
+                            </button>
+                        </div>
 
-            <div className="bg-widgetBg p-4 rounded-lg shadow-md mb-4">
-                <form className='grid grid-cols-1 md:grid-cols-2 gap-4' onSubmit={handleSubmit}>
-                    <input
-                        type="text"
-                        name="username"
-                        placeholder="username"
-                        value={formData.username}
-                        onChange={handleChange}
-                        className="w-full h-[60px] text-white bg-[#2A2E35] focus:ring-1 focus:outline-none font-medium rounded px-2.5 py-2.5"
-                        required
-                    />
-                    <input
-                        type="text"
-                        name="password"
-                        placeholder="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        className="w-full h-[60px] text-white bg-[#2A2E35] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
-                        required
-                    />
-                    <input
-                        type="text"
-                        name="recovery"
-                        placeholder="recovery"
-                        value={formData.recovery}
-                        onChange={handleChange}
-                        className="w-full h-[60px] text-white bg-[#2A2E35] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
-                    />
-                    <input
-                        type="text"
-                        name="mac"
-                        placeholder="mac"
-                        value={formData.mac}
-                        onChange={handleChange}
-                        className="w-full h-[60px] text-white bg-[#2A2E35] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
-                    />
-                    <input
-                        type="text"
-                        name="rid"
-                        placeholder="rid"
-                        value={formData.rid}
-                        onChange={handleChange}
-                        className="w-full h-[60px] text-white bg-[#2A2E35] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
-                    />
-                    <input
-                        type="text"
-                        name="proxy"
-                        placeholder="proxy"
-                        value={formData.proxy}
-                        onChange={handleChange}
-                        className="w-full h-[60px] text-white bg-[#2A2E35] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
-                        required
-                    />
-                    <div className="flex md:col-span-2 justify-end gap-2">
-                        <button
-                            type="submit"
-                            className="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded"
-                        >
-                            submit
-                        </button>
-                    </div>
-                </form>
-            </div>
-            <div className="bg-widgetBg p-4 rounded-lg shadow-md grid grid-cols-1 gap-4 mb-4">
-                <div className="flex md:col-span-2 justify-end gap-2">
-                    <button 
-                        onClick={() => RemoveDataAPI()}
-                        className=" bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded"
-                    >
-                        delete
-                    </button>
-                    <button 
-                        onClick={() => SaveDataAPI()}
-                        className=" bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded"
-                    >
-                        save
-                    </button>
+                    </form>
+                    <form onSubmit={handleSubmit}>
+                        <div>
+                            <label htmlFor="file-upload">Upload File:</label>
+                            <input
+                            type="file"
+                            id="file-upload"
+                            accept=".txt"
+                            onChange={handleFileChange}
+                            />
+                        </div>
+
+                        <button type="submit">Submit</button>
+                    </form>
                 </div>
-                <div className="max-w-full overflow-x-auto custom-scrollbar mr-2">
-                    <StyledDataGrid
-                        rows={rows}
-                        columns={columns}
-                        getRowId={(row) => row.id}
-                        getRowClassName={getRowClassName}
-                        checkboxSelection
-                        disableRowSelectionOnClick
-                        pagination
-                        onCellClick={handleCellClick}
-                        onCellEditCommit={handleCellEditCommit}
-                        processRowUpdate={handleProcessRowUpdate}
-                        getCellClassName={getCellClassName}
-
-                        onRowSelectionModelChange={ProcessSelectionRow}
-                        rowSelectionModel={selectedRow}
-                    />
+                <div className="bg-[#1C1C1C] p-4 rounded-lg shadow-md mb-4 border border-[#424242]">
+                    <div id="myGrid" class="ag-theme-alpine-dark" style={{ height: 760, width: '100%' }}>
+                        <AgGridReact
+                            gridOptions={gridOptions}
+                            rowData={rowData}
+                            columnDefs={columns}
+                            rowSelection={rowSelection}
+                            onSelectionChanged={onSelectionChanged}
+                            onCellEditingStopped={handleCellEditingStopped}
+                            getRowClass={getRowClass}
+                            pagination
+                            getContextMenuItems={getContextMenuItems}
+                        />
+                    </div>
                 </div>
             </div>
         </div>

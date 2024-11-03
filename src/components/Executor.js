@@ -13,7 +13,7 @@ const CodeEditor = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://64.72.205.239:8000/bot/rotasi-script');
+                const response = await fetch('http://191.96.94.35:8000/bot/rotasi-script');
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
@@ -40,7 +40,7 @@ const CodeEditor = () => {
     const handleSave = async () => {
         try {
             setUploading(true);
-            const response = await axios.post('http://64.72.205.239:8000/bot/rotasi-script', code, {
+            const response = await axios.post('http://191.96.94.35:8000/bot/rotasi-script', code, {
                 headers: {
                     'Content-Type': 'text/plain', // Change this as needed
                 },
@@ -75,8 +75,8 @@ const CodeEditor = () => {
 
     return (
         <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
-            <div className="bg-widgetBg p-4 rounded-lg shadow-md grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
-                <div className="max-w-full overflow-x-auto custom-scrollbar rounded-lg">
+            <div className="bg-[#28313E] border border-[#434B56] p-4 rounded-lg shadow-md grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
+                <div className="max-w-full overflow-x-auto custom-scrollbar rounded-lg border border-[#434B56">
                     <Editor
                         height="70vh"
                         language="lua"
@@ -93,7 +93,7 @@ const CodeEditor = () => {
                 <div className="flex justify-end">
                     <button
                         onClick={() => handleSave()} 
-                        className="mt-4 bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded"
+                        className="mt-4 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
                     >
                         {uploading && (
                             <svg aria-hidden="true" role="status" class="inline w-5 h-5 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">

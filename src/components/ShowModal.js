@@ -8,7 +8,7 @@ const InventoryTable = ({ data }) => {
     const trashItem = async (index, id) => {
         const script = `local bot = getBot(${index})\nreturn bot:getInventory():findItem(${id}) or 0`;
         try {
-            const response = await axios.post('http://64.72.205.239:8000/bot/runScript', script, {
+            const response = await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
                 headers: {
                     'Content-Type' : 'text/plain'
                 }
@@ -97,7 +97,7 @@ const InventoryTable = ({ data }) => {
 
 const executeScript = async (script) => {
     try {
-        const response = await axios.post('http://64.72.205.239:8000/bot/runScript', script, {
+        const response = await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
             headers: {
                 'Content-Type': 'text/plain',
             },
@@ -124,7 +124,7 @@ const StopScriptAPI = async (id) => {
     return bot:isRunningScript()`;
 
     try {
-        const response = await axios.post('http://64.72.205.239:8000/bot/runScript', script, {
+        const response = await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
             headers: {
                 'Content-Type': 'text/plain',
             },
@@ -164,7 +164,7 @@ const StartRotasiAPI = async (id) => {
     const script = `local bot = getBot(${index})\nlocal script = read("rotasi-luci-json.lua")\nif not bot:isRunningScript() then\nbot:runScript(script)\nbot.custom_status=""\nsleep(5000)\nreturn bot:isRunningScript()\nend`;
 
     try {
-        const response = await axios.post('http://64.72.205.239:8000/bot/runScript', script, {
+        const response = await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
             headers: {
                 'Content-Type': 'text/plain',
             },
@@ -201,7 +201,7 @@ const RestartRotasiAPI = async (id) => {
     end`;
 
     try {
-        const response = await axios.post('http://64.72.205.239:8000/bot/runScript', script, {
+        const response = await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
             headers: {
                 'Content-Type': 'text/plain',
             },
@@ -232,7 +232,7 @@ const ConnectBotAPI = async (id, event) => {
     }
     
     try {
-        const response = await axios.post('http://64.72.205.239:8000/bot/runScript', script, {
+        const response = await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
             headers: {
                 'Content-Type': 'text/plain',
             },
@@ -246,7 +246,7 @@ const ConnectBotAPI = async (id, event) => {
 const RemoveBotAPI = async (index) => {
     const script = `local bot = getBot(${index})\nremoveBot(bot.name)`;
     try {
-        await axios.post('http://64.72.205.239:8000/bot/runScript', script, {
+        await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
             headers: {
                 'Content-Type': 'text/plain',
             },
@@ -259,18 +259,19 @@ const RemoveBotAPI = async (index) => {
 
 const StartTutorialAPI = async (index) => {
     const script = `
-    local bot = getBot(${index})\n
-    local tutorial = bot.auto_tutorial\n
-    tutorial.enabled = true\n
-    tutorial.auto_quest = true\n
-    tutorial.set_as_home = true\n
-    tutorial.set_high_level = true\n
-    tutorial.set_random_skin = true\n
-    tutorial.set_random_profile = true\n
-    tutorial.detect_tutorial = true\n
-    return tutorial.detect_tutorial`;
+    local bot = getBot(${index})
+    local tutorial = bot.auto_tutorial
+    tutorial.enabled = true
+    tutorial.auto_quest = true
+    tutorial.set_as_home = true
+    tutorial.set_high_level = true
+    tutorial.set_random_skin = true
+    tutorial.set_random_profile = true
+    tutorial.detect_tutorial = true
+    return tutorial.detect_tutorial
+    `;
     try {
-        const response = await axios.post('http://64.72.205.239:8000/bot/runScript', script, {
+        const response = await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
             headers: {
                 'Content-Type': 'text/plain',
             },

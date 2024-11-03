@@ -8,7 +8,7 @@ const NavigationBar = () => {
     const toggleNav = () => setIsNavOpen(!isNavOpen);
 
     return (
-        <nav className="bg-[#28313E] border-b-2 border-[#434B56] text-white p-4 flex items-center justify-between lg:justify-between flex-col lg:flex-row top-0 left-0 right-0 z-50 max-w-screen">
+        <nav className="bg-[#1C1C1C] border-b-2 border-[#424242] text-white p-4 flex items-center justify-between lg:justify-between flex-col lg:flex-row top-0 left-0 right-0 z-50 max-w-screen">
         <button
             className="lg:hidden absolute right-4 top-4 p-2 rounded-lg text-white focus:outline-none"
             onClick={toggleNav}
@@ -38,7 +38,7 @@ const NavigationBar = () => {
         <div className={`lg:flex ${isNavOpen ? 'block' : 'hidden'} lg:flex lg:space-x-4 lg:ml-auto flex-col lg:flex-row space-y-2 lg:space-y-0 mt-4 lg:mt-0 w-full lg:w-auto`}>
             <Link
                 to="/"
-                className={`flex items-center px-4 py-2 rounded-lg ${pathname === '/' ? 'bg-[#272B34]' : 'hover:bg-[#272B34]'}`}
+                className={`flex items-center px-4 py-2 rounded-lg ${pathname === '/' ? 'bg-[#2D3436]' : 'hover:bg-[#2D3436]'}`}
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -53,7 +53,7 @@ const NavigationBar = () => {
             </Link>
             <Link
                 to="/dashboard"
-                className={`flex items-center px-4 py-2 rounded-lg ${pathname === '/dashboard' ? 'bg-[#272B34]' : 'hover:bg-[#272B34]'}`}
+                className={`flex items-center px-4 py-2 rounded-lg ${pathname === '/dashboard' ? 'bg-[#2D3436]' : 'hover:bg-[#2D3436]'}`}
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -67,7 +67,7 @@ const NavigationBar = () => {
             </Link>
             <Link
                 to="/config"
-                className={`flex items-center px-4 py-2 rounded-lg ${pathname === '/config' ? 'bg-[#272B34]' : 'hover:bg-[#272B34]'}`}
+                className={`flex items-center px-4 py-2 rounded-lg ${pathname === '/config' ? 'bg-[#2D3436]' : 'hover:bg-[#2D3436]'}`}
             >
                 <svg 
                     xmlns="http://www.w3.org/2000/svg" 
@@ -84,7 +84,7 @@ const NavigationBar = () => {
             </Link>
             <Link
                 to="/bot"
-                className={`flex items-center px-4 py-2 rounded-lg ${pathname === '/bot' ? 'bg-[#272B34]' : 'hover:bg-[#272B34]'}`}
+                className={`flex items-center px-4 py-2 rounded-lg ${pathname === '/bot' ? 'bg-[#2D3436]' : 'hover:bg-[#2D3436]'}`}
             >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`w-5 h-5 mr-2 ${pathname === '/bot' ? 'text-[#22D3EE]' : 'text-white'}`}>
                     <path fillRule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clipRule="evenodd" />
@@ -92,8 +92,18 @@ const NavigationBar = () => {
                 bot
             </Link>
             <Link
+                to="/farm"
+                className={`flex items-center px-4 py-2 rounded-lg ${pathname === '/farm' ? 'bg-[#2D3436]' : 'hover:bg-[#2D3436]'}`}
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`w-5 h-5 mr-2 ${pathname === '/farm' ? 'text-[#22D3EE]' : 'text-white'}`}>
+                    <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM6.262 6.072a8.25 8.25 0 1 0 10.562-.766 4.5 4.5 0 0 1-1.318 1.357L14.25 7.5l.165.33a.809.809 0 0 1-1.086 1.085l-.604-.302a1.125 1.125 0 0 0-1.298.21l-.132.131c-.439.44-.439 1.152 0 1.591l.296.296c.256.257.622.374.98.314l1.17-.195c.323-.054.654.036.905.245l1.33 1.108c.32.267.46.694.358 1.1a8.7 8.7 0 0 1-2.288 4.04l-.723.724a1.125 1.125 0 0 1-1.298.21l-.153-.076a1.125 1.125 0 0 1-.622-1.006v-1.089c0-.298-.119-.585-.33-.796l-1.347-1.347a1.125 1.125 0 0 1-.21-1.298L9.75 12l-1.64-1.64a6 6 0 0 1-1.676-3.257l-.172-1.03Z" clipRule="evenodd" />
+                </svg>
+
+                farm
+            </Link>
+            <Link
                 to="/script"
-                className={`flex items-center px-4 py-2 rounded-lg ${pathname === '/script' ? 'bg-[#272B34]' : 'hover:bg-[#272B34]'}`}
+                className={`flex items-center px-4 py-2 rounded-lg ${pathname === '/script' ? 'bg-[#2D3436]' : 'hover:bg-[#2D3436]'}`}
             >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`w-5 h-5 mr-2 ${pathname === '/script' ? 'text-[#22D3EE]' : 'text-white'}`}>
                     <path fillRule="evenodd" d="M2.25 6a3 3 0 0 1 3-3h13.5a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V6Zm3.97.97a.75.75 0 0 1 1.06 0l2.25 2.25a.75.75 0 0 1 0 1.06l-2.25 2.25a.75.75 0 0 1-1.06-1.06l1.72-1.72-1.72-1.72a.75.75 0 0 1 0-1.06Zm4.28 4.28a.75.75 0 0 0 0 1.5h3a.75.75 0 0 0 0-1.5h-3Z" clipRule="evenodd" />
