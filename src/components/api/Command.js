@@ -3,9 +3,22 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 class Command {
-    constructor (index, script) {
+    constructor(index, script) {
         this.index = index;
         this.script = script;
+    }
+
+    async executeScriptRequest(script, successMessage, errorMessage) {
+        try {
+            await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
+                headers: {
+                    'Content-Type': 'text/plain',
+                },
+            });
+            toast.success(`(${this.index}) ${successMessage}`);
+        } catch (error) {
+            toast.error(`(${this.index}) ${errorMessage}`);
+        }
     }
 
     async startTutorial() {
@@ -21,54 +34,28 @@ class Command {
             tutorial.detect_tutorial = true
             return tutorial.detect_tutorial
         `;
-        try {
-            await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
-                headers: {
-                    'Content-Type': 'text/plain',
-                },
-            });
-            toast.success(`(${this.index}) running tutorial`);
-        } catch (error) {
-            toast.error(`(${this.index}) failed running tutorial`);
-        }
+        this.executeScriptRequest(script, 'running tutorial', 'failed to run tutorial');
     }
+
     async stopTutorial() {
         const script = `
             local bot = getBot(${this.index})
             local tutorial = bot.auto_tutorial
             tutorial.enabled = false
         `;
-        try {
-            await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
-                headers: {
-                    'Content-Type': 'text/plain',
-                },
-            });
-            toast.success(`(${this.index}) stopping tutorial`);
-        } catch (error) {
-            toast.error(`(${this.index}) error stopping tutorial`);
-        }
+        this.executeScriptRequest(script, 'stopping tutorial', 'failed to stop tutorial');
     }
 
     async startRotasi() {
         const script = `
-        local bot = getBot(${this.index})
-        local script = read("rotasi-luci-json.lua")
-
-        if not bot:isRunningScript() then
-            bot:runScript(script)
-            sleep(5000)
-        end`;
-        try {
-            await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
-                headers: {
-                    'Content-Type': 'text/plain',
-                },
-            });
-            toast.success(`(${this.index}) starting rotation`);
-        } catch (error) {
-            toast.error(`(${this.index}) error starting rotation`);
-        }
+            local bot = getBot(${this.index})
+            local script = read("rotasi-luci-json.lua")
+            if not bot:isRunningScript() then
+                bot:runScript(script)
+                sleep(5000)
+            end
+        `;
+        this.executeScriptRequest(script, 'starting rotation', 'failed to start rotation');
     }
 
     async removeBot() {
@@ -76,16 +63,7 @@ class Command {
             local bot = getBot(${this.index})
             removeBot(bot.name)
         `;
-        try {
-            await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
-                headers: {
-                    'Content-Type': 'text/plain',
-                },
-            });
-            toast.success(`(${this.index}) bot removed`);
-        } catch (error) {
-            toast.error(`(${this.index}) erro starting rotation`);
-        }
+        this.executeScriptRequest(script, 'bot removed', 'failed to remove bot');
     }
 
     async reconnectBot() {
@@ -93,76 +71,38 @@ class Command {
             local bot = getBot(${this.index})
             bot:connect()
         `;
-        try {
-            await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
-                headers: {
-                    'Content-Type': 'text/plain',
-                },
-            });
-        } catch (error) {
-        }
+        this.executeScriptRequest(script, 'bot reconnected', 'failed to reconnect bot');
     }
+
     async disconnectBot() {
         const script = `
             local bot = getBot(${this.index})
             bot:disconnect()
         `;
-        try {
-            await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
-                headers: {
-                    'Content-Type': 'text/plain',
-                },
-            });
-        } catch (error) {
-        }
+        this.executeScriptRequest(script, 'bot disconnected', 'failed to disconnect bot');
     }
+
     async executeScript() {
-        try {
-            await axios.post('http://191.96.94.35:8000/bot/runScript', this.script, {
-                headers: {
-                    'Content-Type': 'text/plain',
-                },
-            });
-            toast.success(`(${this.index}) script executed`);
-        } catch (error) {
-            toast.error(`(${this.index}) error executing script`);
-        }
+        this.executeScriptRequest(this.script, 'script executed', 'error executing script');
     }
+
     async stopScript() {
         const script = `
             local bot = getBot(${this.index})
             bot:stopScript()
         `;
-        try {
-            await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
-                headers: {
-                    'Content-Type': 'text/plain',
-                },
-            });
-            toast.success(`(${this.index}) script stopped`);
-        } catch (error) {
-            toast.success(`(${this.index}) failed stopping script`);
-        }
+        this.executeScriptRequest(script, 'script stopped', 'failed to stop script');
     }
+
     async startLeveling() {
         const script = `
             local bot = getBot(${this.index})
-            local script = read("rotasi-mass-1.lua")
-
+            local script = read("rotasi-mass-2.lua")
             if not bot:isRunningScript() then
                 bot:runScript(script)
             end
         `;
-        try {
-            await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
-                headers: {
-                    'Content-Type': 'text/plain',
-                },
-            });
-            toast.success(`(${this.index}) is now leveling`);
-        } catch (error) {
-            toast.success(`(${this.index}) failed to start leveling`);
-        }
+        this.executeScriptRequest(script, 'now leveling', 'failed to start leveling');
     }
 }
 

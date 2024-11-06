@@ -15,7 +15,7 @@ const Config = () => {
         const fetchData = async () => {
             try {
                 const response = await axios.get('http://191.96.94.35:8000/bot/config');
-                setConfig(response.data);  // Store JSON data as config
+                setConfig(response.data);
             } catch (error) {
                 setError('Error fetching config data');
             } finally {

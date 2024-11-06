@@ -23,6 +23,7 @@
     "ag-grid-react": "^32.3.0",
     "bootstrap": "^5.3.3",
     "browserify-zlib": "^0.2.0",
+    "firebase": "^11.0.1",
     "growtopia-sprite": "^1.0.3-pre.2",
     "pako": "^2.1.0",
     "react": "^18.3.1",
@@ -33,6 +34,7 @@
     "react-toastify": "^10.0.6",
     "styled-components": "^6.1.13",
     "sweetalert2": "^11.14.4",
+    "sweetalert2-react-content": "^5.0.7",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

@@ -10,6 +10,7 @@ import 'ag-grid-community/styles/ag-theme-balham.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import 'ag-grid-enterprise';
 
+
 import TornSprites from './img/Torn.png'
 import GemsCutSprites from './img/gems-cut.png'
 import GrumbleTeethSprites from './img/grumble_teeth.png'
@@ -20,23 +21,6 @@ import FormatNumber from './FormatNumber';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-const MaladySprites = (malady) => {
-    switch (malady) {
-        case 'Torn Punching Muscle':
-            return <img src={TornSprites} alt="Torn" />;
-        case 'Gem Cuts':
-            return <img src={GemsCutSprites} alt="Gems Cut" />;
-        case 'Grumbleteeth':
-            return <img src={GrumbleTeethSprites} alt="Grumble Teeth" />;
-        case 'Chicken Feet':
-            return <img src={ChickenFeetSprites} alt="Chicken Feet" />;
-        case 'Brainworms':
-            return <img src={BrainwormsSprites} alt="Chicken Feet" />;
-        default:
-            return <img src={ClearSprites} alt="Clear" />;
-    }
-};
 
 const GetExactTime = (second) => {
     if (second === 0) {
@@ -52,7 +36,6 @@ const GetExactTime = (second) => {
 const Controller = () => {
     const [rowData, setRowData] = useState([]);
     const [selectedRowIds, setSelectedRowIds] = useState([]);
-    const [selectedCount, setSelectedCount] = useState(0);
     const [loading, setLoading] = useState(true);
     const previousRowDataRef = useRef([]);
 
@@ -60,20 +43,20 @@ const Controller = () => {
         const fetchData = async () => {
             try {
                 const response = await axios.get("http://191.96.94.35:8000/bot/get");
-
                 setRowData(response.data);
             } catch (error) {
                 console.error(error);
+                toast.error('Failed to fetch data. Check network or server.');
             } finally {
                 setLoading(false);
             }
         };
-
+    
         fetchData();
         const interval = setInterval(fetchData, 2000);
-
         return () => clearInterval(interval);
-    }, [rowData]);
+    }, []);
+    
 
     useEffect(() => {
         rowData.forEach((row, index) => {
@@ -83,35 +66,51 @@ const Controller = () => {
                 if (previousRow.status === "connected" && row.details.status !== "connected") {
                     toast.error(`${row.details.name} disconnected`, {
                         theme: "colored",
-                        icon: '❌'
+                        position: "bottom-right",
+                        pauseOnFocusLoss: false
                     });
+
                 }
                 if (previousRow.status !== "connected" && row.details.status === "connected") {
                     toast.success(`${row.details.name} connected`, {
                         theme: "colored",
-                        icon: '✅'
+                        position: "bottom-right",
+                        pauseOnFocusLoss: false
                     });
+                }
+                if (previousRow.status !== "connected" && row.details.status === "error_connecting") {
+                    toast.error(`${row.details.name} error connecting`, {
+                        theme: "colored",
+                        position: "bottom-right",
+                        pauseOnFocusLoss: false
+                    });
+
                 }
             }
         });
 
-        // Update the ref to store the current rowData for future comparisons
         previousRowDataRef.current = rowData;
     }, [rowData]);
 
-    function cellClass(params) {
-        if (!params.value) {
-            return ''; // or a default class if you prefer
-        }
-        return params.value.toLowerCase() === "connected" ? "rag-green" : "rag-red";
-    };
-
+    const maladySpritesMap = useMemo(() => ({
+        'Torn Punching Muscle': TornSprites,
+        'Gem Cuts': GemsCutSprites,
+        'Grumbleteeth': GrumbleTeethSprites,
+        'Chicken Feet': ChickenFeetSprites,
+        'Brainworms': BrainwormsSprites,
+    }), []);
+    
+    const MaladySprites = React.memo(({ malady }) => (
+        <img src={maladySpritesMap[malady] || ClearSprites} alt={malady || 'Clear'} />
+    ));
+    
     const columnDefs = [
         {
             field: 'is_script_run',
             width: 50,
             filter: false,
             headerName: "⚡",
+            enableCellChangeFlash: true,
             menuTabs: []
         },
         {
@@ -119,6 +118,7 @@ const Controller = () => {
             width: 50,
             filter: false,
             headerName: "🔒",
+            enableCellChangeFlash: true,
             menuTabs: []
         },
         { 
@@ -152,7 +152,12 @@ const Controller = () => {
             field: 'status', 
             width: 175,
             enableCellChangeFlash: true,
-            cellClass: cellClass,
+            cellStyle: params => {
+                return {
+                    backgroundColor: params.value === "connected" ? '#33cc2244' : '#cc333344',
+                    
+                };
+            },
             valueFormatter: (params) => {
                 return params.value ? params.value.toUpperCase() : '';
             }
@@ -186,14 +191,12 @@ const Controller = () => {
             field: 'malady',
             width: 225,
             enableCellChangeFlash: true,
-            cellRenderer: (params) => {
-                return (
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        {MaladySprites(params.value)}
-                        <span style={{ marginLeft: '5px' }}>{params.value}</span>
-                    </div>
-                );
-            }
+            cellRenderer: (params) => (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <MaladySprites malady={params.value} />
+                    <span style={{ marginLeft: '5px' }}>{params.value}</span>
+                </div>
+            )
         },
         { 
             field: 'malady_expiration',
@@ -201,9 +204,7 @@ const Controller = () => {
             width: 240,
             enableCellChangeFlash: true,
             filter: "agNumberColumnFilter",
-            valueFormatter: (params) => {
-                return GetExactTime(params.value);
-            }
+            valueFormatter: (params) => GetExactTime(params.value)
         },
         { 
             field: 'proxy', 
@@ -244,6 +245,16 @@ const Controller = () => {
         }
     ];
 
+    useEffect(() => {
+        const savedColumnState = JSON.parse(localStorage.getItem('columnDefs'));
+        if (savedColumnState) {
+            gridOptions.api?.columnApi.applyColumnState({
+                state: savedColumnState,
+                applyOrder: true,
+            });
+        }
+    }, []);
+    
     const onColumnStateChanged = (event) => {
         const columnState = event.columnApi.getColumnState();
         localStorage.setItem('columnDefs', JSON.stringify(columnState));
@@ -269,31 +280,12 @@ const Controller = () => {
         },
         columnMenu: 'legacy',
         suppressMenuHide: true,
+        animateRows: true,
     };
-
-    const totals = rowData.reduce((acc, user) => {
-        const status = user.details.status;
-        
-        acc.totalGems += user.details.gems;
-        acc.totalObtained += user.details.obtained_gems;
     
-        if (status === 'connected' || status === "changing_subserver") {
-            acc.totalOnline += 1;
-        } else if (status === 'account_banned') {
-            acc.totalBanned += 1;
-        } else {
-            acc.totalOffline += 1;
-        }
-    
-        return acc;
-    }, { totalOnline: 0, totalOffline: 0, totalBanned: 0, totalGems: 0, totalObtained: 0 });
-
-    const { totalOnline, totalOffline, totalBanned, totalGems, totalObtained } = totals;
-
     const onSelectionChanged = useCallback((event) => {
         const selectedIds = event.api.getSelectedRows().map(row => row.index);
         setSelectedRowIds(selectedIds);
-        setSelectedCount(selectedIds.length); // Update selected count
     }, []);
 
     const selectedRowNames = selectedRowIds.length > 0 
@@ -366,10 +358,45 @@ const Controller = () => {
             }
         },
         {
-            name: 'Remove',
-            action: () => {
-                const commandInterface = new Command(params.node.data.index, '');
-                commandInterface.removeBot();
+            name: 'Warp',
+            action: async () => {
+                await Swal.fire({
+                    input: 'text',
+                    inputLabel: 'Enter world name',
+                    inputPlaceholder: 'Enter world name',
+                    confirmButtonText: 'Warp',
+                    showLoaderOnConfirm: true,
+                    inputAttributes: {
+                        style: 'border: #424242 1px solid;background-color: #0F1015; color: #FFFFFF; font-family: JetBrains Mono'
+                    },
+                    preConfirm: async (world) => {
+                        if (!world) {
+                            Swal.showValidationMessage('Please enter world name!');
+                            return;
+                        }
+                        const script = `
+                            bot = getBot(${params.node.data.index})
+                            bot:warp(${world})
+                        `
+                        try {
+                            await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
+                                headers: {
+                                    'Content-Type': 'text/plain',
+                                },
+                            });
+                        } catch (error) {
+                            Swal.showValidationMessage(`Error: ${error.message}`);
+                        }
+                    },
+                    allowOutsideClick: () => !Swal.isLoading(),
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'result',
+                            text: result.value === 'nil' ? 'Script Executed!' : result.value
+                        });
+                    }
+                });
             }
         },
         "separator",
@@ -547,7 +574,39 @@ const Controller = () => {
         },
         "separator",
         "copy",
+        {
+            name: 'Remove',
+            action: () => {
+                const commandInterface = new Command(params.node.data.index, '');
+                commandInterface.removeBot();
+            }
+        },
     ];
+
+
+    const totals = rowData.reduce((acc, user) => {
+        const { status, gems, obtained_gems } = user.details;
+
+        acc.totalGems += gems;
+        acc.totalObtained += obtained_gems;
+
+        switch (status) {
+            case 'connected':
+            case 'changing_subserver':
+                acc.totalOnline += 1;
+                break;
+            case 'account_banned':
+                acc.totalBanned += 1;
+                break;
+            default:
+                acc.totalOffline += 1;
+                break;
+        }
+
+        return acc;
+    }, { totalOnline: 0, totalOffline: 0, totalBanned: 0, totalGems: 0, totalObtained: 0 });
+
+    const { totalOnline, totalOffline, totalBanned, totalGems, totalObtained } = totals;
 
     if (loading) {
         return (
@@ -556,33 +615,52 @@ const Controller = () => {
             </div>
         );
     }
-    
+
     return (
-        <div className="p-4 md:p-6 bg-mainBg text-white overflow-x-hidden">
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-2 md:gap-4 mb-4">
-                <div className="col-span-1 bg-[#1C1C1C] border border-[#424242] p-4 md:p-5 rounded-lg shadow-md">
-                    <div className="bg-[#1C1C1C] p-4 md:p-5 rounded-lg shadow-md border border-[#424242] mb-4">
-                        <p className="text-xs font-bold text-gray-200 mb-2 uppercase">User Statistics</p>
-                        <p className="text-sm">⌐ Online: {FormatNumber(totalOnline)}</p>
-                        <p className="text-sm">⌐ Offline: {FormatNumber(totalOffline)}</p>
-                        <p className="text-sm">⌐ Banned: {FormatNumber(totalBanned)}</p>
-                        <p className="text-sm">⌐ Gems: {FormatNumber(totalGems)}</p>
-                        <p className="text-sm">⌐ Obtained Gems: {FormatNumber(totalObtained)}</p>
+        <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
+                <div className="grid grid-cols-1 gap-4 mb-4 w-full">
+                    <div className="bg-[#1C1C1C] border border-[#424242] p-4 md:p-5 rounded-lg shadow-md">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                            <div className="p-4 text-gray-700 border border-[#424242]">
+                                <p className="text-xs font-bold text-gray-200 mb-3 uppercase">✅ total online</p>
+                                <p className="text-xl font-bold text-gray-200">⌐ Online: {FormatNumber(totalOnline)}</p>
+                            </div>
+                            <div className="p-4 text-gray-700 border border-[#424242]">
+                                <p className="text-xs font-bold text-gray-200 mb-3 uppercase">❌ total offline</p>
+                                <p className="text-xl font-bold text-gray-200">⌐ Offline: {FormatNumber(totalOffline)}</p>
+                            </div>
+                            <div className="p-4 text-gray-700 border border-[#424242]">
+                                <p className="text-xs font-bold text-gray-200 mb-3 uppercase">☠️ total banned</p>
+                                <p className="text-xl font-bold text-gray-200">⌐ Banned: {totalBanned}</p>
+                            </div>
+                            <div className="p-4 text-gray-700 border border-[#424242]">
+                                <p className="text-xs font-bold text-gray-200 mb-3 uppercase">💎 total gems</p>
+                                <p className="text-xl font-bold text-gray-200">⌐ Gems: {FormatNumber(totalGems)}</p>
+                            </div>
+                            <div className="p-4 text-gray-700 border border-[#424242]">
+                                <p className="text-xs font-bold text-gray-200 mb-3 uppercase">💰 total obtained</p>
+                                <p className="text-xl font-bold text-gray-200">⌐ Obtained Gems: {FormatNumber(totalObtained)}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div className="col-span-1 md:col-span-4 bg-[#1C1C1C] border border-[#424242] p-4 md:p-5 rounded-lg shadow-md w-full h-[800px] md:h-[800px] ag-theme-alpine-dark">
-                    {/* <div className="flex md:col-span-2 gap-2">
-                        <p>selected bots: <u>x{selectedCount}</u></p>
-                    </div> */}
+
+                {/* AG Grid Section */}
+                <div className="col-span-1 md:col-span-5 bg-[#1C1C1C] border border-[#424242] p-4 md:p-5 rounded-lg shadow-md w-full h-[700px] md:h-[800px] ag-theme-alpine-dark">
                     <ToastContainer />
                     <AgGridReact
+                        rowBuffer={10}
+                        suppressCellFlash={true}
+                        deltaRowDataMode={true}
+                        getRowNodeId={(data) => data.id}
                         gridOptions={gridOptions}
                         rowData={rowData.map((item, index) => ({
                             id: index,
                             ...item.details
                         }))}
                         pagination
-                        columnDefs={columnDefs} 
+                        columnDefs={columnDefs}
                         rowSelection={rowSelection}
                         getRowId={getRowId}
                         onColumnStateChanged={onColumnStateChanged}
@@ -592,6 +670,7 @@ const Controller = () => {
                 </div>
             </div>
         </div>
+
     );
     
 };

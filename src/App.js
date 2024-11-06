@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles'; // Import ThemeProvider and createTheme
-import Dashboard from './components/Dashboard';
 import NavigationBar from './components/NavigationBar';
 import Config from './components/Config';
 import DataBot from './components/DataBot';
@@ -31,7 +30,6 @@ function App() {
                                 <Route path="/bot" element={<DataBot />} />
                                 <Route path="/farm" element={<FarmTable />} />
                                 <Route path="/script" element={<CodeEditor />} />
-                                <Route path="/hidden" element={<Dashboard />} />
                             </Routes>
                         </div>
                     </div>

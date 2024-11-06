@@ -411,6 +411,9 @@ const DataBot = () => {
                     </form>
                 </div>
                 <div className="bg-[#1C1C1C] p-4 rounded-lg shadow-md mb-4 border border-[#424242]">
+                    <div className="flex md:col-span-2 gap-2">
+                        <p>selected bots: <u>x{selectedCount}</u></p>
+                    </div>
                     <div id="myGrid" class="ag-theme-alpine-dark" style={{ height: 760, width: '100%' }}>
                         <AgGridReact
                             gridOptions={gridOptions}
