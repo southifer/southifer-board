@@ -1,4 +1,5 @@
 import axios from 'axios';
+import CONFIG from '../config/Config.json';
 
 class Interface {
     constructor(index, item) {
@@ -8,7 +9,7 @@ class Interface {
 
     async executeItemAction(script, action) {
         try {
-            const response = await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
+            const response = await axios.post(`${CONFIG.BASE_URL}/bot/runScript`, script, {
                 headers: {
                     'Content-Type': 'text/plain',
                 },

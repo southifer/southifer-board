@@ -10,7 +10,6 @@ import 'ag-grid-community/styles/ag-theme-balham.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import 'ag-grid-enterprise';
 
-
 import TornSprites from './img/Torn.png'
 import GemsCutSprites from './img/gems-cut.png'
 import GrumbleTeethSprites from './img/grumble_teeth.png'
@@ -21,6 +20,7 @@ import FormatNumber from './FormatNumber';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import CONFIG from './config/Config.json';
 
 const GetExactTime = (second) => {
     if (second === 0) {
@@ -42,7 +42,7 @@ const Controller = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get("http://191.96.94.35:8000/bot/get");
+                const response = await axios.get(`${CONFIG.BASE_URL}/bot/get`);
                 setRowData(response.data);
             } catch (error) {
                 console.error(error);
@@ -57,7 +57,6 @@ const Controller = () => {
         return () => clearInterval(interval);
     }, []);
     
-
     useEffect(() => {
         rowData.forEach((row, index) => {
             const previousRow = previousRowDataRef.current[index]?.details;
@@ -77,14 +76,6 @@ const Controller = () => {
                         position: "bottom-right",
                         pauseOnFocusLoss: false
                     });
-                }
-                if (previousRow.status !== "connected" && row.details.status === "error_connecting") {
-                    toast.error(`${row.details.name} error connecting`, {
-                        theme: "colored",
-                        position: "bottom-right",
-                        pauseOnFocusLoss: false
-                    });
-
                 }
             }
         });
@@ -178,7 +169,7 @@ const Controller = () => {
         },
         { 
             field: 'task', 
-            width: 200,
+            width: 225,
             enableCellChangeFlash: true
         },
         { 
@@ -218,7 +209,7 @@ const Controller = () => {
             enableCellChangeFlash: true,
             filter: "agTextColumnFilter"
         },
-        { 
+        {
             field: 'gems', 
             width: 150, 
             enableCellChangeFlash: true,
@@ -281,6 +272,11 @@ const Controller = () => {
         columnMenu: 'legacy',
         suppressMenuHide: true,
         animateRows: true,
+        statusBar: {
+            statusPanels: [
+              { statusPanel: "agSelectedRowCountComponent" },
+            ],
+        },
     };
     
     const onSelectionChanged = useCallback((event) => {
@@ -288,9 +284,18 @@ const Controller = () => {
         setSelectedRowIds(selectedIds);
     }, []);
 
-    const selectedRowNames = selectedRowIds.length > 0 
-    ?   `local bots = {${selectedRowIds.map(item => item).join(', ')}}\n\nfor _,i in pairs(bots) do\nlocal bot = getBot(i)\n\nend`
-    : '';
+    const formatScript = (script) => {
+        if (selectedRowIds.length > 0) {
+            return `
+            local bots = {${selectedRowIds.map(item => item).join(', ')}}
+            for _,i in pairs(bots) do
+                local bot = getBot(i)
+                ${script}
+            end`;
+        } else {
+            return script;
+        }
+    };
 
     const parseDisplayName = (displayName) => {
         const growtopiaColors = {
@@ -379,7 +384,7 @@ const Controller = () => {
                             bot:warp(${world})
                         `
                         try {
-                            await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
+                            await axios.post(`${CONFIG.BASE_URL}/bot/runScript`, script, {
                                 headers: {
                                     'Content-Type': 'text/plain',
                                 },
@@ -434,7 +439,7 @@ const Controller = () => {
             name: 'Logs',
             action: () => {
                 const logContent = params.node.data.console
-                .map(log => `<div class="text-[#C6BD9E] text-xs">${parseDisplayName(log)}</div>`)
+                .map(log => `<div style="text-size: 8px;">${parseDisplayName(log)}</div>`)
                 .join('');
 
                 const newWindow = window.open('', 'Logs', 'width=1200,height=600');
@@ -467,7 +472,7 @@ const Controller = () => {
                 await Swal.fire({
                     input: 'textarea',
                     inputLabel: 'Enter your Lua script',
-                    inputValue: `bot = getBot(${params.node.data.index})\n`,
+                    inputValue: selectedRowIds.length > 0 ? '' : `bot = getBot(${params.node.data.index})\n`,
                     inputPlaceholder: 'Type your Lua script here...',
                     showCancelButton: true,
                     confirmButtonText: 'Run Script',
@@ -484,11 +489,13 @@ const Controller = () => {
                             return;
                         }
                         try {
-                            await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
+                            const response = await axios.post(`${CONFIG.BASE_URL}/bot/runScript`, formatScript(script), {
                                 headers: {
                                     'Content-Type': 'text/plain',
                                 },
                             });
+                            return response.data;
+
                         } catch (error) {
                             Swal.showValidationMessage(`Error: ${error.message}`);
                         }
@@ -619,7 +626,7 @@ const Controller = () => {
     return (
         <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
             <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
-                <div className="grid grid-cols-1 gap-4 mb-4 w-full">
+                <div className="grid  w-full">
                     <div className="bg-[#1C1C1C] border border-[#424242] p-4 md:p-5 rounded-lg shadow-md">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                             <div className="p-4 text-gray-700 border border-[#424242]">
@@ -650,9 +657,6 @@ const Controller = () => {
                 <div className="col-span-1 md:col-span-5 bg-[#1C1C1C] border border-[#424242] p-4 md:p-5 rounded-lg shadow-md w-full h-[700px] md:h-[800px] ag-theme-alpine-dark">
                     <ToastContainer />
                     <AgGridReact
-                        rowBuffer={10}
-                        suppressCellFlash={true}
-                        deltaRowDataMode={true}
                         getRowNodeId={(data) => data.id}
                         gridOptions={gridOptions}
                         rowData={rowData.map((item, index) => ({

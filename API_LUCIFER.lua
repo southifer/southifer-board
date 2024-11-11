@@ -63,19 +63,28 @@ server:get("/bot/get", function(request, response)
     end
 
     local function getGoogleStatus(googleStatus)
-        local googleStatusNaming = {
+        local enum_status = {
             [GoogleStatus.idle] = "idle",
             [GoogleStatus.processing] = "processing",
             [GoogleStatus.init_error] = "init_error",
             [GoogleStatus.invalid_credentials] = "invalid_credentials",
+            [GoogleStatus.invalid_challenge] = "invalid_challenge",
             [GoogleStatus.account_disabled] = "account_disabled",
             [GoogleStatus.captcha_required] = "captcha_required",
             [GoogleStatus.phone_required] = "phone_required",
             [GoogleStatus.recovery_required] = "recovery_required",
             [GoogleStatus.couldnt_verify] = "couldnt_verify",
             [GoogleStatus.unknown_url] = "unknown_url",
+            [GoogleStatus.bad_server] = "bad_server",
+            [GoogleStatus.bad_connection] = "bad_connection",
+            [GoogleStatus.invalid_key] = "invalid_key",
+            [GoogleStatus.missing_server] = "missing_server",
+            [GoogleStatus.missing_local_server] = "missing_local_server",
+            [GoogleStatus.timeout] = "timeout",
+            [GoogleStatus.driver_closed] = "driver_closed",
+            [GoogleStatus.redirect] = "redirect",
         }
-        return googleStatusNaming[googleStatus] or "UNKNOWN"
+        return enum_status[googleStatus] or "UNKNOWN"
     end
 
     local bots = getBots()
@@ -127,6 +136,7 @@ server:get("/bot/get", function(request, response)
                 is_account_secured = bot.is_account_secured,
                 mac = bot:getLogin().mac,
                 rid = bot:getLogin().rid,
+                mail = bot:getLogin().mail,
                 inventory = botInventory,
                 console = consoleLog
             },

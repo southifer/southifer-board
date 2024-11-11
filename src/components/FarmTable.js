@@ -7,6 +7,7 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import 'ag-grid-enterprise';
 import Swal from 'sweetalert2';
+import CONFIG from './config/Config.json'
 
 const FarmTable = () => {
     const [farmData, setFarmData] = useState([]);
@@ -15,7 +16,7 @@ const FarmTable = () => {
 
     const fetchData = useCallback(async () => {
         try {
-            const response = await axios.get('http://191.96.94.35:8000/bot/farm');
+            const response = await axios.get(`${CONFIG.BASE_URL}/bot/farm`);
             const dataWithIds = response.data.map((item, index) => ({ ...item, id: index }));
 
             // Check if data is the same before setting state to prevent duplicates
@@ -107,14 +108,13 @@ const FarmTable = () => {
     }, []);
 
     const onCellValueChanged = useCallback((event) => {
-        // Handle cell value change if needed
         console.log('Cell value changed:', event.data);
-    }, [farmData]);
+    }, []);
 
     const sendDataToServer = async (updatedData, titleText) => {
         try {
             const newScript = `${JSON.stringify(updatedData, null, 2)}`;
-            const response = await axios.post('http://191.96.94.35:8000/bot/farm', newScript, {
+            const response = await axios.post(`${CONFIG.BASE_URL}/bot/farm`, newScript, {
                 headers: {
                     'Content-Type': 'text/plain',
                 },

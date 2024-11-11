@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import CONFIG from '../config/Config.json'
 
 class Command {
     constructor(index, script) {
@@ -10,7 +11,7 @@ class Command {
 
     async executeScriptRequest(script, successMessage, errorMessage) {
         try {
-            await axios.post('http://191.96.94.35:8000/bot/runScript', script, {
+            await axios.post(`${CONFIG.BASE_URL}/bot/runScript`, script, {
                 headers: {
                     'Content-Type': 'text/plain',
                 },
@@ -49,7 +50,7 @@ class Command {
     async startRotasi() {
         const script = `
             local bot = getBot(${this.index})
-            local script = read("rotasi-luci-json.lua")
+            local script = read("C:\\Users\\Administrator\\Desktop\\rotasi-luci-json.lua")
             if not bot:isRunningScript() then
                 bot:runScript(script)
                 sleep(5000)
@@ -69,6 +70,8 @@ class Command {
     async reconnectBot() {
         const script = `
             local bot = getBot(${this.index})
+            bot:disconnect()
+            sleep(1000)
             bot:connect()
         `;
         this.executeScriptRequest(script, 'bot reconnected', 'failed to reconnect bot');

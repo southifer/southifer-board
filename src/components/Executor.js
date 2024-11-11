@@ -4,6 +4,7 @@ import Editor from '@monaco-editor/react';
 import LoadingSpinner from './Loading';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import CONFIG from './config/Config.json'
 
 const CodeEditor = () => {
     const [code, setCode] = useState();
@@ -13,7 +14,7 @@ const CodeEditor = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://191.96.94.35:8000/bot/rotasi-script');
+                const response = await fetch(`${CONFIG.BASE_URL}/bot/rotasi-script`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
@@ -40,7 +41,7 @@ const CodeEditor = () => {
     const handleSave = async () => {
         try {
             setUploading(true);
-            const response = await axios.post('http://191.96.94.35:8000/bot/rotasi-script', code, {
+            const response = await axios.post(`${CONFIG.BASE_URL}/bot/rotasi-script`, code, {
                 headers: {
                     'Content-Type': 'text/plain', // Change this as needed
                 },
@@ -75,10 +76,10 @@ const CodeEditor = () => {
 
     return (
         <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
-            <div className="bg-[#28313E] border border-[#434B56] p-4 rounded-lg shadow-md grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
-                <div className="max-w-full overflow-x-auto custom-scrollbar rounded-lg border border-[#434B56">
+            <div className="bg-[#1C1C1C] border border-[#434B56] p-4 rounded-lg shadow-md grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
+                <div className="max-w-full overflow-x-auto custom-scrollbar rounded-lg border border-[#434B56]">
                     <Editor
-                        height="70vh"
+                        height="75vh"
                         language="lua"
                         value={code}
                         onChange={handleEditorChange}

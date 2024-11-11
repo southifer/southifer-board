@@ -2,19 +2,18 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import LoadingSpinner from './Loading';
 import Swal from 'sweetalert2';
-
-import Button from 'react-bootstrap/Button';
-import Offcanvas from 'react-bootstrap/Offcanvas';
+import CONFIG from './config/Config.json'
 
 const Config = () => {
     const [config, setConfig] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isCollapsed, setIsCollapsed] = useState(true);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://191.96.94.35:8000/bot/config');
+                const response = await axios.get(`${CONFIG.BASE_URL}/bot/config`);
                 setConfig(response.data);
             } catch (error) {
                 setError('Error fetching config data');
@@ -41,7 +40,7 @@ const Config = () => {
     const updateConfig = async (sc) => {
         const newScript = `${JSON.stringify(sc, null, 2)}`; // Convert config object to JSON string
         try {
-            const response = await axios.post("http://191.96.94.35:8000/bot/config", newScript);
+            const response = await axios.post(`${CONFIG.BASE_URL}/bot/config`, newScript);
             
             // Show success notification when the response is returned
             Swal.fire({
@@ -60,7 +59,7 @@ const Config = () => {
             });
         }
     };
-    
+
     return (
         <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
             <div className="gap-6 mb-4 flex items-center justify-center ">
