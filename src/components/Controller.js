@@ -155,11 +155,16 @@ const Controller = () => {
         },
         { 
             field: 'google_status', 
-            width: 175,
+            width: 150,
             enableCellChangeFlash: true,
             valueFormatter: (params) => {
                 return params.value ? params.value.toUpperCase() : '';
             }
+        },
+        { 
+            field: 'mail', 
+            width: 250,
+            enableCellChangeFlash: true
         },
         { 
             field: 'world', 
@@ -636,6 +641,45 @@ const Controller = () => {
                     }
                 ],
             },
+            "separator",
+            {
+                name: 'View details',
+                action: async () => {
+                    try {
+                        const response = await axios.get(`${CONFIG.BASE_URL}/bot/bot-backup`);
+                        const specificEmail = params.node.data.mail;
+                        const botData = response.data.find(bot => bot.username === specificEmail);
+            
+                        if (botData) {
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'Bot details',
+                                html: `
+                                    Are you sure you want to add the following bot?
+                                    <br>Name: <strong>${botData.username}</strong>
+                                    <br>Password: <strong>${botData.password}</strong>
+                                    <br>MAC: <strong>${botData.mac}</strong>
+                                    <br>Recovery: <strong>${botData.recovery}</strong>
+                                    <br>RID: <strong>${botData.rid}</strong>
+                                    <br>Proxy: <strong>${botData.proxy}</strong>
+                                `,
+                                showCancelButton: false,
+                                confirmButtonText: 'OK',
+                                customClass: {
+                                    popup: 'swal2-addbot' // Apply custom class to the modal
+                                }
+                            });
+                        }
+                    } catch (error) {
+                        console.error("Error fetching bot data:", error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Failed to retrieve bot data. Please try again later.',
+                        });
+                    }
+                }
+            },            
             "separator",
             "copy",
             {

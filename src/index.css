@@ -14,43 +14,6 @@ body {
     height: 100vh; /* Optional: to ensure full height */
 }
 
-/* Custom Scrollbar Styling */
-.custom-scrollbar::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
-}
-  
-.custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #171A22;
-    border-radius: 6px;
-    border: 3px solid #181A20;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: #171A22;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-    background-color: #0F1015;
-    border-radius: 6px;
-}
-
-/* Ensures the scrollbar is visible on other browsers */
-.custom-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: #ffffff #0F1015;
-}
-
-.glow {
-    transition: background-color 1s ease;
-}
-
-.glow-update {
-    background-color: rgba(125, 125, 125, 0.372); /* Semi-transparent yellow for glowing effect */
-}
-
-
-
 .swal2-popup {
     background-color: #28313E; /* Background color for the SweetAlert */
     color: white; /* Text color */
@@ -96,7 +59,7 @@ body {
 }
 
 .toast-notify {
-    background-color: #181A20 !important; /* Input background color */
+    background-color: #424242 !important; /* Input background color */
     color: white !important; /* Input text color */
 }
 
@@ -132,7 +95,7 @@ body {
     padding: 8px;
     width: 100%;
     padding: 5%;
-    background-color: #181A20;
+    background-color: #424242;
 }
 
 .swal2-addbot .swal2-addbot-input:focus {

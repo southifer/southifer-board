@@ -4,8 +4,18 @@ import { Link, useLocation } from 'react-router-dom';
 const NavigationBar = () => {
     const { pathname } = useLocation();
     const [isNavOpen, setIsNavOpen] = useState(false);
+    const [frameIndex, setFrameIndex] = useState(0);
 
     const toggleNav = () => setIsNavOpen(!isNavOpen);
+    const frameLink = [
+        "https://stickercommunity.com/uploads/main/20-12-2020-12-00-19-abc11.webp",
+        "https://sticker-collection.com/stickers/plain/Puskamvret/512/c0df3d08-8ecf-4ef8-9f35-1af904e79fa2file_2979128.webp",
+        "https://media.stickerswiki.app/puskamvret/229038.512.webp",
+        "https://media.stickerswiki.app/puskamvret/228979.512.webp",
+        "https://media.stickerswiki.app/puskamvret/229013.512.webp"
+    ]
+
+    const MathRandom = (list) => list[Math.floor(Math.random() * list.length)];
 
     return (
         <nav className="bg-[#1C1C1C] border-b-2 border-[#424242] text-white p-4 flex items-center justify-between lg:justify-between flex-col lg:flex-row top-0 left-0 right-0 z-50 max-w-screen">
@@ -28,11 +38,12 @@ const NavigationBar = () => {
 
         <div className="flex items-center w-full lg:w-auto">
             <img
-                src="https://komikkamvret.com/wp-content/uploads/2020/11/Tiers1-PNG.png"
+                src={frameLink[frameIndex]}
                 alt="Logo"
                 className="w-12 h-12 rounded-full object-cover"
+                onClick={() => setFrameIndex(Math.floor(Math.random() * frameLink.length))}
             />
-            <span className="ml-4 text-xl font-semibold">Noir'e</span>
+            <span className="ml-4 text-xl font-semibold hover:cursor=pointer">Noir'e</span>
         </div>
 
         <div className={`lg:flex ${isNavOpen ? 'block' : 'hidden'} lg:flex lg:space-x-4 lg:ml-auto flex-col lg:flex-row space-y-2 lg:space-y-0 mt-4 lg:mt-0 w-full lg:w-auto`}>
