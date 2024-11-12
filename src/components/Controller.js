@@ -643,7 +643,7 @@ const Controller = () => {
             },
             "separator",
             {
-                name: 'View details',
+                name: 'View Details',
                 action: async () => {
                     try {
                         const response = await axios.get(`${CONFIG.BASE_URL}/bot/bot-backup`);
@@ -655,20 +655,39 @@ const Controller = () => {
                                 icon: 'info',
                                 title: 'Bot details',
                                 html: `
-                                    Are you sure you want to add the following bot?
-                                    <br>Name: <strong>${botData.username}</strong>
-                                    <br>Password: <strong>${botData.password}</strong>
-                                    <br>MAC: <strong>${botData.mac}</strong>
-                                    <br>Recovery: <strong>${botData.recovery}</strong>
-                                    <br>RID: <strong>${botData.rid}</strong>
-                                    <br>Proxy: <strong>${botData.proxy}</strong>
-                                `,
+                                <table style="width: 100%; text-align: left; border-collapse: collapse; font-family: Arial, sans-serif; color: #333;">
+                                    <tr style="background-color: #f4f4f4;">
+                                        <td style="padding: 8px; font-weight: bold; border: 1px solid #ddd;">Name</td>
+                                        <td style="padding: 8px; border: 1px solid #ddd;">${botData.username}</td>
+                                    </tr>
+                                    <tr style="background-color: #f4f4f4;">
+                                        <td style="padding: 8px; font-weight: bold; border: 1px solid #ddd;">Password</td>
+                                        <td style="padding: 8px; border: 1px solid #ddd;">${botData.password}</td>
+                                    </tr>
+                                    <tr style="background-color: #f4f4f4;">
+                                        <td style="padding: 8px; font-weight: bold; border: 1px solid #ddd;">MAC</td>
+                                        <td style="padding: 8px; border: 1px solid #ddd;">${botData.mac}</td>
+                                    </tr>
+                                    <tr style="background-color: #f4f4f4;">
+                                        <td style="padding: 8px; font-weight: bold; border: 1px solid #ddd;">Recovery</td>
+                                        <td style="padding: 8px; border: 1px solid #ddd;">${botData.recovery}</td>
+                                    </tr>
+                                    <tr style="background-color: #f4f4f4;">
+                                        <td style="padding: 8px; font-weight: bold; border: 1px solid #ddd;">RID</td>
+                                        <td style="padding: 8px; border: 1px solid #ddd;">${botData.rid}</td>
+                                    </tr>
+                                    <tr style="background-color: #f4f4f4;">
+                                        <td style="padding: 8px; font-weight: bold; border: 1px solid #ddd;">Proxy</td>
+                                        <td style="padding: 8px; border: 1px solid #ddd;">${botData.proxy}</td>
+                                    </tr>
+                                </table>
+                            `,
                                 showCancelButton: false,
                                 confirmButtonText: 'OK',
                                 customClass: {
                                     popup: 'swal2-addbot' // Apply custom class to the modal
                                 }
-                            });
+                            });                            
                         }
                     } catch (error) {
                         console.error("Error fetching bot data:", error);
