@@ -260,14 +260,14 @@ const Controller = () => {
         };
     }, []);
 
-    const getRowId = (params) => params.data.index;
+    const getRowId = (params) => String(params.data.index);
     
     const gridOptions = {
         columnDefs: columnDefs,
         defaultColDef: {
             filter: true,
             floatingFilter: true,
-            menuTabs: ['filterMenuTab', 'generalMenuTab', 'columnsMenuTab'], // Set the menu tabs
+            menuTabs: ['generalMenuTab', 'filterMenuTab', 'columnsMenuTab'], // Set the menu tabs
         },
         columnMenu: 'legacy',
         suppressMenuHide: true,
@@ -296,6 +296,8 @@ const Controller = () => {
             return script;
         }
     };
+
+    const selectedIndex = () => `{${selectedRowIds.join(',')}}`;
 
     const parseDisplayName = (displayName) => {
         const growtopiaColors = {
@@ -347,248 +349,304 @@ const Controller = () => {
     };
     
 
-    const getContextMenuItems = (params) => [
-        {
-            name: 'Reconnect',
-            action: () => {
-                const commandInterface = new Command(params.node.data.index, '');
-                commandInterface.reconnectBot();
-            }
-        },
-        {
-            name: 'Disconnect',
-            action: () => {
-                const commandInterface = new Command(params.node.data.index, '');
-                commandInterface.disconnectBot();
-            }
-        },
-        {
-            name: 'Warp',
-            action: async () => {
-                await Swal.fire({
-                    input: 'text',
-                    inputLabel: 'Enter world name',
-                    inputPlaceholder: 'Enter world name',
-                    confirmButtonText: 'Warp',
-                    showLoaderOnConfirm: true,
-                    inputAttributes: {
-                        style: 'border: #424242 1px solid;background-color: #0F1015; color: #FFFFFF; font-family: JetBrains Mono'
-                    },
-                    preConfirm: async (world) => {
-                        if (!world) {
-                            Swal.showValidationMessage('Please enter world name!');
-                            return;
-                        }
-                        const script = `
-                            bot = getBot(${params.node.data.index})
-                            bot:warp(${world})
-                        `
-                        try {
-                            await axios.post(`${CONFIG.BASE_URL}/bot/runScript`, script, {
-                                headers: {
-                                    'Content-Type': 'text/plain',
-                                },
-                            });
-                        } catch (error) {
-                            Swal.showValidationMessage(`Error: ${error.message}`);
-                        }
-                    },
-                    allowOutsideClick: () => !Swal.isLoading(),
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        Swal.fire({
-                            title: 'result',
-                            text: result.value === 'nil' ? 'Script Executed!' : result.value
+    const getContextMenuItems = (params) => {
+        if (!params.node.data) {
+            return [
+                {
+                    name: 'Test Command',
+                    action: () => {
+                        alert(selectedIndex())
+                    }
+                },
+                {
+                    name: 'Run Command',
+                    action: async () => {
+                        await Swal.fire({
+                            input: 'textarea',
+                            inputLabel: 'Enter your Lua script',
+                            inputPlaceholder: 'Type your Lua script here...',
+                            showCancelButton: true,
+                            confirmButtonText: 'Run Script',
+                            showLoaderOnConfirm: true,
+                            inputAttributes: {
+                                style: 'border: #424242 1px solid;font-size: 15px;height: 400px; background-color: #0F1015; color: #FFFFFF; font-family: JetBrains Mono'
+                            },
+                            customClass: {
+                                popup: 'swal2-executor', // Optional: Add custom class if you want to style the modal
+                            },
+                            preConfirm: async (script) => {
+                                if (!script) {
+                                    Swal.showValidationMessage('Please enter a script!');
+                                    return;
+                                }
+                                try {
+                                    const response = await axios.post(`${CONFIG.BASE_URL}/bot/runScript`, script, {
+                                        headers: {
+                                            'Content-Type': 'text/plain',
+                                        },
+                                    });
+                                    return response.data;
+
+                                } catch (error) {
+                                    Swal.showValidationMessage(`Error: ${error.message}`);
+                                }
+                            },
+                            allowOutsideClick: () => !Swal.isLoading(),
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                Swal.fire({
+                                    title: 'result',
+                                    text: result.value === 'nil' ? 'Script Executed!' : result.value
+                                });
+                            }
                         });
                     }
-                });
-            }
-        },
-        "separator",
-        {
-            name: 'Inventory',
-            subMenu: params.node.data.inventory.map((item) => ({
-                name: `${item.name} (x${item.amount})`,
+                },
+            ]
+        }
+        return [
+            {
+                name: 'Reconnect',
+                action: () => {
+                    const commandInterface = new Command(selectedIndex(), '');
+                    commandInterface.reconnectBot();
+                }
+            },
+            {
+                name: 'Disconnect',
+                action: () => {
+                    const commandInterface = new Command(selectedIndex(), '');
+                    commandInterface.disconnectBot();
+                }
+            },
+            {
+                name: 'Warp',
+                action: async () => {
+                    await Swal.fire({
+                        input: 'text',
+                        inputLabel: 'Enter world name',
+                        inputPlaceholder: 'Enter world name',
+                        confirmButtonText: 'Warp',
+                        showLoaderOnConfirm: true,
+                        inputAttributes: {
+                            style: 'border: #424242 1px solid;background-color: #0F1015; color: #FFFFFF; font-family: JetBrains Mono'
+                        },
+                        preConfirm: async (world) => {
+                            if (!world) {
+                                Swal.showValidationMessage('Please enter world name!');
+                                return;
+                            }
+                            const script = `
+                                bot = getBot(${params.node.data.index})
+                                bot:warp(${world})
+                            `
+                            try {
+                                await axios.post(`${CONFIG.BASE_URL}/bot/runScript`, formatScript(script), {
+                                    headers: {
+                                        'Content-Type': 'text/plain',
+                                    },
+                                });
+                            } catch (error) {
+                                Swal.showValidationMessage(`Error: ${error.message}`);
+                            }
+                        },
+                        allowOutsideClick: () => !Swal.isLoading(),
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Swal.fire({
+                                title: 'result',
+                                text: result.value === 'nil' ? 'Script Executed!' : result.value
+                            });
+                        }
+                    });
+                }
+            },
+            "separator",
+            {
+                name: 'Inventory',
+                subMenu: params.node.data.inventory.map((item) => ({
+                    name: `${item.name} (x${item.amount})`,
+                    subMenu: [
+                        {
+                            name: 'Trash',
+                            action: () => {
+                                const interfaceInstance = new Interface(params.node.data.index, item.id); // Create instance with index and item ID
+                                interfaceInstance.trash(); // Call the trash method
+                            },
+                        },
+                        {
+                            name: 'Wear',
+                            action: () => {
+                                const interfaceInstance = new Interface(params.node.data.index, item.id);
+                                interfaceInstance.wear(); // Call the wear method
+                            },
+                        },
+                        {
+                            name: 'Drop',
+                            action: () => {
+                                const interfaceInstance = new Interface(params.node.data.index, item.id);
+                                interfaceInstance.drop(); // Call the drop method
+                            },
+                        },
+                    ],
+                    })),
+                },
+                
+            {
+                name: 'Logs',
+                action: () => {
+                    const logContent = params.node.data.console
+                    .map(log => `<div style="text-size: 8px;">${parseDisplayName(log)}</div>`)
+                    .join('');
+    
+                    const newWindow = window.open('', 'Logs', 'width=1200,height=600');
+                    newWindow.document.write(`
+                        <html>
+                            <head>
+                                <title>Logs</title>
+                                <style>
+                                    body {
+                                        font-family: 'Fira Code', sans-serif;
+                                        background-color: black;
+                                        color: white;
+                                        padding: 20px;
+                                    }
+                                </style>
+                            </head>
+                            <body>
+                                <h1 class="text-lg font-bold">Logs</h1>
+                                ${logContent}
+                            </body>
+                        </html>
+                    `);
+                    newWindow.document.close(); // Close the document to render the content
+                },
+            },
+            "separator",
+            {
+                name: 'Run Command',
+                action: async () => {
+                    await Swal.fire({
+                        input: 'textarea',
+                        inputLabel: 'Enter your Lua script',
+                        inputValue: selectedRowIds.length > 0 ? '' : `bot = getBot(${params.node.data.index})\n`,
+                        inputPlaceholder: 'Type your Lua script here...',
+                        showCancelButton: true,
+                        confirmButtonText: 'Run Script',
+                        showLoaderOnConfirm: true,
+                        inputAttributes: {
+                            style: 'border: #424242 1px solid;font-size: 15px;height: 400px; background-color: #0F1015; color: #FFFFFF; font-family: JetBrains Mono'
+                        },
+                        customClass: {
+                            popup: 'swal2-executor', // Optional: Add custom class if you want to style the modal
+                        },
+                        preConfirm: async (script) => {
+                            if (!script) {
+                                Swal.showValidationMessage('Please enter a script!');
+                                return;
+                            }
+                            try {
+                                const response = await axios.post(`${CONFIG.BASE_URL}/bot/runScript`, formatScript(script), {
+                                    headers: {
+                                        'Content-Type': 'text/plain',
+                                    },
+                                });
+                                return response.data;
+    
+                            } catch (error) {
+                                Swal.showValidationMessage(`Error: ${error.message}`);
+                            }
+                        },
+                        allowOutsideClick: () => !Swal.isLoading(),
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Swal.fire({
+                                title: 'result',
+                                text: result.value === 'nil' ? 'Script Executed!' : result.value
+                            });
+                        }
+                    });
+                }
+            },
+            {
+                name: 'Stop Script',
+                action: () => {
+                    const commandInterface = new Command(selectedIndex(), '');
+                    commandInterface.stopScript();
+                }
+            },
+            "separator",
+            {
+                name: 'Leveling',
                 subMenu: [
                     {
-                        name: 'Trash',
+                        name: 'Start',
                         action: () => {
-                            const interfaceInstance = new Interface(params.node.data.index, item.id); // Create instance with index and item ID
-                            interfaceInstance.trash(); // Call the trash method
+                            const commandInterface = new Command(selectedIndex(), '');
+                            commandInterface.startLeveling();
+                            
                         },
                     },
                     {
-                        name: 'Wear',
+                        name: 'Stop',
                         action: () => {
-                            const interfaceInstance = new Interface(params.node.data.index, item.id);
-                            interfaceInstance.wear(); // Call the wear method
+                            const commandInterface = new Command(selectedIndex(), '');
+                            commandInterface.stopScript();
                         },
-                    },
-                    {
-                        name: 'Drop',
-                        action: () => {
-                            const interfaceInstance = new Interface(params.node.data.index, item.id);
-                            interfaceInstance.drop(); // Call the drop method
-                        },
-                    },
-                ],
-                })),
-            },
-            
-        {
-            name: 'Logs',
-            action: () => {
-                const logContent = params.node.data.console
-                .map(log => `<div style="text-size: 8px;">${parseDisplayName(log)}</div>`)
-                .join('');
-
-                const newWindow = window.open('', 'Logs', 'width=1200,height=600');
-                newWindow.document.write(`
-                    <html>
-                        <head>
-                            <title>Logs</title>
-                            <style>
-                                body {
-                                    font-family: 'Fira Code', sans-serif;
-                                    background-color: black;
-                                    color: white;
-                                    padding: 20px;
-                                }
-                            </style>
-                        </head>
-                        <body>
-                            <h1 class="text-lg font-bold">Logs</h1>
-                            ${logContent}
-                        </body>
-                    </html>
-                `);
-                newWindow.document.close(); // Close the document to render the content
-            },
-        },
-        "separator",
-        {
-            name: 'Run Command',
-            action: async () => {
-                await Swal.fire({
-                    input: 'textarea',
-                    inputLabel: 'Enter your Lua script',
-                    inputValue: selectedRowIds.length > 0 ? '' : `bot = getBot(${params.node.data.index})\n`,
-                    inputPlaceholder: 'Type your Lua script here...',
-                    showCancelButton: true,
-                    confirmButtonText: 'Run Script',
-                    showLoaderOnConfirm: true,
-                    inputAttributes: {
-                        style: 'border: #424242 1px solid;font-size: 15px;height: 400px; background-color: #0F1015; color: #FFFFFF; font-family: JetBrains Mono'
-                    },
-                    customClass: {
-                        popup: 'swal2-executor', // Optional: Add custom class if you want to style the modal
-                    },
-                    preConfirm: async (script) => {
-                        if (!script) {
-                            Swal.showValidationMessage('Please enter a script!');
-                            return;
-                        }
-                        try {
-                            const response = await axios.post(`${CONFIG.BASE_URL}/bot/runScript`, formatScript(script), {
-                                headers: {
-                                    'Content-Type': 'text/plain',
-                                },
-                            });
-                            return response.data;
-
-                        } catch (error) {
-                            Swal.showValidationMessage(`Error: ${error.message}`);
-                        }
-                    },
-                    allowOutsideClick: () => !Swal.isLoading(),
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        Swal.fire({
-                            title: 'result',
-                            text: result.value === 'nil' ? 'Script Executed!' : result.value
-                        });
                     }
-                });
-            }
-        },
-        {
-            name: 'Stop Script',
-            action: () => {
-                const commandInterface = new Command(params.node.data.index, '');
-                commandInterface.stopScript();
-            }
-        },
-        "separator",
-        {
-            name: 'Leveling',
-            subMenu: [
-                {
-                    name: 'Start',
-                    action: () => {
-                        const commandInterface = new Command(params.node.data.index, '');
-                        commandInterface.startLeveling();
-                        
+                ]
+            },
+            {
+                name: 'Rotasi',
+                subMenu: [
+                    {
+                        name: 'Start',
+                        action: () => {
+                            const commandInterface = new Command(selectedIndex(), '');
+                            commandInterface.startRotasi();
+                            
+                        },
                     },
-                },
-                {
-                    name: 'Stop',
-                    action: () => {
-                        const commandInterface = new Command(params.node.data.index, '');
-                        commandInterface.stopScript();
+                    {
+                        name: 'Stop',
+                        action: () => {
+                            const commandInterface = new Command(selectedIndex(), '');
+                            commandInterface.stopScript();
+                        },
+                    }
+                ]
+            },
+            {
+                name: 'Tutorial',
+                subMenu: [
+                    {
+                        name: 'Start',
+                        action: () => {
+                            const commandInterface = new Command(selectedIndex(), '');
+                            commandInterface.startTutorial();
+                            
+                        },
                     },
+                    {
+                        name: 'Stop',
+                        action: () => {
+                            const commandInterface = new Command(selectedIndex(), '');
+                            commandInterface.stopTutorial();
+                        },
+                    }
+                ],
+            },
+            "separator",
+            "copy",
+            {
+                name: 'Remove',
+                action: () => {
+                    const commandInterface = new Command(selectedIndex(), '');
+                    commandInterface.removeBot();
                 }
-            ]
-        },
-        {
-            name: 'Rotasi',
-            subMenu: [
-                {
-                    name: 'Start',
-                    action: () => {
-                        const commandInterface = new Command(params.node.data.index, '');
-                        commandInterface.startRotasi();
-                        
-                    },
-                },
-                {
-                    name: 'Stop',
-                    action: () => {
-                        const commandInterface = new Command(params.node.data.index, '');
-                        commandInterface.stopScript();
-                    },
-                }
-            ]
-        },
-        {
-            name: 'Tutorial',
-            subMenu: [
-                {
-                    name: 'Start',
-                    action: () => {
-                        const commandInterface = new Command(params.node.data.index, '');
-                        commandInterface.startTutorial();
-                        
-                    },
-                },
-                {
-                    name: 'Stop',
-                    action: () => {
-                        const commandInterface = new Command(params.node.data.index, '');
-                        commandInterface.stopTutorial();
-                    },
-                }
-            ],
-        },
-        "separator",
-        "copy",
-        {
-            name: 'Remove',
-            action: () => {
-                const commandInterface = new Command(params.node.data.index, '');
-                commandInterface.removeBot();
-            }
-        },
-    ];
+            },
+        ];
+    }
 
 
     const totals = rowData.reduce((acc, user) => {
@@ -667,7 +725,7 @@ const Controller = () => {
                         columnDefs={columnDefs}
                         rowSelection={rowSelection}
                         getRowId={getRowId}
-                        onColumnStateChanged={onColumnStateChanged}
+                        // onColumnStateChanged={onColumnStateChanged}
                         onSelectionChanged={onSelectionChanged}
                         getContextMenuItems={getContextMenuItems}
                     />

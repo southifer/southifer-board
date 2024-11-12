@@ -93,7 +93,6 @@ server:get("/bot/get", function(request, response)
     for i, bot in ipairs(bots) do
         local botData = getBot(bot.name)
 
-        -- Prepare inventory list
         local botInventory = {}
         for _, item in ipairs(bot:getInventory():getItems()) do
             local itemInfo = getInfo(item.id)
@@ -105,13 +104,11 @@ server:get("/bot/get", function(request, response)
             })
         end
 
-        -- Prepare log content
         local consoleLog = {}
         for _,message in pairs(bot:getConsole().contents) do
             table.insert(consoleLog, message)
         end
 
-        -- Add bot details to the bot list
         table.insert(botList, {
             details = {
                 index = i,
