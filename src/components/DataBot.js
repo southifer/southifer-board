@@ -7,74 +7,68 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 import 'ag-grid-enterprise';
 import CONFIG from './config/Config.json'
 import LoadingSpinner from './Loading';
+import { toast } from 'react-toastify';
 
-// Your showModal function as defined earlier
+const controller = new AbortController();
+
 const showModal = (data) => {
-    Swal.fire({
-        icon: 'info',
-        title: 'Confirm Adding Bot',
-        html: `
-            Are you sure you want to add the following bot?
-            <br>Name: <strong>${data.username}</strong>
-            <br>Password: <strong>${data.password}</strong>
-            <br>MAC: <strong>${data.mac}</strong>
-            <br>Recovery: <strong>${data.recovery}</strong>
-            <br>RID: <strong>${data.rid}</strong>
-            <br>Proxy: <strong>${data.proxy}</strong>
-        `,
-        showCancelButton: true,
-        confirmButtonText: 'Add Bot',
-        customClass: {
-            popup: 'swal2-addbot' // Apply custom class to the modal
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            handleSubmit(data);  // Pass the collected data to handleSubmit
-        }
-    });
+    if (data.length > 1) {
+        Swal.fire({
+            icon: 'info',
+            title: 'Confirmation',
+            text: `Confirm adding x${data.length} bots?`,
+            showCancelButton: true,
+            confirmButtonText: 'Add Bots',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                AddBot(data);
+            }
+        });
+    } else {
+        const bot = data[0];
+        Swal.fire({
+            icon: 'info',
+            title: 'Confirm Adding Bot',
+            html: `
+                Are you sure you want to add the following bot?
+                <br>Name: <strong>${bot.username}</strong>
+                <br>Password: <strong>${bot.password}</strong>
+                <br>MAC: <strong>${bot.mac}</strong>
+                <br>Recovery: <strong>${bot.recovery}</strong>
+                <br>RID: <strong>${bot.rid}</strong>
+                <br>Proxy: <strong>${bot.proxy}</strong>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Add Bot'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                AddBot(data);
+            }
+        });
+    }
 };
 
-// Your handleSubmit function as defined earlier
-const handleSubmit = async (data) => {
-
-    if (!data.username || !data.password) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Name and Password are required fields!'
-        });
-        return;
-    }
-
+const AddBot = async (data) => {
     try {
-        const response = await axios.post(
-            `${CONFIG.BASE_URL}/bot/add`,
-            null,
-            {
-                params: {
-                    name: data.username,
-                    password: data.password,
-                    recovery: data.recovery || "",
-                    mac: data.mac || "",
-                    rid: data.rid || "",
-                    proxy: data.proxy || ""
+        const requests = data.map(async (item) => {
+            const response = await axios.post(
+                `${CONFIG.BASE_URL}/bot/add`,
+                null,
+                {
+                    params: {
+                        name: item.username,
+                        password: item.password,
+                        recovery: item.recovery || "",
+                        mac: item.mac || "",
+                        rid: item.rid || "",
+                        proxy: item.proxy || ""
+                    }
                 }
-            }
-        );
+            );
+        });
 
-        if (response.status === 200) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Bot Added!',
-                text: response.data
-            });
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: response.data
-            });
-        }
+        await Promise.all(requests);
+        toast.success(`x${data.length} bot added!`)
     } catch (error) {
         Swal.fire({
             icon: 'error',
@@ -85,9 +79,11 @@ const handleSubmit = async (data) => {
     }
 };
 
+
 const DataBot = () => {
     const [rowData, setRowData] = useState([]);
     const [selectedRowIds, setSelectedRowIds] = useState([]);
+    const [selectedRowData, setSelectedRowData] = useState([]);
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -130,25 +126,25 @@ const DataBot = () => {
         });
     };
     
+    const generateRID = () => {
+        const characters = '0123456789ABCDEF';
+        let rid = '';
+        for (let i = 0; i < 32; i++) {
+            rid += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return rid;
+    };
+
+    const generateMAC = () => {
+        const mac = ['02']; // Setting the first byte to 02
+        for (let i = 0; i < 5; i++) {
+            const octet = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
+            mac.push(octet);
+        }
+        return mac.join(':');
+    };
+
     const processFileContent = (content) => {
-        const generateRID = () => {
-            const characters = '0123456789ABCDEF';
-            let rid = '';
-            for (let i = 0; i < 32; i++) {
-                rid += characters.charAt(Math.floor(Math.random() * characters.length));
-            }
-            return rid;
-        };
-
-        const generateMAC = () => {
-            const mac = ['02']; // Setting the first byte to 02
-            for (let i = 0; i < 5; i++) {
-                const octet = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
-                mac.push(octet);
-            }
-            return mac.join(':');
-        };
-
         const lines = content.split('\n');
         return lines.map((line, index) => {
             const parts = line.split('|');
@@ -182,8 +178,6 @@ const DataBot = () => {
         }));
     };
 
-    const controller = new AbortController();
-
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
@@ -207,7 +201,7 @@ const DataBot = () => {
         }
     }, []);
 
-    const columns = [
+    const columnDefs = [
         { headerName: 'Name', field: 'username', editable: true, minWidth: 250, filter: "agTextColumnFilter"},
         { headerName: 'Password', field: 'password', editable: true, minWidth: 175, filter: "agTextColumnFilter"},
         { headerName: 'Recovery', field: 'recovery', editable: true, minWidth: 250, filter: "agTextColumnFilter"},
@@ -225,8 +219,9 @@ const DataBot = () => {
     ];
 
     const onSelectionChanged = useCallback((event) => {
-        const selectedIds = event.api.getSelectedRows().map(row => row.id);
-        setSelectedRowIds(selectedIds);
+        const selectedIds = event.api.getSelectedRows().map(row => row);
+        setSelectedRowData(selectedIds);
+        setSelectedRowIds(selectedIds.map(row => row.id));
     }, []);
 
     const handleCellEditingStopped = useCallback((event) => {
@@ -251,8 +246,8 @@ const DataBot = () => {
             username: formData.username,
             password: formData.password,
             recovery: formData.recovery,
-            mac: formData.mac,
-            rid: formData.rid,
+            mac: formData.mac || generateMAC(),
+            rid: formData.rid || generateRID(),
             proxy: formData.proxy,
             id: rowData.length // Assuming you want to keep it sequential
         };
@@ -321,13 +316,11 @@ const DataBot = () => {
     }), []);
     
     const gridOptions = {
-        columnDefs: columns,
+        columnDefs: columnDefs,
         defaultColDef: {
-            flex: 1,
             filter: true,
             floatingFilter: true,
             menuTabs: ['generalMenuTab', 'filterMenuTab', 'columnsMenuTab'],
-            enableCellChangeFlash: true,
         },
         columnMenu: 'legacy',
         suppressMenuHide: true,
@@ -348,7 +341,7 @@ const DataBot = () => {
         {
             name: 'Add Bot',
             action: () => {
-                showModal(params.node.data);
+                showModal(selectedRowData);
             }
         },
         {
@@ -458,12 +451,12 @@ const DataBot = () => {
                     </form>
                 </div>
                 <div className="bg-[#1C1C1C] p-4 rounded-lg shadow-md mb-4 border border-[#424242]">
-                    <div id="myGrid" class="ag-theme-alpine-dark" style={{ height: 760, width: '100%' }}>
+                    <div id="myGrid" className="ag-theme-alpine-dark" style={{ height: 760, width: '100%' }}>
                         <AgGridReact
                             gridOptions={gridOptions}
                             rowData={rowData}
+                            getRowId={(params) => String(params.data.id)}
                             getRowNodeId={(data) => data.id}
-                            columnDefs={columns}
                             rowSelection={rowSelection}
                             onSelectionChanged={onSelectionChanged}
                             onCellEditingStopped={handleCellEditingStopped}

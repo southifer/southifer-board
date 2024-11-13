@@ -241,21 +241,6 @@ const Controller = () => {
         }
     ];
 
-    useEffect(() => {
-        const savedColumnState = JSON.parse(localStorage.getItem('columnDefs'));
-        if (savedColumnState) {
-            gridOptions.api?.columnApi.applyColumnState({
-                state: savedColumnState,
-                applyOrder: true,
-            });
-        }
-    }, []);
-    
-    const onColumnStateChanged = (event) => {
-        const columnState = event.columnApi.getColumnState();
-        localStorage.setItem('columnDefs', JSON.stringify(columnState));
-    };
-
     const rowSelection = useMemo(() => { 
         return {
             mode: 'multiRow',
@@ -652,33 +637,32 @@ const Controller = () => {
             
                         if (botData) {
                             Swal.fire({
-                                icon: 'info',
                                 title: 'Bot details',
                                 html: `
-                                <table style="width: 100%; text-align: left; border-collapse: collapse; font-family: Arial, sans-serif; color: #333;">
-                                    <tr style="background-color: #f4f4f4;">
-                                        <td style="padding: 8px; font-weight: bold; border: 1px solid #ddd;">Name</td>
-                                        <td style="padding: 8px; border: 1px solid #ddd;">${botData.username}</td>
+                                <table style="width: 100%; text-align: left; border-collapse: collapse; font-family: Nunito, sans-serif; color: #FFFFFF; border-radius: 15%;">
+                                    <tr style="background-color: #1C1C1C;">
+                                        <td style="padding: 8px; border: 0.5px solid #ddd;">Name</td>
+                                        <td style="padding: 8px; border: 0.5px solid #ddd;">${botData.username}</td>
                                     </tr>
-                                    <tr style="background-color: #f4f4f4;">
-                                        <td style="padding: 8px; font-weight: bold; border: 1px solid #ddd;">Password</td>
-                                        <td style="padding: 8px; border: 1px solid #ddd;">${botData.password}</td>
+                                    <tr style="background-color: #1C1C1C;">
+                                        <td style="padding: 8px; border: 0.5px solid #ddd;">Password</td>
+                                        <td style="padding: 8px; border: 0.5px solid #ddd;">${botData.password}</td>
                                     </tr>
-                                    <tr style="background-color: #f4f4f4;">
-                                        <td style="padding: 8px; font-weight: bold; border: 1px solid #ddd;">MAC</td>
-                                        <td style="padding: 8px; border: 1px solid #ddd;">${botData.mac}</td>
+                                    <tr style="background-color: #1C1C1C;">
+                                        <td style="padding: 8px; border: 0.5px solid #ddd;">Recovery</td>
+                                        <td style="padding: 8px; border: 0.5px solid #ddd;">${botData.recovery}</td>
                                     </tr>
-                                    <tr style="background-color: #f4f4f4;">
-                                        <td style="padding: 8px; font-weight: bold; border: 1px solid #ddd;">Recovery</td>
-                                        <td style="padding: 8px; border: 1px solid #ddd;">${botData.recovery}</td>
+                                    <tr style="background-color: #1C1C1C;">
+                                        <td style="padding: 8px; border: 0.5px solid #ddd;">MAC</td>
+                                        <td style="padding: 8px; border: 0.5px solid #ddd;">${botData.mac}</td>
                                     </tr>
-                                    <tr style="background-color: #f4f4f4;">
-                                        <td style="padding: 8px; font-weight: bold; border: 1px solid #ddd;">RID</td>
-                                        <td style="padding: 8px; border: 1px solid #ddd;">${botData.rid}</td>
+                                    <tr style="background-color: #1C1C1C;">
+                                        <td style="padding: 8px; border: 0.5px solid #ddd;">RID</td>
+                                        <td style="padding: 8px; border: 0.5px solid #ddd;">${botData.rid}</td>
                                     </tr>
-                                    <tr style="background-color: #f4f4f4;">
-                                        <td style="padding: 8px; font-weight: bold; border: 1px solid #ddd;">Proxy</td>
-                                        <td style="padding: 8px; border: 1px solid #ddd;">${botData.proxy}</td>
+                                    <tr style="background-color: #1C1C1C;">
+                                        <td style="padding: 8px; border: 0.5px solid #ddd;">Proxy</td>
+                                        <td style="padding: 8px; border: 0.5px solid #ddd;">${botData.proxy}</td>
                                     </tr>
                                 </table>
                             `,
@@ -788,7 +772,6 @@ const Controller = () => {
                         columnDefs={columnDefs}
                         rowSelection={rowSelection}
                         getRowId={getRowId}
-                        // onColumnStateChanged={onColumnStateChanged}
                         onSelectionChanged={onSelectionChanged}
                         getContextMenuItems={getContextMenuItems}
                     />

@@ -7,6 +7,7 @@ import DataBot from './components/DataBot';
 import CodeEditor from './components/Executor';
 import Controller from './components/Controller';
 import FarmTable from './components/FarmTable';
+import RouterIP from './components/RouterIP';
 
 // Create a dark theme
 const darkTheme = createTheme({
@@ -30,6 +31,7 @@ function App() {
                                 <Route path="/bot" element={<DataBot />} />
                                 <Route path="/farm" element={<FarmTable />} />
                                 <Route path="/script" element={<CodeEditor />} />
+                                <Route path="/router" element={<RouterIP />} />
                             </Routes>
                         </div>
                     </div>
