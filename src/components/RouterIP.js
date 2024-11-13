@@ -173,7 +173,7 @@ const RouterIP = () => {
                         <h1 className="flex items-center text-xs font-bold text-gray-400 mb-2 uppercase">
                             terminal
                         </h1>
-                        <div className="overflow-y-auto h-[450px]"> {/* Inner div for scrollable area */}
+                        <div className="overflow-y-auto h-[450px]">
                             {terminalLogs.map((row, index) => (
                                 <div key={index} className='flex items-center text-sm text-gray-100'>
                                     {row}

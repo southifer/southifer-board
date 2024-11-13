@@ -51,7 +51,7 @@ const showModal = (data) => {
 const AddBot = async (data) => {
     try {
         const requests = data.map(async (item) => {
-            const response = await axios.post(
+            await axios.post(
                 `${CONFIG.BASE_URL}/bot/add`,
                 null,
                 {
