@@ -96,12 +96,14 @@ server:get("/bot/get", function(request, response)
         local botInventory = {}
         for _, item in ipairs(bot:getInventory():getItems()) do
             local itemInfo = getInfo(item.id)
-            table.insert(botInventory, {
-                name = itemInfo.name,
-                id = item.id,
-                is_clothes = itemInfo.clothing_type ~= 0,
-                amount = item.count
-            })
+            if itemInfo then
+                table.insert(botInventory, {
+                    name = itemInfo.name,
+                    id = item.id,
+                    is_clothes = itemInfo.clothing_type ~= 0,
+                    amount = item.count
+                })
+            end
         end
 
         local consoleLog = {}

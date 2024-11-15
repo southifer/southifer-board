@@ -7,8 +7,6 @@ import 'ag-grid-community/styles/ag-theme-balham.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import 'ag-grid-enterprise';
 
-const Sleep = async (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
 const RouterIP = () => {
     const [terminalLogs, setTerminalLogs] = useState([]);
     const [userInput, setUserInput] = useState('');

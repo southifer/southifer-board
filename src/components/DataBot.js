@@ -61,7 +61,7 @@ const AddBot = async (data) => {
                         recovery: item.recovery || "",
                         mac: item.mac || "",
                         rid: item.rid || "",
-                        proxy: item.proxy || ""
+                        proxy: item.proxy
                     }
                 }
             );
