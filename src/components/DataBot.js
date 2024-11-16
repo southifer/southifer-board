@@ -94,6 +94,10 @@ const DataBot = () => {
     });
     const [isLoading, setIsLoading] = useState(false);
 
+    useEffect(() => {
+        document.title = 'Bot';
+    }, []);
+
     const handleFileChange = (event) => {
         const file = event.target.files[0];
     

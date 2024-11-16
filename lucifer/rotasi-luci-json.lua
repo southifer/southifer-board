@@ -1,6 +1,6 @@
 bot = getBot()
 json = require("json")
-config = "C:\\Users\\Administrator\\Desktop\\config-json.json"
+config = "C:\\Users\\Administrator\\Desktop\\config.json"
 
 for i, botz in pairs(getBots()) do
     if botz.name:upper() == bot.name:upper() then
@@ -11,19 +11,12 @@ end
 bot.collect_range = 4
 bot.collect_interval = 150
 
-world = ""
-doorFarm = ""
-worldPNB = ""
-worldBreak = ""
-doorBreak = ""
 mode3Tile = {-1,0,1}
 tileBreak = {}
 tilePath = {}
 storageIndex = 1
 warpStatus = ""
-uptime = os.time()
 switchBreak = 1
-isNukedAfterReconnect = false
 
 local JSON = {
     content = function(self, path)
@@ -73,9 +66,14 @@ function tilePlace(x,y)
     return false
 end
 
-function growscan(id)
-    return (bot:getWorld().growscan:getTiles()[id] or 0)
-end
+local GROWSCAN = {
+    tile = function(self, id)
+        return (bot:getWorld().growscan:getTiles()[id] or 0)
+    end,
+    object = function(self, id)
+        return (bot:getWorld().growscan:getObjects()[id] or 0)
+    end,
+}
 
 function append_to_file(filename, text)
     local file = io.open(filename, "a") -- Buka file dalam mode append
@@ -270,7 +268,7 @@ function updateFarm(fileName, worldName, updatedData)
 end
 
 function StatusGoogle()
-    local GoogleStatus_ENUM = {
+    local statusNaming = {
         [GoogleStatus.idle] = "Idle",
         [GoogleStatus.processing] = "Processing",
         [GoogleStatus.init_error] = "Init Error",
@@ -283,7 +281,7 @@ function StatusGoogle()
         [GoogleStatus.couldnt_verify] = "Couldnt Verify",
         [GoogleStatus.unknown_url] = "Unknown URL"
     }
-    return GoogleStatus_ENUM[bot.google_status] or "UNKNOWN"
+    return statusNaming[bot.google_status] or "UNKNOWN"
 end
 
 local GetBot = function(bot)
@@ -619,36 +617,12 @@ function displayBotList()
     webhook:edit(farming.webhook.bot.id)
 end
 
-function changeBot(credential)
-    local dataUser = string.split(credential, "|")
-    local splitAt = string.split(dataUser[1], "@")
-    local information = {
-        ["name"] = dataUser[1],
-        ["password"] = dataUser[2],
-        ["platform"] = Platform.steam,
-        ["secret"] = dataUser[3],
-        ["steamlogin"] = dataUser[4] .. ":" .. dataUser[5]
-    }
-    bot:updateCustomBot(information)
-    return splitAt[1]
-end
-
-function findLog(str)
-    for _,log in pairs(bot:getConsole().contents) do
-        if log:find(str) then
-            botInfo(farming.webhook.info, ":orange_circle: "..bot.name.." ["..indexBot.."] " .. log .. ".")
-            return true
-        end
-    end
-    return false
-end
-
 function reconnect(world,id,x,y)
     local timeNow = os.date("*t")
     if timeNow.hour == 11 then
-        done0 = false
-        done1 = false
-        done2 = false
+        FirstGoals = false
+        SecondGoals = false
+        ThirdGoals = false
     end
     while bot:getPing() >= 200 do
         sleep(100)
@@ -713,10 +687,7 @@ function reconnect(world,id,x,y)
             bot:findPath(x,y)
             sleep(100)
         end
-        sleep(100)
         bot:say("/status")
-        sleep(100)
-        uptime = os.time()
         sleep(100)
     end
 end
@@ -771,7 +742,7 @@ function storeSeed(world)
         clearHistory(5)
     end
     if farming.claim_goals.enable then
-        if not done0 or not done1 or not done2 then
+        if not FirstGoals or not SecondGoals or not ThirdGoals then
             claimGoals(farming.claim_goals.world, farming.claim_goals.doorId)
             sleep(100)
             takeMagplant()
@@ -834,7 +805,7 @@ function pnbTutorial()
     warp(worldPNB,"",true,true)
     sleep(100)
     if not nuked and bot:getWorld().name == worldPNB and bot:getWorld():hasAccess(bot.x-1,bot.y) > 0 then
-        if growscan(226) == 0 then
+        if GROWSCAN:tile(226) == 0 then
             if findItem(226) == 0 then
                 if bot.gem_count > 2000 then
                     while findItem(226) == 0 and bot.gem_count > 2000 do
@@ -1962,34 +1933,34 @@ function claimGoals(world,door)
                     sleep(1000)
                     bot:sendPacket(2,"action|dialog_return\ndialog_name|phonecall\ntilex|"..tile.x.."|\ntiley|"..tile.y.."|\nnum|-12|\nbuttonClicked|back")
                     sleep(1000)
-                    done0 = true
+                    FirstGoals = true
                 end
                 if skip0 and giveup0 and bot:isInWorld(world:upper()) then
                     bot:sendPacket(2,"action|dialog_return\ndialog_name|phonecall\ntilex|"..tile.x.."|\ntiley|"..tile.y.."|\nnum|-4|\nbuttonClicked|giveup0")
                     sleep(1000)
                     bot:sendPacket(2,"action|dialog_return\ndialog_name|phonecall\ntilex|"..tile.x.."|\ntiley|"..tile.y.."|\nnum|-10|\ngoal|0||\nbuttonClicked|giveuptrue")
                     sleep(1000)
-                    done0 = true
+                    FirstGoals = true
                 end
                 if not finish0 and not giveup0 then
-                    done0 = true
+                    FirstGoals = true
                 end
                 if finish1 and bot:isInWorld(world:upper()) then
                     bot:sendPacket(2,"action|dialog_return\ndialog_name|phonecall\ntilex|"..tile.x.."|\ntiley|"..tile.y.."|\nnum|-4|\nbuttonClicked|finish1")
                     sleep(1000)
                     bot:sendPacket(2,"action|dialog_return\ndialog_name|phonecall\ntilex|"..tile.x.."|\ntiley|"..tile.y.."|\nnum|-12|\nbuttonClicked|back")
                     sleep(1000)
-                    done1 = true
+                    SecondGoals = true
                 end
                 if skip1 and giveup1 and bot:isInWorld(world:upper()) then
                     bot:sendPacket(2,"action|dialog_return\ndialog_name|phonecall\ntilex|"..tile.x.."|\ntiley|"..tile.y.."|\nnum|-4|\nbuttonClicked|giveup1")
                     sleep(1000)
                     bot:sendPacket(2,"action|dialog_return\ndialog_name|phonecall\ntilex|"..tile.x.."|\ntiley|"..tile.y.."|\nnum|-10|\ngoal|1||\nbuttonClicked|giveuptrue")
                     sleep(1000)
-                    done1 = true
+                    SecondGoals = true
                 end
                 if not finish1 and not giveup1 then
-                    done1 = true
+                    SecondGoals = true
                 end
 
                 if finish2 and bot:isInWorld(world:upper()) then
@@ -1997,17 +1968,17 @@ function claimGoals(world,door)
                     sleep(1000)
                     bot:sendPacket(2,"action|dialog_return\ndialog_name|phonecall\ntilex|"..tile.x.."|\ntiley|"..tile.y.."|\nnum|-12|\nbuttonClicked|back")
                     sleep(1000)
-                    done1 = true
+                    SecondGoals = true
                 end
                 if skip2 and giveup2 and bot:isInWorld(world:upper()) then
                     bot:sendPacket(2,"action|dialog_return\ndialog_name|phonecall\ntilex|"..tile.x.."|\ntiley|"..tile.y.."|\nnum|-4|\nbuttonClicked|giveup2")
                     sleep(1000)
                     bot:sendPacket(2,"action|dialog_return\ndialog_name|phonecall\ntilex|"..tile.x.."|\ntiley|"..tile.y.."|\nnum|-10|\ngoal|2||\nbuttonClicked|giveuptrue")
                     sleep(1000)
-                    done2 = true
+                    ThirdGoals = true
                 end
                 if not finish2 and not giveup2 then
-                    done2 = true
+                    ThirdGoals = true
                 end
                 removeEvent(Event.variantlist)
                 break
@@ -2082,11 +2053,13 @@ function takeMagplant()
     sleep(100)
 end
 
-function checkTiles()
+function ScanWorld()
     local hasFire = false
     local hasToxic = false
     local treeTotal = 0
     local fossilTotal = 0
+    local itemFloatTotal = 0
+    local seedFloatTotal = 0
 
     -- Loop through tiles, using ipairs for potential performance boost with indexed arrays
     for _, tile in ipairs(getTiles()) do
@@ -2111,12 +2084,26 @@ function checkTiles()
         end
     end
 
+    for _,object in ipairs(getObjects()) do
+        -- Count total floating items objects
+        if object.id == farming.item_id then
+            itemFloatTotal = itemFloatTotal + object.count
+        end
+
+        -- Count total floating seeds objects
+        if object.id == farming.item_id then
+            seedFloatTotal = seedFloatTotal + object.count
+        end
+    end
+
     -- Return the results
     return {
         fire = hasFire,
         toxic = hasToxic,
         tree_total = treeTotal,
         fossil_total = fossilTotal,
+        item_float_total = itemFloatTotal,
+        seed_float_total = seedFloatTotal,
     }
 end
 
@@ -2139,7 +2126,7 @@ function OnVarSearchQuest(var, netid)
     end
 end
 
-function roleQuest()
+function startRoleQuest()
     addEvent(Event.variantlist, OnVarSearchQuest)
 
     if bot:isInWorld() then
@@ -2254,16 +2241,18 @@ if farming then
             sleep(100)
 
             if not nuked then
-                patokanTree = math.floor(growscan(farming.item_seed) / 2)
+                patokanTree = math.floor(GROWSCAN:tile(farming.item_seed) / 2)
                 queryInsert('Patokan tree di harvest: ' .. patokanTree)
 
-                local scanTile = checkTiles()
+                local scanTile = ScanWorld()
                 updateFarm(farming.world_list, world, {
                     status = "OK",
                     fire = scanTile.fire,
                     toxic = scanTile.toxic,
                     tree_total = scanTile.tree_total,
-                    fossil_total = scanTile.fossil_total 
+                    fossil_total = scanTile.fossil_total,
+                    item_float_total = scanTile.item_float_total,
+                    seed_float_total = scanTile.seed_float_total
                 })
 
                 if not scanTile.fire then
@@ -2295,6 +2284,8 @@ if farming then
                         bot:trash(98, findItem(98))
                         sleep(500)
                     end
+                    startRoleQuest()
+                    sleep(100)
                     clearBlocks(world)
                     sleep(100)
                     harvest(world)

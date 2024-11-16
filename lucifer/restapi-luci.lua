@@ -1,10 +1,15 @@
-server = HttpServer.new()
+local HttpServer = HttpServer.new()
 
-server:setLogger(function(request, response)
-  print(string.format("Method: %s, Path: %s, Status: %i", request.method, request.path, response.status))
+local CONFIG_PATH = "C:\\Users\\Administrator\\Desktop\\config.json"
+local FARM_PATH = "C:\\Users\\Administrator\\Desktop\\FARM.json"
+local BOT_BACKUP_PATH = "C:\\Users\\Administrator\\Desktop\\bot-backup.json"
+local SCRIPT_ROTASI_PATH = "C:\\Users\\Administrator\\Desktop\\rotasi-luci-json.lua"
+
+HttpServer:setLogger(function(request, response)
+    print(string.format("Method: %s, Path: %s, Status: %i", request.method, request.path, response.status))
 end)
 
-server:get("/bot/get", function(request, response)
+HttpServer:get("/bot/get", function(request, response)
     response.headers["Access-Control-Allow-Origin"] = "*"  -- Allow all origins (use specific origin in production)
     response.headers["Access-Control-Allow-Methods"] = "GET"  -- Allow methods
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"  -- Allow headers
@@ -147,7 +152,7 @@ server:get("/bot/get", function(request, response)
     response:setContent(json.encode(botList), "application/json")
 end)
 
-server:post("/bot/runScript", function(request, response)
+HttpServer:post("/bot/runScript", function(request, response)
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Methods"] = "POST"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
@@ -168,12 +173,12 @@ server:post("/bot/runScript", function(request, response)
     end
 end)
 
-server:get("/bot/config", function(request, response)
+HttpServer:get("/bot/config", function(request, response)
     response.headers["Access-Control-Allow-Origin"] = "*"  -- Allow all origins (use specific origin in production)
     response.headers["Access-Control-Allow-Methods"] = "GET"  -- Allow methods
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"  -- Allow headers
 
-    local configData = read("C:\\Users\\Administrator\\Desktop\\config.json")  -- Use the inbuilt read function to get the file contents
+    local configData = read(CONFIG_PATH)  -- Use the inbuilt read function to get the file contents
   
     if configData then
         response:setContent(configData, "application/json")  -- Respond with JSON content
@@ -182,7 +187,7 @@ server:get("/bot/config", function(request, response)
     end
 end)
 
-server:post("/bot/config", function(request, response)
+HttpServer:post("/bot/config", function(request, response)
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Methods"] = "POST"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
@@ -190,7 +195,7 @@ server:post("/bot/config", function(request, response)
     local body = request.body -- Get the request body
 
     -- Validate and write the JSON data to the config file
-    local success = write("C:\\Users\\Administrator\\Desktop\\config.json", body) -- Assuming write is a function you have to write data to a file
+    local success = write(CONFIG_PATH, body) -- Assuming write is a function you have to write data to a file
 
     if success then
         response:setContent("Config updated successfully.", "text/plain")
@@ -199,12 +204,12 @@ server:post("/bot/config", function(request, response)
     end
 end)
 
-server:get("/bot/farm", function(request, response)
+HttpServer:get("/bot/farm", function(request, response)
     response.headers["Access-Control-Allow-Origin"] = "*"  -- Allow all origins (use specific origin in production)
     response.headers["Access-Control-Allow-Methods"] = "GET"  -- Allow methods
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"  -- Allow headers
 
-    local configData = read("C:\\Users\\Administrator\\Desktop\\FARM.json")  -- Use the inbuilt read function to get the file contents
+    local configData = read(FARM_PATH)  -- Use the inbuilt read function to get the file contents
   
     if configData then
         response:setContent(configData, "application/json")  -- Respond with JSON content
@@ -213,7 +218,7 @@ server:get("/bot/farm", function(request, response)
     end
 end)
 
-server:post("/bot/farm", function(request, response)
+HttpServer:post("/bot/farm", function(request, response)
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Methods"] = "POST"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
@@ -221,7 +226,7 @@ server:post("/bot/farm", function(request, response)
     local body = request.body -- Get the request body
 
     -- Validate and write the JSON data to the config file
-    local success = write("C:\\Users\\Administrator\\Desktop\\FARM.json", body) -- Assuming write is a function you have to write data to a file
+    local success = write(FARM_PATH, body) -- Assuming write is a function you have to write data to a file
 
     if success then
         response:setContent("Farm updated successfully.", "text/plain")
@@ -230,7 +235,7 @@ server:post("/bot/farm", function(request, response)
     end
 end)
 
-server:post("/bot/remove", function(request, response)
+HttpServer:post("/bot/remove", function(request, response)
     -- Set CORS headers
     response:setHeader("Access-Control-Allow-Origin", "*")  -- Allow all origins (use specific origin in production)
     response:setHeader("Access-Control-Allow-Methods", "POST")  -- Allow methods
@@ -265,7 +270,7 @@ server:post("/bot/remove", function(request, response)
     response:setContent("You have successfully removed bot " .. name .. ".", "text/plain")
 end)
 
-server:post("/bot/add", function(request, response)
+HttpServer:post("/bot/add", function(request, response)
     response.headers["Access-Control-Allow-Origin"] = "*"  -- Allow all origins (use specific origin in production)
     response.headers["Access-Control-Allow-Methods"] = "POST"  -- Allow methods
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"  -- Allow headers
@@ -299,12 +304,12 @@ server:post("/bot/add", function(request, response)
     end
 end)
 
-server:get("/bot/bot-backup", function(request, response)
+HttpServer:get("/bot/bot-backup", function(request, response)
     response.headers["Access-Control-Allow-Origin"] = "*"  -- Allow all origins (use specific origin in production)
     response.headers["Access-Control-Allow-Methods"] = "GET"  -- Allow methods
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"  -- Allow headers
 
-    local backupData = read("C:\\Users\\Administrator\\Desktop\\bot-backup.json")  -- Adjust the path if necessary
+    local backupData = read(BOT_BACKUP_PATH)  -- Adjust the path if necessary
     if backupData then
         response:setContent(backupData, "application/json")
     else
@@ -312,7 +317,7 @@ server:get("/bot/bot-backup", function(request, response)
     end
 end)
 
-server:post("/bot/bot-backup", function(request, response)
+HttpServer:post("/bot/bot-backup", function(request, response)
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Methods"] = "POST"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
@@ -320,7 +325,7 @@ server:post("/bot/bot-backup", function(request, response)
     local body = request.body -- Get the request body
 
     -- Validate and write the JSON data to the config file
-    local success = write("C:\\Users\\Administrator\\Desktop\\bot-backup.json", body) -- Assuming write is a function you have to write data to a file
+    local success = write(BOT_BACKUP_PATH, body) -- Assuming write is a function you have to write data to a file
 
     if success then
         response:setContent("Backup updated successfully.", "text/plain")
@@ -329,14 +334,12 @@ server:post("/bot/bot-backup", function(request, response)
     end
 end)
 
-
-
-server:get("/bot/rotasi-script", function(request, response)
+HttpServer:get("/bot/rotasi-script", function(request, response)
     response.headers["Access-Control-Allow-Origin"] = "*"  -- Allow all origins (use specific origin in production)
     response.headers["Access-Control-Allow-Methods"] = "GET"  -- Allow methods
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"  -- Allow headers
 
-    local backupData = read("C:\\Users\\Administrator\\Desktop\\rotasi-luci-json.lua")  -- Adjust the path if necessary
+    local backupData = read(SCRIPT_ROTASI_PATH)  -- Adjust the path if necessary
     if backupData then
         response:setContent(backupData, "text/plain")
     else
@@ -344,7 +347,7 @@ server:get("/bot/rotasi-script", function(request, response)
     end
 end)
 
-server:post("/bot/rotasi-script", function(request, response)
+HttpServer:post("/bot/rotasi-script", function(request, response)
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Methods"] = "POST"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
@@ -352,7 +355,7 @@ server:post("/bot/rotasi-script", function(request, response)
     local body = request.body -- Get the request body
 
     -- Validate and write the JSON data to the config file
-    local success = write("C:\\Users\\Administrator\\Desktop\\rotasi-luci-json.lua", body) -- Assuming write is a function you have to write data to a file
+    local success = write(SCRIPT_ROTASI_PATH, body) -- Assuming write is a function you have to write data to a file
 
     if success then
         response:setContent("Backup updated successfully.", "text/plain")
@@ -361,4 +364,4 @@ server:post("/bot/rotasi-script", function(request, response)
     end
 end)
 
-server:listen("0.0.0.0", 8000)
+HttpServer:listen("0.0.0.0", 8000)

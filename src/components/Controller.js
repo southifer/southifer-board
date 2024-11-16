@@ -40,6 +40,10 @@ const Controller = () => {
     const previousRowDataRef = useRef([]);
 
     useEffect(() => {
+        document.title = 'Controller';
+    }, []);
+
+    useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`${CONFIG.BASE_URL}/bot/get`);
@@ -385,7 +389,7 @@ const Controller = () => {
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 Swal.fire({
-                                    title: 'result',
+                                    icon: 'info',
                                     text: result.value === 'nil' ? 'Script Executed!' : result.value
                                 });
                             }

@@ -8,6 +8,7 @@ import 'ag-grid-community/styles/ag-theme-quartz.css';
 import 'ag-grid-enterprise';
 import Swal from 'sweetalert2';
 import CONFIG from './config/Config.json'
+import { toast } from 'react-toastify';
 
 const controller = new AbortController();
 
@@ -19,33 +20,43 @@ const FarmTable = () => {
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
+            
+            const fetchPromise = axios.get(`${CONFIG.BASE_URL}/bot/farm`, { signal: controller.signal });
+    
+            toast.promise(fetchPromise, {
+                pending: "Fetching farm data...",
+                success: "Farm data loaded successfully!",
+                error: "Failed to load farm data. Please try again.",
+            });
+    
             try {
-                const response = await axios.get(`${CONFIG.BASE_URL}/bot/farm`);
+                const response = await fetchPromise;
                 const dataWithIds = response.data.map((item, index) => ({ ...item, id: index }));
     
-                setFarmData(dataWithIds)
+                setFarmData(dataWithIds);
             } catch (error) {
                 console.error(error);
             } finally {
                 setIsLoading(false);
             }
+    
+            return () => {
+                controller.abort();
+            };
         };
-
+    
         fetchData();
-
-        return () => {
-            controller.abort();
-        }
     }, []);
+    
 
     const columnDefs = [
         { field: 'world', width: 200, editable: true, enableCellChangeFlash: true, filter: "agTextColumnFilter" },
         { field: 'door', width: 200, editable: true, enableCellChangeFlash: true, filter: "agTextColumnFilter" },
-        { field: 'status', width: 200, editable: true, enableCellChangeFlash: true },
-        { field: 'nuked', width: 150, editable: true, enableCellChangeFlash: true, filter: "agSetColumnFilter" },
-        { field: 'fire', width: 150, editable: true, enableCellChangeFlash: true, filter: "agSetColumnFilter" },
-        { field: 'toxic', width: 150, editable: true, enableCellChangeFlash: true, filter: "agSetColumnFilter" },
-        { 
+        { field: 'status', width: 100, editable: true, enableCellChangeFlash: true },
+        { field: 'nuked', width: 100, editable: true, enableCellChangeFlash: true, filter: "agSetColumnFilter" },
+        { field: 'fire', width: 100, editable: true, enableCellChangeFlash: true, filter: "agSetColumnFilter" },
+        { field: 'toxic', width: 100, editable: true, enableCellChangeFlash: true, filter: "agSetColumnFilter" },
+        {
             field: 'tree_total', 
             width: 150,
             headerName: 'Tree',
@@ -56,8 +67,26 @@ const FarmTable = () => {
         },
         { 
             field: 'fossil_total', 
-            width: 200,
+            width: 150,
             headerName: 'Fossil',
+            editable: true,  // Make this column editable
+            enableCellChangeFlash: true,
+            filter: "agNumberColumnFilter" ,
+            valueFormatter: params => FormatNumber(params.value)
+        },
+        { 
+            field: 'item_float_total', 
+            width: 150,
+            headerName: 'Item Float',
+            editable: true,  // Make this column editable
+            enableCellChangeFlash: true,
+            filter: "agNumberColumnFilter" ,
+            valueFormatter: params => FormatNumber(params.value)
+        },
+        { 
+            field: 'seed_float_total', 
+            width: 150,
+            headerName: 'Seeds Float',
             editable: true,  // Make this column editable
             enableCellChangeFlash: true,
             filter: "agNumberColumnFilter" ,
@@ -69,9 +98,18 @@ const FarmTable = () => {
             headerName: 'Last Update',
             enableCellChangeFlash: true,
             valueFormatter: (params) => {
-                const date = new Date(params.value * 1000); // Multiply by 1000 to convert seconds to milliseconds
-                return date.toLocaleDateString(); // Format as date string (adjust if you want a different format)
-            },
+                const date = new Date(params.value * 1000);
+                const options = {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: true // Set to false for 24-hour format
+                };
+                return date.toLocaleString('en-US', options);
+            },            
             filter: 'agDateColumnFilter', // Use the built-in date filter
             filterParams: {
                 // Define the custom filter options
@@ -94,7 +132,7 @@ const FarmTable = () => {
         enableClickSelection: true,
     }), []);
 
-    const getRowId = (params) => params.data.id;
+    const getRowId = (params) => String(params.data.id);
 
     const gridOptions = {
         columnDefs: columnDefs,
@@ -105,32 +143,36 @@ const FarmTable = () => {
             resizable: true,
         },
         columnMenu: 'legacy',
-        suppressHeaderMenuButton: true,
         sideBar: {
-            toolPanels: [
-                {
-                    id: "columns",
-                    labelDefault: "Columns",
-                    labelKey: "columns",
-                    iconKey: "columns",
-                    toolPanel: "agColumnsToolPanel",
-                    minWidth: 225,
-                    width: 225,
-                    maxWidth: 225,
-                },
-                {
-                    id: "filters",
-                    labelDefault: "Filters",
-                    labelKey: "filters",
-                    iconKey: "filter",
-                    toolPanel: "agFiltersToolPanel",
-                    minWidth: 180,
-                    maxWidth: 400,
-                    width: 250,
-                },
-            ],
-            position: "left",
-            defaultToolPanel: "filters",
+          toolPanels: [
+            {
+                id: "columns",
+                labelDefault: "Columns",
+                labelKey: "columns",
+                iconKey: "columns",
+                toolPanel: "agColumnsToolPanel",
+                minWidth: 225,
+                width: 225,
+                maxWidth: 225,
+            },
+            {
+                id: "filters",
+                labelDefault: "Filters",
+                labelKey: "filters",
+                iconKey: "filter",
+                toolPanel: "agFiltersToolPanel",
+                minWidth: 180,
+                maxWidth: 400,
+                width: 250,
+            },
+          ],
+          position: "left",
+          defaultToolPanel: "filters",
+        },
+        statusBar: {
+          statusPanels: [
+            { statusPanel: "agSelectedRowCountComponent" },
+          ],
         },
     };
 
@@ -214,6 +256,7 @@ const FarmTable = () => {
                 </div> */}
                 <div className="bg-[#1C1C1C] border border-[#434B56] p-5 rounded-lg shadow-md w-full h-[800px] ag-theme-alpine-dark">
                     <AgGridReact
+                        loading={isLoading}
                         gridOptions={gridOptions}
                         rowData={farmData}
                         columnDefs={columnDefs}

@@ -11,6 +11,10 @@ const Config = () => {
     const [isCollapsed, setIsCollapsed] = useState(true);
 
     useEffect(() => {
+        document.title = 'Config';
+    }, []);
+
+    useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`${CONFIG.BASE_URL}/bot/config`);
