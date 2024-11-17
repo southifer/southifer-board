@@ -257,7 +257,7 @@ const FarmTable = () => {
                 {/* <div className="bg-[#1C1C1C] border border-[#434B56] p-5 rounded-lg shadow-md">
                     input here
                 </div> */}
-                <div className="bg-[#1C1C1C] border border-[#434B56] p-5 rounded-lg shadow-md w-full h-[800px] ag-theme-alpine-dark">
+                <div className="bg-[#1C1C1C] border border-[#434B56] p-5 rounded-lg shadow-md w-full h-[800px] ag-theme-quartz-dark">
                     <ToastContainer />
                     <AgGridReact
                         loading={isLoading}
