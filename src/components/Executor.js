@@ -5,6 +5,7 @@ import LoadingSpinner from './Loading';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import CONFIG from './config/Config.json'
+import { ToastContainer, toast } from 'react-toastify';
 
 const CodeEditor = () => {
     const [code, setCode] = useState();
@@ -40,29 +41,25 @@ const CodeEditor = () => {
     
     const handleSave = async () => {
         try {
-            setUploading(true);
-            const response = await axios.post(`${CONFIG.BASE_URL}/bot/rotasi-script`, code, {
+            const fetchPromise = axios.post(`${CONFIG.BASE_URL}/bot/rotasi-script`, code, {
                 headers: {
-                    'Content-Type': 'text/plain', // Change this as needed
+                    'Content-Type': 'text/plain',
                 },
             });
-            
-            if (response.status === 200) {
-                Swal.fire({
-                    title: 'Saved',
-                    text: 'Script updated successfully!',
-                    icon: 'success',
-                });
-            }
+
+            toast.promise(fetchPromise, {
+                pending: "Saving script...",
+                success: "Script saved successfully!",
+                error: "Failed saving script. Please try again.",
+            });
+
+            const response = await fetchPromise;
+            return response.data;
 
         } catch (error) {
-            Swal.fire({
-                title: 'Error',
-                text: error.response ? error.response.data : error.message, // More detailed error feedback
-                icon: 'warning',
-            });
-        } finally {
-            setUploading(false);
+            console.error('Error saving script:', error);
+            toast.error("An error occurred while updating the config.");
+            throw error;
         }
     };
     
@@ -78,11 +75,14 @@ const CodeEditor = () => {
         <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
             <div className="bg-[#1F2937] border border-[#434B56] p-4 rounded-lg shadow-md grid grid-cols-1 md:grid-cols-1 gap-4">
                 <div className="max-w-full overflow-x-auto custom-scrollbar rounded">
-                    <h1 className="flex items-center text-xs font-bold text-gray-400 mb-2 uppercase">
-                        script
-                    </h1>
+                    <ToastContainer 
+                        position='bottom-right'
+                        autoClose={2000}
+                        theme="dark"
+                    />
                     <Editor
-                        height="75vh"
+                        width='100%'
+                        height='75vh'
                         language="lua"
                         value={code}
                         onChange={handleEditorChange}

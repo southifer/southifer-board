@@ -24,9 +24,6 @@ const FarmTable = () => {
             const fetchPromise = axios.get(`${CONFIG.BASE_URL}/bot/farm`, { signal: controller.signal });
     
             toast.promise(fetchPromise, {
-                position: "bottom-right",
-                theme: "colored",
-                autoClose: 2000,
                 pending: "Fetching farm data...",
                 success: "Farm data loaded successfully!",
                 error: "Failed to load farm data. Please try again.",
@@ -55,13 +52,13 @@ const FarmTable = () => {
     const columnDefs = [
         { field: 'world', width: 200, editable: true, enableCellChangeFlash: true, filter: "agTextColumnFilter" },
         { field: 'door', width: 200, editable: true, enableCellChangeFlash: true, filter: "agTextColumnFilter" },
-        { field: 'status', width: 100, editable: true, enableCellChangeFlash: true },
+        { field: 'status', width: 100, editable: true, enableCellChangeFlash: true},
         { field: 'nuked', width: 100, editable: true, enableCellChangeFlash: true, filter: "agSetColumnFilter" },
         { field: 'fire', width: 100, editable: true, enableCellChangeFlash: true, filter: "agSetColumnFilter" },
         { field: 'toxic', width: 100, editable: true, enableCellChangeFlash: true, filter: "agSetColumnFilter" },
         {
             field: 'tree_total', 
-            width: 150,
+            width: 125,
             headerName: 'Tree',
             editable: true,  // Make this column editable
             enableCellChangeFlash: true,
@@ -70,7 +67,7 @@ const FarmTable = () => {
         },
         { 
             field: 'fossil_total', 
-            width: 150,
+            width: 125,
             headerName: 'Fossil',
             editable: true,  // Make this column editable
             enableCellChangeFlash: true,
@@ -79,7 +76,7 @@ const FarmTable = () => {
         },
         { 
             field: 'item_float_total', 
-            width: 150,
+            width: 125,
             headerName: 'Item Float',
             editable: true,  // Make this column editable
             enableCellChangeFlash: true,
@@ -88,7 +85,7 @@ const FarmTable = () => {
         },
         { 
             field: 'seed_float_total', 
-            width: 150,
+            width: 125,
             headerName: 'Seeds Float',
             editable: true,  // Make this column editable
             enableCellChangeFlash: true,
@@ -146,36 +143,17 @@ const FarmTable = () => {
             resizable: true,
         },
         columnMenu: 'legacy',
-        sideBar: {
-          toolPanels: [
-            {
-                id: "columns",
-                labelDefault: "Columns",
-                labelKey: "columns",
-                iconKey: "columns",
-                toolPanel: "agColumnsToolPanel",
-                minWidth: 225,
-                width: 225,
-                maxWidth: 225,
-            },
-            {
-                id: "filters",
-                labelDefault: "Filters",
-                labelKey: "filters",
-                iconKey: "filter",
-                toolPanel: "agFiltersToolPanel",
-                minWidth: 180,
-                maxWidth: 400,
-                width: 250,
-            },
-          ],
-          position: "left",
-          defaultToolPanel: "filters",
-        },
         statusBar: {
           statusPanels: [
-            { statusPanel: "agSelectedRowCountComponent" },
-          ],
+                { statusPanel: 'agTotalAndFilteredRowCountComponent' },
+                { statusPanel: 'agTotalRowCountComponent' },
+                { statusPanel: 'agFilteredRowCountComponent' },
+                { statusPanel: 'agSelectedRowCountComponent' },
+                { statusPanel: 'agAggregationComponent' }
+            ],
+        },
+        autoGroupColumnDef: {
+            minWidth: 200,
         },
     };
 
@@ -252,13 +230,14 @@ const FarmTable = () => {
     ]
 
     return (
-        <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
+        <div className="p-6 bg-mainBg text-white overflow-x-hidden">
             <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
-                {/* <div className="bg-[#1C1C1C] border border-[#434B56] p-5 rounded-lg shadow-md">
-                    input here
-                </div> */}
-                <div className="bg-[#1C1C1C] border border-[#434B56] p-5 rounded-lg shadow-md w-full h-[800px] ag-theme-quartz-dark">
-                    <ToastContainer />
+                <div className="w-full h-[800px] ag-theme-quartz-dark">
+                    <ToastContainer 
+                        position='bottom-right'
+                        autoClose={2000}
+                        theme="dark"
+                    />
                     <AgGridReact
                         loading={isLoading}
                         gridOptions={gridOptions}

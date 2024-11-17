@@ -48,7 +48,7 @@ const NavigationBar = () => {
 
         <div className={`lg:flex ${isNavOpen ? 'block' : 'hidden'} lg:flex lg:space-x-4 lg:ml-auto flex-col lg:flex-row space-y-2 lg:space-y-0 mt-4 lg:mt-0 w-full lg:w-auto`}>
             <Link
-                to="/"
+                to="/dashboard"
                 className={`flex items-center px-4 py-2 rounded-lg ${pathname === '/dashboard' ? 'bg-[#111827]' : 'hover:bg-[#111827]'}`}
             >
                 <svg
