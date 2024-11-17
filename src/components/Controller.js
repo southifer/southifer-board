@@ -7,7 +7,7 @@ import Interface from './api/Interface';
 import Command from './api/Command';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-balham.css';
-import 'ag-grid-community/styles/ag-theme-alpine.css';
+import 'ag-grid-community/styles/ag-theme-quartz.css';
 import 'ag-grid-enterprise';
 
 import TornSprites from './img/Torn.png'
@@ -102,19 +102,21 @@ const Controller = () => {
     const columnDefs = [
         {
             field: 'is_script_run',
-            width: 50,
+            width: 60,
             filter: false,
-            headerName: "⚡",
+            headerName: "🚨",
             enableCellChangeFlash: true,
-            menuTabs: []
-        },
+            menuTabs: [],
+            cellRenderer: (params) => params.value ? '✅' : '❌'
+        },             
         {
             field: 'is_account_secured',
-            width: 50,
+            width: 60,
             filter: false,
-            headerName: "🔒",
+            headerName: "📌",
             enableCellChangeFlash: true,
-            menuTabs: []
+            menuTabs: [],
+            cellRenderer: (params) => params.value ? '✅' : '❌'
         },
         { 
             field: 'name', 
@@ -160,6 +162,7 @@ const Controller = () => {
         { 
             field: 'google_status', 
             width: 150,
+            headerName: "Google Status",
             enableCellChangeFlash: true,
             valueFormatter: (params) => {
                 return params.value ? params.value.toUpperCase() : '';
@@ -423,7 +426,7 @@ const Controller = () => {
                         confirmButtonText: 'Warp',
                         showLoaderOnConfirm: true,
                         inputAttributes: {
-                            style: 'border: #424242 1px solid;background-color: #0F1015; color: #FFFFFF; font-family: JetBrains Mono'
+                            style: 'border: #424242 1px solid;background-color: #0F1015; color: #FFFFFF;'
                         },
                         preConfirm: async (world) => {
                             if (!world) {
@@ -431,9 +434,12 @@ const Controller = () => {
                                 return;
                             }
                             const script = `
-                                bot = getBot(${params.node.data.index})
-                                bot:warp(${world})
+                                for _,i in pairs(${selectedIndex()}) do
+                                    bot = getBot(i)
+                                    bot:warp("${world}")
+                                end
                             `
+                            console.log(script);
                             try {
                                 await axios.post(`${CONFIG.BASE_URL}/bot/runScript`, formatScript(script), {
                                     headers: {
@@ -445,14 +451,7 @@ const Controller = () => {
                             }
                         },
                         allowOutsideClick: () => !Swal.isLoading(),
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            Swal.fire({
-                                title: 'result',
-                                text: result.value === 'nil' ? 'Script Executed!' : result.value
-                            });
-                        }
-                    });
+                    })
                 }
             },
             "separator",
@@ -555,7 +554,7 @@ const Controller = () => {
                     }).then((result) => {
                         if (result.isConfirmed) {
                             Swal.fire({
-                                title: 'result',
+                                icon: 'info',
                                 text: result.value === 'nil' ? 'Script Executed!' : result.value
                             });
                         }
@@ -701,10 +700,16 @@ const Controller = () => {
 
 
     const totals = rowData.reduce((acc, user) => {
-        const { status, gems, obtained_gems } = user.details;
+        const { status, gems, obtained_gems, google_status } = user.details;
 
         acc.totalGems += gems;
         acc.totalObtained += obtained_gems;
+
+        switch (google_status) {
+            case 'captcha_required':
+                acc.totalCaptcha += 1;
+                break;
+        }
 
         switch (status) {
             case 'connected':
@@ -720,9 +725,9 @@ const Controller = () => {
         }
 
         return acc;
-    }, { totalOnline: 0, totalOffline: 0, totalBanned: 0, totalGems: 0, totalObtained: 0 });
+    }, { totalOnline: 0, totalOffline: 0, totalBanned: 0, totalGems: 0, totalObtained: 0, totalCaptcha: 0 });
 
-    const { totalOnline, totalOffline, totalBanned, totalGems, totalObtained } = totals;
+    const { totalOnline, totalOffline, totalBanned, totalGems, totalObtained, totalCaptcha } = totals;
 
     if (loading) {
         return (
@@ -733,38 +738,40 @@ const Controller = () => {
     }
 
     return (
-        <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
-            <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
-                <div className="grid  w-full">
-                    <div className="bg-[#1C1C1C] border border-[#424242] p-4 md:p-5 rounded-lg shadow-md">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                            <div className="p-4 text-gray-700 border border-[#424242]">
-                                <p className="text-xs font-bold text-gray-200 mb-3 uppercase">✅ total online</p>
-                                <p className="text-xl font-bold text-gray-200">⌐ Online: {FormatNumber(totalOnline)}</p>
-                            </div>
-                            <div className="p-4 text-gray-700 border border-[#424242]">
-                                <p className="text-xs font-bold text-gray-200 mb-3 uppercase">❌ total offline</p>
-                                <p className="text-xl font-bold text-gray-200">⌐ Offline: {FormatNumber(totalOffline)}</p>
-                            </div>
-                            <div className="p-4 text-gray-700 border border-[#424242]">
-                                <p className="text-xs font-bold text-gray-200 mb-3 uppercase">☠️ total banned</p>
-                                <p className="text-xl font-bold text-gray-200">⌐ Banned: {totalBanned}</p>
-                            </div>
-                            <div className="p-4 text-gray-700 border border-[#424242]">
-                                <p className="text-xs font-bold text-gray-200 mb-3 uppercase">💎 total gems</p>
-                                <p className="text-xl font-bold text-gray-200">⌐ Gems: {FormatNumber(totalGems)}</p>
-                            </div>
-                            <div className="p-4 text-gray-700 border border-[#424242]">
-                                <p className="text-xs font-bold text-gray-200 mb-3 uppercase">💰 total obtained</p>
-                                <p className="text-xl font-bold text-gray-200">⌐ Obtained Gems: {FormatNumber(totalObtained)}</p>
-                            </div>
-                        </div>
+        <div className="p-6 bg-mainBg text-white h-full overflow-x-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                <div className="sm:flex sm:justify-between sm:items-center mb-4">
+
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-300">Dashboard</h1>
+
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mb-4">
+                    <div className="p-4 text-gray-700 bg-[#1F2937] rounded-lg">
+                        <p className="text-lg font-bold text-gray-200 mb-1 uppercase">✅ total online</p>
+                        <p className="text-2xl font-bold text-gray-200">{FormatNumber(totalOnline)}</p>
+                    </div>
+                    <div className="p-4 text-gray-700 bg-[#1F2937] rounded-lg">
+                        <p className="text-lg font-bold text-gray-200 mb-1 uppercase">❌ total offline</p>
+                        <p className="text-2xl font-bold text-gray-200">{FormatNumber(totalOffline)}</p>
+                    </div>
+                    <div className="p-4 text-gray-700 bg-[#1F2937] rounded-lg">
+                        <p className="text-lg font-bold text-gray-200 mb-1 uppercase">☠️ total banned</p>
+                        <p className="text-2xl font-bold text-gray-200">{FormatNumber(totalBanned)}</p>
+                    </div>
+                    <div className="p-4 text-gray-700 bg-[#1F2937] rounded-lg">
+                        <p className="text-lg font-bold text-gray-200 mb-1 uppercase">🤖 total captcha</p>
+                        <p className="text-2xl font-bold text-gray-200">{FormatNumber(totalCaptcha)}</p>
+                    </div>
+                    <div className="p-4 text-gray-700 bg-[#1F2937] rounded-lg">
+                        <p className="text-lg font-bold text-gray-200 mb-1 uppercase">💎 total gems</p>
+                        <p className="text-2xl font-bold text-gray-200">{FormatNumber(totalGems)}</p>
+                    </div>
+                    <div className="p-4 text-gray-700 bg-[#1F2937] rounded-lg">
+                        <p className="text-lg font-bold text-gray-200 mb-1 uppercase">💰 total obtained</p>
+                        <p className="text-2xl font-bold text-gray-200">{FormatNumber(totalObtained)}</p>
                     </div>
                 </div>
-
-                {/* AG Grid Section */}
-                <div className="col-span-1 md:col-span-5 bg-[#1C1C1C] border border-[#424242] p-4 md:p-5 rounded-lg shadow-md w-full h-[700px] md:h-[800px] ag-theme-alpine-dark">
-                    <ToastContainer />
+                <div className="min-w-full h-[800px] ag-theme-quartz-dark border-none">
                     <AgGridReact
                         getRowNodeId={(data) => data.id}
                         gridOptions={gridOptions}
@@ -776,13 +783,15 @@ const Controller = () => {
                         columnDefs={columnDefs}
                         rowSelection={rowSelection}
                         getRowId={getRowId}
+                        paginationPageSize={50}
+                        pagi
                         onSelectionChanged={onSelectionChanged}
                         getContextMenuItems={getContextMenuItems}
                     />
+                    <ToastContainer />
                 </div>
             </div>
         </div>
-
     );
     
 };

@@ -8,7 +8,7 @@ import 'ag-grid-community/styles/ag-theme-quartz.css';
 import 'ag-grid-enterprise';
 import Swal from 'sweetalert2';
 import CONFIG from './config/Config.json'
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 
 const controller = new AbortController();
 
@@ -24,6 +24,9 @@ const FarmTable = () => {
             const fetchPromise = axios.get(`${CONFIG.BASE_URL}/bot/farm`, { signal: controller.signal });
     
             toast.promise(fetchPromise, {
+                position: "bottom-right",
+                theme: "colored",
+                autoClose: 2000,
                 pending: "Fetching farm data...",
                 success: "Farm data loaded successfully!",
                 error: "Failed to load farm data. Please try again.",
@@ -255,6 +258,7 @@ const FarmTable = () => {
                     input here
                 </div> */}
                 <div className="bg-[#1C1C1C] border border-[#434B56] p-5 rounded-lg shadow-md w-full h-[800px] ag-theme-alpine-dark">
+                    <ToastContainer />
                     <AgGridReact
                         loading={isLoading}
                         gridOptions={gridOptions}

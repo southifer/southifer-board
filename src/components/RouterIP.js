@@ -1,16 +1,22 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import RouterConfig from './config/Router.json';
 import axios from 'axios';
-import { AgGridReact } from 'ag-grid-react';
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-balham.css';
-import 'ag-grid-community/styles/ag-theme-alpine.css';
-import 'ag-grid-enterprise';
 
 const RouterIP = () => {
     const [terminalLogs, setTerminalLogs] = useState([]);
     const [userInput, setUserInput] = useState('');
     const [routerProxy, setRouterProxy] = useState([]);
+
+    useEffect(() => {
+        const storedLogs = JSON.parse(localStorage.getItem('terminalLogs')) || [];
+        setTerminalLogs(storedLogs);
+    }, []);
+
+    useEffect(() => {
+        if (terminalLogs.length > 0) {
+            localStorage.setItem('terminalLogs', JSON.stringify(terminalLogs));
+        }
+    }, [terminalLogs]);
 
     const checkProxy = async () => {
         function doesIpValid(ip) {
@@ -165,7 +171,7 @@ const RouterIP = () => {
     return (
         <div className="ag-theme-quartz-dark" style={{ height: 760, width: '100%' }}>
             <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
-                <div className="bg-[#1C1C1C] p-4 rounded-lg shadow-md mb-4 border border-[#424242]">
+                <div className="bg-[#1F2937] p-4 rounded-lg shadow-md mb-4 border border-[#424242]">
                     {/* {RouterConfig.router.map(item => item)} */}
                     <div className='bg-[#0F1015] h-[500px] border border-[#424242] p-4 rounded-sm shadow-md'>
                         <h1 className="flex items-center text-xs font-bold text-gray-400 mb-2 uppercase">
@@ -189,7 +195,7 @@ const RouterIP = () => {
                         />
                         <button
                             onClick={() => setTerminalLogs([])}
-                            className="px-2 py-2 bg-red-500 text-white rounded hover:bg-red-800"
+                            className="px-2 py-2 bg-violet-500 text-white rounded hover:bg-violet-800"
                         >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
                             <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
@@ -200,7 +206,7 @@ const RouterIP = () => {
                     <div className="flex flex-col sm:flex-row-reverse sm:flex-wrap items-center gap-2">
                         <button 
                             onClick={requestIp}
-                            className="flex items-center px-4 py-2 bg-red-500 text-white rounded-sm hover:bg-red-700 w-full sm:w-auto"
+                            className="flex items-center px-4 py-2 bg-violet-500 text-white rounded-sm hover:bg-violet-700 w-full sm:w-auto"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z" />
@@ -209,7 +215,7 @@ const RouterIP = () => {
                         </button>
                         <button 
                         onClick={checkProxy}
-                        className="flex items-center px-4 py-2 bg-red-500 text-white rounded-sm hover:bg-red-700 w-full sm:w-auto">
+                        className="flex items-center px-4 py-2 bg-violet-500 text-white rounded-sm hover:bg-violet-700 w-full sm:w-auto">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
                             </svg>

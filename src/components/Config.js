@@ -67,7 +67,7 @@ const Config = () => {
     return (
         <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
             <div className="gap-6 mb-4 flex items-center justify-center ">
-                <div className="bg-[#1C1C1C] p-5 rounded-lg shadow-md">
+                <div className="bg-[#1C1C1C] p-5 rounded-lg shadow-md grid">
                     <form className="">
 
                         {/* Farming settings div */}

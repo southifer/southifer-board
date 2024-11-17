@@ -76,8 +76,11 @@ const CodeEditor = () => {
 
     return (
         <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
-            <div className="bg-[#1C1C1C] border border-[#434B56] p-4 rounded-lg shadow-md grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
-                <div className="max-w-full overflow-x-auto custom-scrollbar rounded-lg border border-[#434B56]">
+            <div className="bg-[#1F2937] border border-[#434B56] p-4 rounded-lg shadow-md grid grid-cols-1 md:grid-cols-1 gap-4">
+                <div className="max-w-full overflow-x-auto custom-scrollbar rounded">
+                    <h1 className="flex items-center text-xs font-bold text-gray-400 mb-2 uppercase">
+                        script
+                    </h1>
                     <Editor
                         height="75vh"
                         language="lua"
@@ -94,7 +97,7 @@ const CodeEditor = () => {
                 <div className="flex justify-end">
                     <button
                         onClick={() => handleSave()} 
-                        className="mt-4 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
+                        className="mt-4 bg-violet-500 hover:bg-violet-700 text-white py-2 px-4 rounded"
                     >
                         {uploading && (
                             <svg aria-hidden="true" role="status" class="inline w-5 h-5 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">

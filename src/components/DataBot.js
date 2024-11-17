@@ -3,7 +3,7 @@ import { AgGridReact } from 'ag-grid-react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-alpine.css';
+import 'ag-grid-community/styles/ag-theme-quartz.css';
 import 'ag-grid-enterprise';
 import CONFIG from './config/Config.json'
 import LoadingSpinner from './Loading';
@@ -93,6 +93,7 @@ const DataBot = () => {
         proxy: '',
     });
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedOption, setSelectedOption] = useState('manual');
 
     useEffect(() => {
         document.title = 'Bot';
@@ -367,108 +368,130 @@ const DataBot = () => {
     }
 
     return (
-        <div className="ag-theme-quartz-dark" style={{ height: 760, width: '100%' }}>
+        <div>
             <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
-                <div className="bg-[#1C1C1C] p-4 rounded-lg shadow-md mb-4 border border-[#424242]">
-                    <form className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-4' onSubmit={handleSubmit}>
-                        <input
-                            type="text"
-                            name="username"
-                            placeholder="username"
-                            value={formData.username}
-                            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                            className="w-full h-[60px] text-white bg-[#222628] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded px-2.5 py-2.5"
-                            required
-                        />
-                        <input
-                            type="text"
-                            name="password"
-                            placeholder="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            className="w-full h-[60px] text-white bg-[#222628] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
-                            required
-                        />
-                        <input
-                            type="text"
-                            name="recovery"
-                            placeholder="recovery"
-                            value={formData.recovery}
-                            onChange={handleChange}
-                            className="w-full h-[60px] text-white bg-[#222628] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
-                        />
-                        <input
-                            type="text"
-                            name="mac"
-                            placeholder="mac"
-                            value={formData.mac}
-                            onChange={handleChange}
-                            className="w-full h-[60px] text-white bg-[#222628] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
-                        />
-                        <input
-                            type="text"
-                            name="rid"
-                            placeholder="rid"
-                            value={formData.rid}
-                            onChange={handleChange}
-                            className="w-full h-[60px] text-white bg-[#222628] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
-                        />
-                        <input
-                            type="text"
-                            name="proxy"
-                            placeholder="proxy"
-                            value={formData.proxy}
-                            onChange={handleChange}
-                            className="w-full h-[60px] text-white bg-[#222628] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
-                        />
-                        <div className="flex items-center">
-                            <button type="submit" className="flex items-center gap-2 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                                    <path d="M5.25 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM2.25 19.125a7.125 7.125 0 0 1 14.25 0v.003l-.001.119a.75.75 0 0 1-.363.63 13.067 13.067 0 0 1-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 0 1-.364-.63l-.001-.122ZM18.75 7.5a.75.75 0 0 0-1.5 0v2.25H15a.75.75 0 0 0 0 1.5h2.25v2.25a.75.75 0 0 0 1.5 0v-2.25H21a.75.75 0 0 0 0-1.5h-2.25V7.5Z" />
-                                </svg>
-                                add
-                            </button>
+                <div className="bg-[#1F2937] p-6 md:p-8 rounded shadow-md mb-4">
+                    <form className='grid grid-cols-1 gap-6 mb-6' onSubmit={handleSubmit}>
+                        
+                        {/* Dropdown for Input Type Selection */}
+                        <div className="mb-4">
+                        <label htmlFor="input-option" className="block text-white font-medium mb-2">Select Input Type:</label>
+                        <select
+                            id="input-option"
+                            name="inputOption"
+                            value={selectedOption}
+                            onChange={(e) => setSelectedOption(e.target.value)}
+                            className="w-full h-[45px] text-white bg-[#111827] border border-[#424242] rounded-md px-3 py-2"
+                        >
+                            <option value="manual">Manual Input</option>
+                            <option value="file">Upload File</option>
+                        </select>
                         </div>
 
-                    </form>
-                    <form onSubmit={handleSubmit} className="bg-[#1C1C1C] p-6 rounded-lg shadow-md border border-[#424242]">
-                        <div className="mb-4">
+                        {/* Manual Input Form Fields */}
+                        {selectedOption === 'manual' && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input
+                                type="text"
+                                name="username"
+                                placeholder="Username"
+                                value={formData.username}
+                                onChange={handleChange}
+                                className="w-full h-[60px] text-white bg-[#111827] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded px-2.5 py-2.5"
+                                required
+                            />
+                            <input
+                                type="text"
+                                name="password"
+                                placeholder="Password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                className="w-full h-[60px] text-white bg-[#111827] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
+                                required
+                            />
+                            <input
+                                type="text"
+                                name="recovery"
+                                placeholder="Recovery"
+                                value={formData.recovery}
+                                onChange={handleChange}
+                                className="w-full h-[60px] text-white bg-[#111827] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
+                            />
+                            <input
+                                type="text"
+                                name="mac"
+                                placeholder="MAC"
+                                value={formData.mac}
+                                onChange={handleChange}
+                                className="w-full h-[60px] text-white bg-[#111827] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
+                            />
+                            <input
+                                type="text"
+                                name="rid"
+                                placeholder="RID"
+                                value={formData.rid}
+                                onChange={handleChange}
+                                className="w-full h-[60px] text-white bg-[#111827] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
+                            />
+                            <input
+                                type="text"
+                                name="proxy"
+                                placeholder="Proxy"
+                                value={formData.proxy}
+                                onChange={handleChange}
+                                className="w-full h-[60px] text-white bg-[#111827] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
+                            />
+                            <div className="flex items-center justify-center md:col-span-2 w-full">
+                                <button type="submit" className="flex items-center gap-2 bg-violet-500 hover:bg-violet-700 text-white py-2 px-4 rounded-md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                                    <path d="M5.25 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM2.25 19.125a7.125 7.125 0 0 1 14.25 0v.003l-.001.119a.75.75 0 0 1-.363.63 13.067 13.067 0 0 1-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 0 1-.364-.63l-.001-.122ZM18.75 7.5a.75.75 0 0 0-1.5 0v2.25H15a.75.75 0 0 0 0 1.5h2.25v2.25a.75.75 0 0 0 1.5 0v-2.25H21a.75.75 0 0 0 0-1.5h-2.25V7.5Z" />
+                                    </svg>
+                                    Add
+                                </button>
+                            </div>
+                        </div>
+                        )}
+
+                        {/* File Upload Form */}
+                        {selectedOption === 'file' && (
+                        <div className="bg-[#111827] p-6 rounded-lg shadow-md border border-[#424242]">
+                            <div className="mb-4">
                             <label htmlFor="file-upload" className="block text-white font-medium mb-2">
                                 Upload File:
                             </label>
                             <input
-                            type="file"
-                            id="file-upload"
-                            accept=".txt"
-                            onChange={handleFileChange}
-                            className="w-full h-[45px] text-white bg-[#222628] border border-[#424242] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                type="file"
+                                id="file-upload"
+                                accept=".txt"
+                                onChange={handleFileChange}
+                                className="w-full h-[45px] text-white bg-[#1F2836] border border-[#424242] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-500"
                             />
-                        </div>
-                        <div className="mt-4">
+                            </div>
+                            <div className="mt-4">
                             <button
-                            type="submit"
-                            className="w-full bg-blue-500 hover:bg-blue-700 text-white py-3 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+                                type="submit"
+                                className="w-full bg-violet-500 hover:bg-violet-700 text-white py-3 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-violet-500 transition duration-300"
                             >
-                            Submit
+                                Submit
                             </button>
+                            </div>
                         </div>
+                        )}
                     </form>
                 </div>
-                <div className="bg-[#1C1C1C] p-4 rounded-lg shadow-md mb-4 border border-[#424242]">
-                    <div id="myGrid" className="ag-theme-alpine-dark" style={{ height: 760, width: '100%' }}>
-                        <AgGridReact
-                            gridOptions={gridOptions}
-                            rowData={rowData}
-                            getRowId={(params) => String(params.data.id)}
-                            getRowNodeId={(data) => data.id}
-                            rowSelection={rowSelection}
-                            onSelectionChanged={onSelectionChanged}
-                            onCellEditingStopped={handleCellEditingStopped}
-                            pagination
-                            paginationPageSize={100}
-                            getContextMenuItems={getContextMenuItems}
-                        />
-                    </div>
+                <div id="myGrid" className="ag-theme-quartz-dark" style={{ height: 760, width: '100%' }}>
+                    <AgGridReact
+                        gridOptions={gridOptions}
+                        rowData={rowData}
+                        getRowId={(params) => String(params.data.id)}
+                        getRowNodeId={(data) => data.id}
+                        rowSelection={rowSelection}
+                        onSelectionChanged={onSelectionChanged}
+                        onCellEditingStopped={handleCellEditingStopped}
+                        pagination
+                        paginationPageSize={100}
+                        getContextMenuItems={getContextMenuItems}
+                    />
                 </div>
             </div>
         </div>

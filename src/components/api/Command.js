@@ -57,14 +57,12 @@ class Command {
 
     async startRotasi() {
         const script = `
-            local scriptRotasi = read("C:\\Users\\Administrator\\Desktop\\rotasi-luci-json.lua")
+            local script = read("C:\\\\Users\\\\Administrator\\\\Desktop\\\\rotasi-luci-json.lua")
             ${this.generateLoopScript(`
-                if not bot:isRunningScript() then
-                    bot:runScript(scriptRotasi)
-                    sleep(5000)
-                end
+                bot:runScript(script)
             `)}
         `;
+        console.log(script);
         this.executeScriptRequest(script, 'Starting rotation');
     }
 
