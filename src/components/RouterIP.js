@@ -1,11 +1,56 @@
-import { useState, useEffect } from 'react';
-import RouterConfig from './config/Router.json';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import { AgGridReact } from 'ag-grid-react';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
+import 'ag-grid-community/styles/ag-theme-quartz.css';
+import 'ag-grid-enterprise';
+import Swal from 'sweetalert2';
 
-const RouterIP = () => {
+const RouterIP = ({usersCredential}) => {
     const [terminalLogs, setTerminalLogs] = useState([]);
     const [userInput, setUserInput] = useState('');
     const [routerProxy, setRouterProxy] = useState([]);
+    const [RouterConfig, setRouterConfig] = useState([]);
+    const [selectedRowIds, setSelectedRowIds] = useState([]);
+
+    const credentials = {
+        username: usersCredential.username,
+        password: usersCredential.password,
+    };
+    
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(
+                    "http://31.56.39.143:3000/view-router-list",
+                    {
+                        params: credentials,
+                    }
+                );
+                if (response.data.success) {
+                    const newData = response.data.routerList.map((item, index) => ({
+                        list: item
+                    }))
+                    setRouterConfig(newData)
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+    
+        fetchData();
+    }, []);
+
+    const onSelectionChanged = useCallback((event) => {
+        const selectedIds = event.api.getSelectedRows().map((row) => row);
+        setSelectedRowIds(selectedIds.map((row) => row.list));
+      }, []);
+
+    const onCellValueChanged = useCallback((event) => {
+        console.log('Cell value changed:', event.data);
+    }, []);
 
     useEffect(() => {
         const storedLogs = JSON.parse(localStorage.getItem('terminalLogs')) || [];
@@ -24,7 +69,7 @@ const RouterIP = () => {
             return ipPattern.test(ip);
         }
     
-        if (RouterConfig.router.length === 0) {
+        if (RouterConfig.length === 0) {
             setTerminalLogs(prevLogs => [...prevLogs, '❌ Router config is empty!']);
             return;
         }
@@ -35,11 +80,11 @@ const RouterIP = () => {
             const nonDuplicate = new Set();
     
             setTerminalLogs(prevLogs => [...prevLogs, '✅ Validating IP']);
-    
-            RouterConfig.router.forEach(item => {
-                if (doesIpValid(item)) {
-                    setTerminalLogs(prevLogs => [...prevLogs, `✅ ${item} is validated.`]);
-                    nonDuplicate.add(item);
+            console.log(RouterConfig)
+            RouterConfig.forEach(item => {
+                if (doesIpValid(item.list)) {
+                    setTerminalLogs(prevLogs => [...prevLogs, `✅ ${item.list} is validated.`]);
+                    nonDuplicate.add(item.list);
                 }
             });
     
@@ -168,11 +213,142 @@ const RouterIP = () => {
         }
     }
 
+    const addServer = async () => {
+        try {
+            // Trigger SweetAlert to input the router (hostname)
+            const { value: router } = await Swal.fire({
+                title: "Enter Router Hostname",
+                input: "text",
+                inputAttributes: {
+                    autocapitalize: "off"
+                },
+                showCancelButton: true,
+                confirmButtonText: "Add Router",
+                showLoaderOnConfirm: true,
+                preConfirm: async (router) => {
+                    if (!router) {
+                        Swal.showValidationMessage("Router hostname is required");
+                        return false;
+                    }
+                    return router;
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            });
+    
+            if (!router) return;
+    
+            const credentials = {
+                username: usersCredential.username,
+                password: usersCredential.password,
+            };
+
+            await axios.post("http://31.56.39.143:3000/add-router", {
+                ...credentials,
+                router
+            });
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Router Added!',
+                text: "Router has been added to database!",
+            });
+
+            setRouterConfig([...RouterConfig, {list: router}])
+        } catch (error) {
+            console.error("Error adding router:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: "Something went wrong. Please try again.",
+            });
+        }
+    };
+
+    const columnDefs = [
+        { field: 'list', width: 800, editable: true, enableCellChangeFlash: true, filter: "agTextColumnFilter"},
+    ];
+
+    const rowSelection = useMemo(() => ({
+        mode: 'multiRow',
+        checkboxes: true,
+        headerCheckbox: true,
+        enableClickSelection: true,
+    }), []);
+
+    const gridOptions = {
+        columnDefs: columnDefs,
+        defaultColDef: {
+            filter: true,
+            floatingFilter: true,
+            menuTabs: ['generalMenuTab', 'columnsMenuTab', 'filterMenuTab'],
+            resizable: true,
+        },
+        columnMenu: 'legacy',
+        statusBar: {
+          statusPanels: [
+                { statusPanel: 'agTotalAndFilteredRowCountComponent' },
+                { statusPanel: 'agTotalRowCountComponent' },
+                { statusPanel: 'agFilteredRowCountComponent' },
+                { statusPanel: 'agSelectedRowCountComponent' },
+                { statusPanel: 'agAggregationComponent' }
+            ],
+        }
+    };
+
+    const getContextMenuItems = (params) => [
+        {
+            name: 'Delete',
+            action: () => {
+                removeData();
+            }
+        },
+        "separator",
+        "copy",
+    ]
+
+    const removeData = async () => {
+        if (selectedRowIds.length === 0) {
+            toast.warning("No data selected!");
+            return;
+        }
+    
+        const selectedLogRow = selectedRowIds.length;
+        const mapRemovedData = RouterConfig.filter((row) =>
+            selectedRowIds.includes(row.list)
+        );
+        const mapNewestData = RouterConfig.filter(
+            (row) => !selectedRowIds.includes(row.list)
+        );
+    
+        const credentials = {
+            username: usersCredential.username,
+            password: usersCredential.password,
+        };
+    
+        const fetchPromise = mapRemovedData.map((item) =>
+            axios.delete("http://31.56.39.143:3000/remove-router", {
+                data: { ...credentials, router: item.list },
+            })
+        );
+    
+        toast.promise(Promise.all(fetchPromise), {
+            pending: `Deleting x${selectedLogRow} router...`,
+            success: "Bots deleted successfully!",
+            error: "Failed to delete router. Please try again.",
+        });
+    
+        try {
+            await Promise.all(fetchPromise);
+            setRouterConfig(mapNewestData);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
-        <div className="ag-theme-quartz-dark" style={{ height: 760, width: '100%' }}>
+        <div>
             <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
-                <div className="bg-[#1F2937] p-4 rounded-lg shadow-md mb-4 border border-[#424242]">
-                    {/* {RouterConfig.router.map(item => item)} */}
+                <div className="bg-[#1F2937] p-4 rounded shadow-md mb-4">
                     <div className='bg-[#0F1015] h-[500px] border border-[#424242] p-4 rounded-sm shadow-md'>
                         <h1 className="flex items-center text-xs font-bold text-gray-400 mb-2 uppercase">
                             terminal
@@ -214,15 +390,45 @@ const RouterIP = () => {
                             change ip
                         </button>
                         <button 
-                        onClick={checkProxy}
-                        className="flex items-center px-4 py-2 bg-violet-500 text-white rounded-sm hover:bg-violet-700 w-full sm:w-auto">
+                            onClick={checkProxy}
+                            className="flex items-center px-4 py-2 bg-violet-500 text-white rounded-sm hover:bg-violet-700 w-full sm:w-auto">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
                             </svg>
 
                             reload
                         </button>
+                        <button 
+                            onClick={addServer}
+                            className="flex items-center px-4 py-2 bg-violet-500 text-white rounded-sm hover:bg-violet-700 w-full sm:w-auto">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 mr-2">
+                                <path fillRule="evenodd" d="M17.663 3.118c.225.015.45.032.673.05C19.876 3.298 21 4.604 21 6.109v9.642a3 3 0 0 1-3 3V16.5c0-5.922-4.576-10.775-10.384-11.217.324-1.132 1.3-2.01 2.548-2.114.224-.019.448-.036.673-.051A3 3 0 0 1 13.5 1.5H15a3 3 0 0 1 2.663 1.618ZM12 4.5A1.5 1.5 0 0 1 13.5 3H15a1.5 1.5 0 0 1 1.5 1.5H12Z" clipRule="evenodd" />
+                                <path d="M3 8.625c0-1.036.84-1.875 1.875-1.875h.375A3.75 3.75 0 0 1 9 10.5v1.875c0 1.036.84 1.875 1.875 1.875h1.875A3.75 3.75 0 0 1 16.5 18v2.625c0 1.035-.84 1.875-1.875 1.875h-9.75A1.875 1.875 0 0 1 3 20.625v-12Z" />
+                                <path d="M10.5 10.5a5.23 5.23 0 0 0-1.279-3.434 9.768 9.768 0 0 1 6.963 6.963 5.23 5.23 0 0 0-3.434-1.279h-1.875a.375.375 0 0 1-.375-.375V10.5Z" />
+                            </svg>
+
+                            add server
+                        </button>
                     </div>
+                </div>
+                <div className='ag-theme-quartz-dark h-[400px]'>
+                <ToastContainer 
+                        position='bottom-center'
+                        autoClose={2000}
+                        theme="dark"
+                    />
+                    <AgGridReact
+                        gridOptions={gridOptions}
+                        rowData={RouterConfig}
+                        columnDefs={columnDefs}
+                        rowSelection={rowSelection}
+                        getRowId={(params) => params.data.list}
+                        pagination
+                        onCellValueChanged={onCellValueChanged}
+                        getContextMenuItems={getContextMenuItems}
+
+                        onSelectionChanged={onSelectionChanged}
+                    />
                 </div>
             </div>
         </div>

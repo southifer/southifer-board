@@ -1,0 +1,22 @@
+[
+    { 
+        "username": "admin", 
+        "password": "admin",
+        "isAdmin": true,
+        "serverList": [
+            "191.96.94.35",
+            "191.96.94.192"
+        ],
+        "bot-backup" : []
+    },
+    { 
+        "username": "asd", 
+        "password": "asd",
+        "isAdmin": false,
+        "serverList": [
+            "191.96.94.35",
+            "191.96.94.192"
+        ],
+        "bot-backup" : []
+    }
+]

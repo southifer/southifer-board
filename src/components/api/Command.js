@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import CONFIG from '../config/Config.json';
 
 class Command {
-    constructor(index, script) {
+    constructor(ip,index,script) {
+        this.ip = ip;
         this.index = index;
         this.script = script;
     }
@@ -14,7 +14,7 @@ class Command {
         const errorMessage = `${action} failed`;
 
         try {
-            await axios.post(`${CONFIG.BASE_URL}/bot/runScript`, script, {
+            await axios.post(`http://${this.ip}:8000/bot/runScript`, script, {
                 headers: {
                     'Content-Type': 'text/plain',
                 },
@@ -60,6 +60,7 @@ class Command {
             local script = read("C:\\\\Users\\\\Administrator\\\\Desktop\\\\rotasi-luci-json.lua")
             ${this.generateLoopScript(`
                 bot:runScript(script)
+                sleep(1500)
             `)}
         `;
         console.log(script);

@@ -1,10 +1,5 @@
 local HttpServer = HttpServer.new()
 
-local CONFIG_PATH = "C:\\Users\\Administrator\\Desktop\\config.json"
-local FARM_PATH = "C:\\Users\\Administrator\\Desktop\\FARM.json"
-local BOT_BACKUP_PATH = "C:\\Users\\Administrator\\Desktop\\bot-backup.json"
-local SCRIPT_ROTASI_PATH = "C:\\Users\\Administrator\\Desktop\\rotasi-luci-json.lua"
-
 HttpServer:setLogger(function(request, response)
     print(string.format("Method: %s, Path: %s, Status: %i", request.method, request.path, response.status))
 end)
@@ -178,7 +173,7 @@ HttpServer:get("/bot/config", function(request, response)
     response.headers["Access-Control-Allow-Methods"] = "GET"  -- Allow methods
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"  -- Allow headers
 
-    local configData = read(CONFIG_PATH)  -- Use the inbuilt read function to get the file contents
+    local configData = read("C:\\Users\\Administrator\\Desktop\\config.json")  -- Use the inbuilt read function to get the file contents
   
     if configData then
         response:setContent(configData, "application/json")  -- Respond with JSON content
@@ -195,7 +190,7 @@ HttpServer:post("/bot/config", function(request, response)
     local body = request.body -- Get the request body
 
     -- Validate and write the JSON data to the config file
-    local success = write(CONFIG_PATH, body) -- Assuming write is a function you have to write data to a file
+    local success = write("C:\\Users\\Administrator\\Desktop\\config.json", body) -- Assuming write is a function you have to write data to a file
 
     if success then
         response:setContent("Config updated successfully.", "text/plain")
@@ -209,7 +204,7 @@ HttpServer:get("/bot/farm", function(request, response)
     response.headers["Access-Control-Allow-Methods"] = "GET"  -- Allow methods
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"  -- Allow headers
 
-    local configData = read(FARM_PATH)  -- Use the inbuilt read function to get the file contents
+    local configData = read("C:\\Users\\Administrator\\Desktop\\FARM.json")  -- Use the inbuilt read function to get the file contents
   
     if configData then
         response:setContent(configData, "application/json")  -- Respond with JSON content
@@ -226,7 +221,7 @@ HttpServer:post("/bot/farm", function(request, response)
     local body = request.body -- Get the request body
 
     -- Validate and write the JSON data to the config file
-    local success = write(FARM_PATH, body) -- Assuming write is a function you have to write data to a file
+    local success = write("C:\\Users\\Administrator\\Desktop\\FARM.json", body) -- Assuming write is a function you have to write data to a file
 
     if success then
         response:setContent("Farm updated successfully.", "text/plain")
@@ -309,7 +304,7 @@ HttpServer:get("/bot/bot-backup", function(request, response)
     response.headers["Access-Control-Allow-Methods"] = "GET"  -- Allow methods
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"  -- Allow headers
 
-    local backupData = read(BOT_BACKUP_PATH)  -- Adjust the path if necessary
+    local backupData = read("C:\\Users\\Administrator\\Desktop\\bot-backup.json")  -- Adjust the path if necessary
     if backupData then
         response:setContent(backupData, "application/json")
     else
@@ -325,7 +320,7 @@ HttpServer:post("/bot/bot-backup", function(request, response)
     local body = request.body -- Get the request body
 
     -- Validate and write the JSON data to the config file
-    local success = write(BOT_BACKUP_PATH, body) -- Assuming write is a function you have to write data to a file
+    local success = write("C:\\Users\\Administrator\\Desktop\\bot-backup.json", body) -- Assuming write is a function you have to write data to a file
 
     if success then
         response:setContent("Backup updated successfully.", "text/plain")
@@ -339,7 +334,7 @@ HttpServer:get("/bot/rotasi-script", function(request, response)
     response.headers["Access-Control-Allow-Methods"] = "GET"  -- Allow methods
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"  -- Allow headers
 
-    local backupData = read(SCRIPT_ROTASI_PATH)  -- Adjust the path if necessary
+    local backupData = read("C:\\Users\\Administrator\\Desktop\\rotasi-luci-json.lua")  -- Adjust the path if necessary
     if backupData then
         response:setContent(backupData, "text/plain")
     else
@@ -355,7 +350,7 @@ HttpServer:post("/bot/rotasi-script", function(request, response)
     local body = request.body -- Get the request body
 
     -- Validate and write the JSON data to the config file
-    local success = write(SCRIPT_ROTASI_PATH, body) -- Assuming write is a function you have to write data to a file
+    local success = write("C:\\Users\\Administrator\\Desktop\\rotasi-luci-json.lua", body) -- Assuming write is a function you have to write data to a file
 
     if success then
         response:setContent("Backup updated successfully.", "text/plain")

@@ -33,7 +33,8 @@ const GetExactTime = (second) => {
     return `${hours} hours ${minutes} minutes ${secs} seconds`;
 };
 
-const Controller = () => {
+const Controller = ({serverData, usersCredential}) => {
+    const serverList = serverData;
     const [rowData, setRowData] = useState([]);
     const [selectedRowIds, setSelectedRowIds] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -46,11 +47,31 @@ const Controller = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`${CONFIG.BASE_URL}/bot/get`);
-                setRowData(response.data);
-            } catch (error) {
-                console.error(error);
-                toast.error('Failed to fetch data. Check network or server.');
+                const promises = serverList.map((server, index) =>
+                    axios.get(`http://${server}:8000/bot/get`)
+                        .catch(error => {
+                            console.error(error);
+                            toast.error('Failed to fetch data. Check network or server.');
+                            return null;
+                        })
+                );
+                
+                const responses = await Promise.all(promises);
+                const validResponses = responses
+                    .filter(response => response !== null)
+                    .map((response, index) => 
+                        response.data.map(item => ({
+                            ...item,
+                            details: {
+                                ...item.details,
+                                serverIp: serverList[index] // Use the server from serverList
+                            },
+                            id: `${item.details.name}` // Or any unique id you prefer
+                        }))
+                    )
+                    .flat();
+                
+                setRowData(validResponses);
             } finally {
                 setLoading(false);
             }
@@ -101,6 +122,12 @@ const Controller = () => {
     
     const columnDefs = [
         {
+            field: 'serverIp',
+            width: 150,
+            headerName: "Server Ip",
+            enableCellChangeFlash: true,
+        },
+        {
             field: 'is_script_run',
             width: 60,
             filter: false,
@@ -108,7 +135,7 @@ const Controller = () => {
             enableCellChangeFlash: true,
             menuTabs: [],
             cellRenderer: (params) => params.value ? '✅' : '❌'
-        },             
+        },
         {
             field: 'is_account_secured',
             width: 60,
@@ -256,15 +283,16 @@ const Controller = () => {
             enableClickSelection: true,
         };
     }, []);
-
-    const getRowId = (params) => String(params.data.index);
     
     const gridOptions = {
         columnDefs: columnDefs,
+        rowGroupPanelShow: 'always',
         defaultColDef: {
             filter: true,
             floatingFilter: true,
-            menuTabs: ['generalMenuTab', 'filterMenuTab', 'columnsMenuTab'], // Set the menu tabs
+            menuTabs: ['generalMenuTab', 'filterMenuTab', 'columnsMenuTab'],
+            resizable: true,
+            enableRowGroup: true
         },
         columnMenu: 'legacy',
         suppressMenuHide: true,
@@ -273,6 +301,9 @@ const Controller = () => {
             statusPanels: [
               { statusPanel: "agSelectedRowCountComponent" },
             ],
+        },
+        autoGroupColumnDef: {
+            minWidth: 200,
         },
     };
     
@@ -377,7 +408,7 @@ const Controller = () => {
                                     return;
                                 }
                                 try {
-                                    const response = await axios.post(`${CONFIG.BASE_URL}/bot/runScript`, script, {
+                                    const response = await axios.post(`http://${params.node.data.serverIp}:8000/bot/runScript`, script, {
                                         headers: {
                                             'Content-Type': 'text/plain',
                                         },
@@ -405,14 +436,14 @@ const Controller = () => {
             {
                 name: 'Reconnect',
                 action: () => {
-                    const commandInterface = new Command(selectedIndex(), '');
+                    const commandInterface = new Command(params.node.data.serverIp, selectedIndex(), '');
                     commandInterface.reconnectBot();
                 }
             },
             {
                 name: 'Disconnect',
                 action: () => {
-                    const commandInterface = new Command(selectedIndex(), '');
+                    const commandInterface = new Command(params.node.data.serverIp, selectedIndex(), '');
                     commandInterface.disconnectBot();
                 }
             },
@@ -426,6 +457,7 @@ const Controller = () => {
                         confirmButtonText: 'Warp',
                         showLoaderOnConfirm: true,
                         inputAttributes: {
+                            autocapitalize: "on",
                             style: 'border: #424242 1px solid;background-color: #0F1015; color: #FFFFFF;'
                         },
                         preConfirm: async (world) => {
@@ -441,7 +473,7 @@ const Controller = () => {
                             `
                             console.log(script);
                             try {
-                                await axios.post(`${CONFIG.BASE_URL}/bot/runScript`, formatScript(script), {
+                                await axios.post(`http://${params.node.data.serverIp}:8000/bot/runScript`, formatScript(script), {
                                     headers: {
                                         'Content-Type': 'text/plain',
                                     },
@@ -484,7 +516,6 @@ const Controller = () => {
                     ],
                     })),
                 },
-                
             {
                 name: 'Logs',
                 action: () => {
@@ -539,7 +570,7 @@ const Controller = () => {
                                 return;
                             }
                             try {
-                                const response = await axios.post(`${CONFIG.BASE_URL}/bot/runScript`, formatScript(script), {
+                                const response = await axios.post(`http://${params.node.data.serverIp}:8000/bot/runScript`, formatScript(script), {
                                     headers: {
                                         'Content-Type': 'text/plain',
                                     },
@@ -564,7 +595,7 @@ const Controller = () => {
             {
                 name: 'Stop Script',
                 action: () => {
-                    const commandInterface = new Command(selectedIndex(), '');
+                    const commandInterface = new Command(params.node.data.serverIp, selectedIndex(), '');
                     commandInterface.stopScript();
                 }
             },
@@ -575,7 +606,7 @@ const Controller = () => {
                     {
                         name: 'Start',
                         action: () => {
-                            const commandInterface = new Command(selectedIndex(), '');
+                            const commandInterface = new Command(params.node.data.serverIp, selectedIndex(), '');
                             commandInterface.startLeveling();
                             
                         },
@@ -583,7 +614,7 @@ const Controller = () => {
                     {
                         name: 'Stop',
                         action: () => {
-                            const commandInterface = new Command(selectedIndex(), '');
+                            const commandInterface = new Command(params.node.data.serverIp, selectedIndex(), '');
                             commandInterface.stopScript();
                         },
                     }
@@ -595,7 +626,7 @@ const Controller = () => {
                     {
                         name: 'Start',
                         action: () => {
-                            const commandInterface = new Command(selectedIndex(), '');
+                            const commandInterface = new Command(params.node.data.serverIp, selectedIndex(), '');
                             commandInterface.startRotasi();
                             
                         },
@@ -603,7 +634,7 @@ const Controller = () => {
                     {
                         name: 'Stop',
                         action: () => {
-                            const commandInterface = new Command(selectedIndex(), '');
+                            const commandInterface = new Command(params.node.data.serverIp, selectedIndex(), '');
                             commandInterface.stopScript();
                         },
                     }
@@ -615,7 +646,7 @@ const Controller = () => {
                     {
                         name: 'Start',
                         action: () => {
-                            const commandInterface = new Command(selectedIndex(), '');
+                            const commandInterface = new Command(params.node.data.serverIp, selectedIndex(), '');
                             commandInterface.startTutorial();
                             
                         },
@@ -623,7 +654,7 @@ const Controller = () => {
                     {
                         name: 'Stop',
                         action: () => {
-                            const commandInterface = new Command(selectedIndex(), '');
+                            const commandInterface = new Command(params.node.data.serverIp, selectedIndex(), '');
                             commandInterface.stopTutorial();
                         },
                     }
@@ -634,7 +665,7 @@ const Controller = () => {
                 name: 'View Details',
                 action: async () => {
                     try {
-                        const response = await axios.get(`${CONFIG.BASE_URL}/bot/bot-backup`);
+                        const response = await axios.get("http://31.56.39.143:3000/add-bot-backup");
                         const specificEmail = params.node.data.mail;
                         const botData = response.data.find(bot => bot.username === specificEmail);
             
@@ -668,7 +699,7 @@ const Controller = () => {
                                         <td style="padding: 8px; border: 0.5px solid #ddd;">${botData.proxy}</td>
                                     </tr>
                                 </table>
-                            `,
+                                `,
                                 showCancelButton: false,
                                 confirmButtonText: 'OK',
                                 customClass: {
@@ -691,26 +722,74 @@ const Controller = () => {
             {
                 name: 'Remove',
                 action: () => {
-                    const commandInterface = new Command(selectedIndex(), '');
+                    const commandInterface = new Command(params.node.data.serverIp, selectedIndex(), '');
                     commandInterface.removeBot();
                 }
             },
+            // {
+            //     name: 'Delete Permanent',
+            //     action: () => {
+            //         deletePermanent(params.node.data.name)
+            //     }
+            // },
         ];
     }
 
+    const deletePermanent = async (botName) => {
+        const credentials = {
+            username: usersCredential.username,
+            password: usersCredential.password,
+        };
+    
+        // Show SweetAlert confirmation
+        const confirmation = await Swal.fire({
+            title: `Are you sure?`,
+            text: `You are about to permanently delete ${botName}. This action cannot be undone.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel',
+            reverseButtons: true,
+        });
+    
+        if (confirmation.isConfirmed) {
+            try {
+                const response = axios.delete("http://31.56.39.143:3000/remove-bot-backup", {
+                    data: {
+                        ...credentials,
+                        botUsername: botName
+                    }
+                });
+    
+                toast.promise(response, {
+                    pending: `Deleting ${botName}...`,
+                    success: `${botName} deleted permanently...`,
+                    error: `Failed to delete ${botName}. Check your connection`
+                });
+    
+                await response; // Ensure promise resolution before proceeding
+            } catch (err) {
+                console.error(err);
+                toast.error(`An error occurred while deleting ${botName}`);
+            }
+        } else {
+            // If user cancels the action
+            toast.info(`${botName} deletion was canceled`);
+        }
+    };
 
     const totals = rowData.reduce((acc, user) => {
         const { status, gems, obtained_gems, google_status } = user.details;
-
+    
         acc.totalGems += gems;
         acc.totalObtained += obtained_gems;
-
+    
         switch (google_status) {
             case 'captcha_required':
                 acc.totalCaptcha += 1;
                 break;
         }
-
+    
         switch (status) {
             case 'connected':
             case 'changing_subserver':
@@ -723,11 +802,12 @@ const Controller = () => {
                 acc.totalOffline += 1;
                 break;
         }
-
+    
         return acc;
     }, { totalOnline: 0, totalOffline: 0, totalBanned: 0, totalGems: 0, totalObtained: 0, totalCaptcha: 0 });
-
+    
     const { totalOnline, totalOffline, totalBanned, totalGems, totalObtained, totalCaptcha } = totals;
+    
 
     if (loading) {
         return (
@@ -742,7 +822,7 @@ const Controller = () => {
             <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
                 <div className="sm:flex sm:justify-between sm:items-center mb-4">
 
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-300">Dashboard</h1>
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-300">Dashboard x{serverList.length}</h1>
 
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mb-4">
@@ -773,18 +853,16 @@ const Controller = () => {
                 </div>
                 <div className="min-w-full h-[800px] ag-theme-quartz-dark border-none">
                     <AgGridReact
-                        getRowNodeId={(data) => data.id}
+                        getRowId={(params) => params.data.id}
                         gridOptions={gridOptions}
-                        rowData={rowData.map((item, index) => ({
-                            id: index,
-                            ...item.details
+                        rowData={rowData.map((item) => ({
+                            ...item.details,
+                            id: item.id
                         }))}
                         pagination
                         columnDefs={columnDefs}
                         rowSelection={rowSelection}
-                        getRowId={getRowId}
-                        paginationPageSize={50}
-                        pagi
+                        paginationPageSize={100}
                         onSelectionChanged={onSelectionChanged}
                         getContextMenuItems={getContextMenuItems}
                     />

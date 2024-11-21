@@ -12,7 +12,7 @@ import { ToastContainer, toast } from 'react-toastify';
 
 const controller = new AbortController();
 
-const FarmTable = () => {
+const FarmTable = ({serverData}) => {
     const [farmData, setFarmData] = useState([]);
     const [selectedRowIds, setSelectedRowIds] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -20,34 +20,57 @@ const FarmTable = () => {
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
-            
-            const fetchPromise = axios.get(`${CONFIG.BASE_URL}/bot/farm`, { signal: controller.signal });
     
-            toast.promise(fetchPromise, {
+            const controller = new AbortController(); // Create an AbortController
+            const signal = controller.signal;
+    
+            const fetchPromises = serverData.map((server) =>
+                axios.get(`http://${server}:8000/bot/farm`, { signal }).then((res) => ({
+                    server, // Add the server address
+                    data: res.data, // Include the response data
+                }))
+            );
+    
+            toast.promise(Promise.all(fetchPromises), {
                 pending: "Fetching farm data...",
                 success: "Farm data loaded successfully!",
                 error: "Failed to load farm data. Please try again.",
             });
     
             try {
-                const response = await fetchPromise;
-                const dataWithIds = response.data.map((item, index) => ({ ...item, id: index }));
+                const responses = await Promise.all(fetchPromises);
     
-                setFarmData(dataWithIds);
+                // Flatten the data and add `server` to each row
+                const flattenedData = responses
+                    .map(({ server, data }) =>
+                        data.map((item, index) => ({
+                            ...item,
+                            id: item.world + item.door, // Unique ID based on server and index
+                            server, // Add the server address to each row
+                        }))
+                    )
+                    .flat(); // Flatten the resulting nested array
+    
+                setFarmData(flattenedData); // Set the processed data
             } catch (error) {
-                console.error(error);
+                if (axios.isCancel(error)) {
+                    console.log("Request canceled:", error.message);
+                } else {
+                    console.error("Failed to fetch farm data:", error);
+                }
             } finally {
                 setIsLoading(false);
             }
-    
-            return () => {
-                controller.abort();
-            };
         };
     
         fetchData();
-    }, []);
     
+        return () => {
+            controller.abort(); // Cleanup on unmount
+        };
+    }, [serverData]);    
+    
+    console.log(farmData[0])
 
     const columnDefs = [
         { field: 'world', width: 200, editable: true, enableCellChangeFlash: true, filter: "agTextColumnFilter" },
@@ -136,11 +159,13 @@ const FarmTable = () => {
 
     const gridOptions = {
         columnDefs: columnDefs,
+        rowGroupPanelShow: 'always',
         defaultColDef: {
             filter: true,
             floatingFilter: true,
             menuTabs: ['generalMenuTab', 'columnsMenuTab', 'filterMenuTab'],
             resizable: true,
+            enableRowGroup: true
         },
         columnMenu: 'legacy',
         statusBar: {
@@ -166,31 +191,29 @@ const FarmTable = () => {
         console.log('Cell value changed:', event.data);
     }, []);
 
-    const sendDataToServer = async (updatedData, titleText) => {
-        try {
-            const newScript = `${JSON.stringify(updatedData, null, 2)}`;
-            const response = await axios.post(`${CONFIG.BASE_URL}/bot/farm`, newScript, {
-                headers: {
-                    'Content-Type': 'text/plain',
-                },
-            });
+    const sendDataToServer = async (server, updatedData, titleText) => {
+        
+        const newScript = `${JSON.stringify(updatedData, null, 2)}`;
+        const responsePromise = axios.post(`http://${server}:8000/bot/farm`, newScript, {
+            headers: {
+                'Content-Type': 'text/plain',
+            },
+        });
 
-            Swal.fire({
-                title: "info",
-                text: titleText ? titleText : response.data,
-                icon: "success"
-            });
-    
+        toast.promise(responsePromise, {
+            pending: "Promise is pending...",
+            success: titleText ? titleText : "Success",
+            error: "Please check your API connection...",
+        });
+
+        try {
+            await responsePromise
         } catch (error) {
-            Swal.fire({
-                title: "The Internet?",
-                text: error.message, // Use error.message for clearer output
-                icon: "warning"
-            });
+            console.error(error)
         }
     };
 
-    const DeleteFarmAPI = async () => {
+    const DeleteFarmAPI = async (server) => {
         if (selectedRowIds.length === 0) {
             Swal.fire({
                 title: "info",
@@ -203,28 +226,66 @@ const FarmTable = () => {
         const selectedLogRow = selectedRowIds.length;
         setFarmData(rows => {
             const updatedData = rows.filter(row => !selectedRowIds.includes(row.id)); // Corrected from setSelectedRowIds to selectedRowIds
-            sendDataToServer(updatedData, `deleted x${selectedLogRow} farm`);
+            sendDataToServer(server, updatedData, `Deleted x${selectedLogRow} farm`);
             return updatedData;
         });
     }
 
-    const SaveFarmAPI = async () => {
-        sendDataToServer(farmData, 'all data saved!')
+    const SaveFarmAPI = async (server) => {
+        sendDataToServer(server, farmData, 'all data saved!')
     }
 
     const getContextMenuItems = (params) => [
         {
             name: 'Save Data',
             action: () => {
-                SaveFarmAPI();
+                SaveFarmAPI(params.node.data.server);
             }
         },
         {
             name: 'Delete data',
             action: () => {
-                DeleteFarmAPI();
+                DeleteFarmAPI(params.node.data.server);
             }
         },
+        {
+            name: "Set Farm Status",
+            subMenu: [
+                {
+                    name: "OK",
+                    action: () => {
+                        const selectedNodes = params.api.getSelectedNodes();
+                        selectedNodes.forEach((node) => {
+                            node.setDataValue("status", "OK");
+                            node.setDataValue("nuked", false);
+                        });
+                        params.api.refreshCells({ force: true });
+                    },
+                },
+                {
+                    name: "NUKED",
+                    action: () => {
+                        const selectedNodes = params.api.getSelectedNodes();
+                        selectedNodes.forEach((node) => {
+                            node.setDataValue("status", "NUKED");
+                            node.setDataValue("nuked", true);
+                        });
+                        params.api.refreshCells({ force: true });
+                    },
+                },
+                {
+                    name: "BAD_DOOR",
+                    action: () => {
+                        const selectedNodes = params.api.getSelectedNodes();
+                        selectedNodes.forEach((node) => {
+                            node.setDataValue("status", "BAD_DOOR");
+                            node.setDataValue("nuked", false);
+                        });
+                        params.api.refreshCells({ force: true });
+                    },
+                },
+            ],
+        },        
         "separator",
         "copy",
     ]
@@ -234,7 +295,7 @@ const FarmTable = () => {
             <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
                 <div className="w-full h-[800px] ag-theme-quartz-dark">
                     <ToastContainer 
-                        position='bottom-right'
+                        position='bottom-center'
                         autoClose={2000}
                         theme="dark"
                     />

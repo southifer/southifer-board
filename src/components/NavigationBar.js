@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-const NavigationBar = () => {
+const NavigationBar = ({userInformation, isUserAdmin}) => {
     const { pathname } = useLocation();
     const [isNavOpen, setIsNavOpen] = useState(false);
     const [frameIndex, setFrameIndex] = useState(0);
@@ -14,8 +14,6 @@ const NavigationBar = () => {
         "https://media.stickerswiki.app/puskamvret/228979.512.webp",
         "https://media.stickerswiki.app/puskamvret/229013.512.webp"
     ]
-
-    const MathRandom = (list) => list[Math.floor(Math.random() * list.length)];
 
     return (
         <nav className="bg-[#1F2937] text-white p-4 flex items-center justify-between lg:justify-between flex-col lg:flex-row top-0 left-0 right-0 z-50 max-w-screen">
@@ -43,10 +41,13 @@ const NavigationBar = () => {
                 className="w-12 h-12 rounded-full object-cover"
                 onClick={() => setFrameIndex(Math.floor(Math.random() * frameLink.length))}
             />
-            <span className="ml-4 text-xl font-semibold hover:cursor=pointer">Noir'e</span>
+            <div className='flex flex-col'>
+                <span className="ml-4 text-xl font-semibold hover:cursor=pointer">{userInformation.username}</span>
+                <span className="ml-4 text-sm hover:cursor=pointer">Welcome back!</span>
+            </div>
         </div>
 
-        <div className={`lg:flex ${isNavOpen ? 'block' : 'hidden'} lg:flex lg:space-x-4 lg:ml-auto flex-col lg:flex-row space-y-2 lg:space-y-0 mt-4 lg:mt-0 w-full lg:w-auto`}>
+        <div className={`lg:flex ${isNavOpen ? 'block' : 'hidden'} lg:flex lg:space-x-2 lg:ml-auto flex-col lg:flex-row space-y-2 lg:space-y-0 mt-4 lg:mt-0 w-full lg:w-auto`}>
             <Link
                 to="/dashboard"
                 className={`flex items-center px-4 py-2 rounded-lg ${pathname === '/dashboard' ? 'bg-[#111827]' : 'hover:bg-[#111827]'}`}
@@ -134,6 +135,23 @@ const NavigationBar = () => {
 
                 router
             </Link>
+            {isUserAdmin && (
+                <Link
+                    to="/administrator"
+                    className={`flex items-center px-2 py-2 rounded-lg ${pathname === '/administrator' ? 'bg-[#111827]' : 'hover:bg-[#111827]'}`}
+                >
+                    <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        viewBox="0 0 24 24" 
+                        fill="currentColor" 
+                        className={`w-5 h-5 ${pathname === '/administrator' ? 'text-[#8570FF]' : 'text-white'}`}
+                    >
+                        <path fillRule="evenodd" d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 4.889c-.02.12-.115.26-.297.348a7.493 7.493 0 0 0-.986.57c-.166.115-.334.126-.45.083L6.3 5.508a1.875 1.875 0 0 0-2.282.819l-.922 1.597a1.875 1.875 0 0 0 .432 2.385l.84.692c.095.078.17.229.154.43a7.598 7.598 0 0 0 0 1.139c.015.2-.059.352-.153.43l-.841.692a1.875 1.875 0 0 0-.432 2.385l.922 1.597a1.875 1.875 0 0 0 2.282.818l1.019-.382c.115-.043.283-.031.45.082.312.214.641.405.985.57.182.088.277.228.297.35l.178 1.071c.151.904.933 1.567 1.85 1.567h1.844c.916 0 1.699-.663 1.85-1.567l.178-1.072c.02-.12.114-.26.297-.349.344-.165.673-.356.985-.57.167-.114.335-.125.45-.082l1.02.382a1.875 1.875 0 0 0 2.28-.819l.923-1.597a1.875 1.875 0 0 0-.432-2.385l-.84-.692c-.095-.078-.17-.229-.154-.43a7.614 7.614 0 0 0 0-1.139c-.016-.2.059-.352.153-.43l.84-.692c.708-.582.891-1.59.433-2.385l-.922-1.597a1.875 1.875 0 0 0-2.282-.818l-1.02.382c-.114.043-.282.031-.449-.083a7.49 7.49 0 0 0-.985-.57c-.183-.087-.277-.227-.297-.348l-.179-1.072a1.875 1.875 0 0 0-1.85-1.567h-1.843ZM12 15.75a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5Z" clipRule="evenodd" />
+                    </svg>
+
+                    
+                </Link>
+            )}
         </div>
     </nav>
     );

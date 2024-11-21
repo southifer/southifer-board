@@ -1,0 +1,240 @@
+
+{
+    "farming_state": "RESUME",
+    "show_animation": true,
+    "move_interval": 150,
+    "move_range": 2,
+    "world_list": "C:\\Users\\Administrator\\Desktop\\FARM.json",
+    "item_id": 4584,
+    "item_seed": 4585,
+    "fresh_bot": true,
+    "fresh_bot_level": 10,
+    "auto_fill": false,
+    "detect_object": true,
+    "item_hand": 98,
+    "take_pickaxe": false,
+    "storage_item_list": [
+        "K418|111"
+    ],
+    "storage_pack_list": [
+        "3WTGQJ9N9AND7|AAYSFZF2E1"
+    ],
+    "storage_seed_list": [
+        "5O2E8F8F0K3U1V|8ASGBDB2",
+        "9F6O2S0T6Y5Y2D|8ASGBDB2",
+        "2G1D0N6E2H9A6D|8ASGBDB2",
+        "0D7F0T7N7C6R2Y|8ASGBDB2",
+        "5K6O8N7O3V2Y7K|8ASGBDB2",
+        "4L4V7N2A9X1Y5G|8ASGBDB2",
+        "2J7R4K8R5Y1E8Z|8ASGBDB2",
+        "5A3P6B9X4R1B3S|8ASGBDB2"
+    ],
+    "storage_vile_list": [
+        "MNUMSJXXHH|FNJFSCLT"
+    ],
+    "tile_number": 3,
+    "custom_tile": true,
+    "custom_x": 5,
+    "custom_y": 1,
+    "pnb_home_world": false,
+    "pnb_other_world": false,
+    "world_list_pnb": "C:\\Users\\Administrator\\Desktop\\BREAK.txt",
+    "malady": {
+        "enable": true,
+        "infect": true,
+        "id": 8542,
+        "webhook": {
+        "url": "https://discord.com/api/webhooks/1250628915416793190/9u1IGFBl06Hnkbs8bMGmJAFCGmnW0PqZO3BESylNNQk0_lfh4XVFmidcc_zIssR7c-jl",
+        "id": 1284078522758856700
+        },
+        "location": {
+        "1": {
+            "world": "DOJWA|",
+            "x": 47,
+            "y": 51
+        },
+        "2": {
+            "world": "DOJWA|",
+            "x": 51,
+            "y": 51
+        }
+        }
+    },
+    "auto_rest": {
+        "enable": true,
+        "disconnect_rest": true,
+        "duration": 80,
+        "interval": 1800
+    },
+    "auto_wear": {
+        "enable": false,
+        "buy": {
+        "enable": true,
+        "price": 5000
+        },
+        "id": 10158
+    },
+    "auto_switch": {
+        "enable": false,
+        "file_name": "db.json"
+    },
+    "interval": {
+        "harvest": 250,
+        "plant": 250,
+        "punch": 200,
+        "place": 180,
+        "warp": 10000,
+        "connect": 10,
+        "execute": 8000
+    },
+    "purchase": {
+        "name": "world_lock_10_pack",
+        "list": [
+        242,
+        1796
+        ],
+        "price": 20000,
+        "minimum_gem": 20000
+    },
+    "event": {
+        "enable": false,
+        "list": [
+        {
+            "id": 1058,
+            "count": 25
+        },
+        {
+            "id": 1094,
+            "count": 25
+        },
+        {
+            "id": 1096,
+            "count": 25
+        },
+        {
+            "id": 1098,
+            "count": 25
+        },
+        {
+            "id": 1828,
+            "count": 5
+        },
+        {
+            "id": 3870,
+            "count": 25
+        },
+        {
+            "id": 7058,
+            "count": 25
+        },
+        {
+            "id": 10134,
+            "count": 25
+        },
+        {
+            "id": 10136,
+            "count": 25
+        },
+        {
+            "id": 10138,
+            "count": 25
+        },
+        {
+            "id": 10140,
+            "count": 25
+        },
+        {
+            "id": 10142,
+            "count": 25
+        },
+        {
+            "id": 10146,
+            "count": 25
+        },
+        {
+            "id": 10150,
+            "count": 25
+        },
+        {
+            "id": 10164,
+            "count": 25
+        },
+        {
+            "id": 10228,
+            "count": 25
+        },
+        {
+            "id": 11286,
+            "count": 25
+        }
+        ],
+        "world": "0N3J3B8O3K2Z6V|8ASGBDB2",
+        "webhook": {
+        "url": "https://discord.com/api/webhooks/1250628915416793190/9u1IGFBl06Hnkbs8bMGmJAFCGmnW0PqZO3BESylNNQk0_lfh4XVFmidcc_zIssR7c-jl",
+        "id": 1284078454811136000
+        }
+    },
+    "webhook": {
+        "info": "https://discord.com/api/webhooks/1266302365670309992/LEp1iuitQSveg86IcpylIKfUSEFboPcTQqo-WDxuK05-PQEFf2iHHBiIp1AGVRJlIgnX",
+        "pack": "https://discord.com/api/webhooks/1266302365670309992/LEp1iuitQSveg86IcpylIKfUSEFboPcTQqo-WDxuK05-PQEFf2iHHBiIp1AGVRJlIgnX",
+        "logs": "https://discord.com/api/webhooks/1266302365670309992/LEp1iuitQSveg86IcpylIKfUSEFboPcTQqo-WDxuK05-PQEFf2iHHBiIp1AGVRJlIgnX",
+        "world": "https://discord.com/api/webhooks/1266302365670309992/LEp1iuitQSveg86IcpylIKfUSEFboPcTQqo-WDxuK05-PQEFf2iHHBiIp1AGVRJlIgnX",
+        "bot": {
+        "url": "",
+        "id": ""
+        }
+    },
+    "api_post": "",
+    "buy_clothes": true,
+    "edit_note_profile": true,
+    "random_chat": true,
+    "random_world": true,
+    "claim_goals": {
+        "enable": true,
+        "world": "GUW",
+        "doorId": ""
+    },
+    "magplant": {
+        "world": "FREEDL",
+        "doorId": ""
+    },
+    "whitelist": [
+        18,
+        32,
+        6336,
+        9640,
+        242,
+        1796,
+        4584,
+        4585,
+        1486,
+        3066,
+        818,
+        202,
+        204,
+        206,
+        98
+    ],
+    "chat_list": [
+        "I lonte NOIR love NOIR love NOIR love NOIR love NOIR love NOIR love NOIR love NOIR love NOIR love NOIR love NOIR love NORE"
+    ],
+    "emote_list": [
+    "/troll",
+    "/lol",
+    "/smile",
+    "/cry",
+    "/mad",
+    "/wave",
+    "/dance",
+    "/dab",
+    "/love",
+    "/kiss",
+    "/sleep",
+    "/yes",
+    "/no",
+    "/wink",
+    "/cheer",
+    "/sad",
+    "/fp"
+    ]
+}
