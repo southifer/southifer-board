@@ -117,7 +117,6 @@ const Dashboard = ({ serverData, credentials, setServerList }) => {
         const serverToRemove = inputValue[index];
     
         try {
-            // Send DELETE request to remove a server
             await axios.delete(`http://${AuthAPI.BASE_URL}/delete-server`, {
                 data: { 
                     username: credential.username,
@@ -125,8 +124,7 @@ const Dashboard = ({ serverData, credentials, setServerList }) => {
                     server: serverToRemove 
                 },
             });
-    
-            // Fetch the updated server list from /server endpoint
+
             const updatedServerList = await axios.get(`http://${AuthAPI.BASE_URL}/server`, {
                 params: {
                     username: credential.username,
@@ -136,6 +134,7 @@ const Dashboard = ({ serverData, credentials, setServerList }) => {
     
             setServerList(updatedServerList.data.serverList);
             setInputValue(updatedServerList.data.serverList);
+
             toast.success(`Server ${serverToRemove} removed successfully.`);
         } catch (error) {
             console.error("Failed to delete server:", error);
