@@ -22,8 +22,7 @@ import FormatNumber from './FormatNumber';
 
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-import customTheme from './theme/ag-theme';
+import AuthAPI from "./config/Config.json";
 
 const GetExactTime = (second) => {
   if (second === 0) {
@@ -668,7 +667,7 @@ const Controller = ({serverData, usersCredential}) => {
         name: 'View Details',
         action: async () => {
           try {
-            const response = await axios.get("http://31.56.39.143:3000/add-bot-backup");
+            const response = await axios.get(`https://${AuthAPI.BASE_URL}/add-bot-backup`);
             const specificEmail = params.node.data.mail;
             const botData = response.data.find(bot => bot.username === specificEmail);
 
@@ -751,7 +750,7 @@ const Controller = ({serverData, usersCredential}) => {
 
     if (confirmation.isConfirmed) {
       try {
-        const response = axios.delete("http://31.56.39.143:3000/remove-bot-backup", {
+        const response = axios.delete(`https://${AuthAPI.BASE_URL}/remove-bot-backup`, {
           data: {
             ...credentials,
             botUsername: botName
@@ -764,13 +763,12 @@ const Controller = ({serverData, usersCredential}) => {
           error: `Failed to delete ${botName}. Check your connection`
         });
 
-        await response; // Ensure promise resolution before proceeding
+        await response;
       } catch (err) {
         console.error(err);
         toast.error(`An error occurred while deleting ${botName}`);
       }
     } else {
-      // If user cancels the action
       toast.info(`${botName} deletion was canceled`);
     }
   };
@@ -847,9 +845,8 @@ const Controller = ({serverData, usersCredential}) => {
           <AgGridReact
             getRowId={(params) => {
               console.log(params);
-              return params.data.name; // Or another unique identifier from `params`
+              return params.data.name;
             }}
-
             gridOptions={gridOptions}
             rowData={rowData.map((item) => ({
               ...item.details,
@@ -861,14 +858,12 @@ const Controller = ({serverData, usersCredential}) => {
             paginationPageSize={100}
             onSelectionChanged={onSelectionChanged}
             getContextMenuItems={getContextMenuItems}
-            // theme={customTheme}
           />
           <ToastContainer/>
         </div>
       </div>
     </div>
   );
-
 };
 
 export default Controller;

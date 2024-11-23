@@ -5,6 +5,7 @@ import { Tooltip } from "@mui/material";
 import Swal from "sweetalert2";
 import Cookies from 'js-cookie';
 import FormatNumber from "./FormatNumber";
+import AuthAPI from "./config/Config.json";
 
 const Dashboard = ({ serverData, credentials, setServerList }) => {
     const credential = credentials
@@ -90,13 +91,13 @@ const Dashboard = ({ serverData, credentials, setServerList }) => {
             });
 
             if (newServer) {
-                await axios.post("http://31.56.39.143:3000/add-server", {
+                await axios.post(`https://${AuthAPI.BASE_URL}/add-server`, {
                     username: credential.username,
                     password: credential.password,
                     server: String(newServer),
                 });
                 
-                const updatedServerList = await axios.get("http://31.56.39.143:3000/server", {
+                const updatedServerList = await axios.get(`https://${AuthAPI.BASE_URL}/server`, {
                     params: {
                         username: credential.username,
                         password: credential.password
@@ -117,7 +118,7 @@ const Dashboard = ({ serverData, credentials, setServerList }) => {
     
         try {
             // Send DELETE request to remove a server
-            await axios.delete("http://31.56.39.143:3000/delete-server", {
+            await axios.delete(`http://${AuthAPI.BASE_URL}/delete-server`, {
                 data: { 
                     username: credential.username,
                     password: credential.password,
@@ -126,7 +127,7 @@ const Dashboard = ({ serverData, credentials, setServerList }) => {
             });
     
             // Fetch the updated server list from /server endpoint
-            const updatedServerList = await axios.get("http://31.56.39.143:3000/server", {
+            const updatedServerList = await axios.get(`http://${AuthAPI.BASE_URL}/server`, {
                 params: {
                     username: credential.username,
                     password: credential.password
@@ -143,7 +144,7 @@ const Dashboard = ({ serverData, credentials, setServerList }) => {
     };
 
     const handleSync = async () => {
-        const fetchPromise = axios.get("http://31.56.39.143:3000/server", {
+        const fetchPromise = axios.get(`https://${AuthAPI.BASE_URL}/server`, {
             params: {
                 username: credential.username,
                 password: credential.password
@@ -177,7 +178,7 @@ const Dashboard = ({ serverData, credentials, setServerList }) => {
     return (
         <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-4">
-                <div className="bg-[#1F2937] p-4 rounded shadow-md ">
+                <div className="bg-widgetBg p-4 rounded shadow-md ">
                     <h1 className="flex items-center text-xs font-bold text-gray-400 mb-2 uppercase">
                         server api
                     </h1>
@@ -218,17 +219,18 @@ const Dashboard = ({ serverData, credentials, setServerList }) => {
                         </Tooltip>
                     </div>
                 </div>
-                <div className="bg-[#1F2937] p-4 rounded shadow-md ">
+                <div className="bg-widgetBg p-4 rounded shadow-md ">
                     <h1 className="flex items-center text-xs font-bold text-gray-400 mb-2 uppercase">
                         User Information
                     </h1>
                     <div className="text-gray-300">
                         <p>username : {credentials.username}</p>
                         <p>password : {credentials.password}</p>
+                        {credentials.username === "admin" && <p>API : <strong>{AuthAPI.BASE_URL}</strong></p>}
                     </div>
                 </div>
             </div>
-            <div className="bg-[#1F2937] p-4 rounded shadow-md mb-4">
+            <div className="bg-widgetBg p-4 rounded shadow-md mb-4">
                 <h1 className="flex items-center text-xs font-bold text-gray-400 mb-2 uppercase">
                     Server list
                 </h1>

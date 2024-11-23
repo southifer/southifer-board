@@ -7,7 +7,7 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 import "ag-grid-enterprise";
 import LoadingSpinner from "./Loading";
 import { toast, ToastContainer } from "react-toastify";
-
+import AuthAPI from "./config/Config.json";
 
 const controller = new AbortController();
 
@@ -80,7 +80,7 @@ const DataBot = ({ serverData, usersCredential }) => {
           password: usersCredential.password,
         };
         const response = await axios.get(
-          "http://31.56.39.143:3000/view-bot-backup",
+          `https://${AuthAPI.BASE_URL}/view-bot-backup`,
           {
             params: credentials,
           }
@@ -224,7 +224,7 @@ const DataBot = ({ serverData, usersCredential }) => {
     };
 
     try {
-      await axios.post("http://31.56.39.143:3000/add-bot-backup", {
+      await axios.post(`https://${AuthAPI.BASE_URL}/add-bot-backup`, {
         ...credentials,
         bots: [newBotData],
       });
@@ -256,7 +256,7 @@ const DataBot = ({ serverData, usersCredential }) => {
     };
 
     const fetchPromise = mapRemovedData.map((item) =>
-      axios.delete("http://31.56.39.143:3000/remove-bot-backup", {
+      axios.delete(`https://${AuthAPI.BASE_URL}/remove-bot-backup`, {
         data: { ...credentials, botUsername: item.username },
       })
     );
@@ -278,17 +278,12 @@ const DataBot = ({ serverData, usersCredential }) => {
   };
 
   const saveData = async () => {
-    const selectedLogRow = selectedRowIds.length;
-    const mapUpdatedData = rowData.filter((row) =>
-      selectedRowIds.includes(row.id)
-    );
-
     const credentials = {
       username: usersCredential.username,
       password: usersCredential.password,
     };
     const fetchPromise = rowData.map((item) => {
-      return axios.put("http://31.56.39.143:3000/update-bot-backup", {
+      return axios.put(`https://${AuthAPI.BASE_URL}/update-bot-backup`, {
         ...credentials,
         botUsername: item.username,
         updatedData: item,
@@ -541,7 +536,7 @@ const DataBot = ({ serverData, usersCredential }) => {
       username: usersCredential.username,
       password: usersCredential.password,
     };
-    const fetchPromise = axios.post("http://31.56.39.143:3000/add-bot-backup", {
+    const fetchPromise = axios.post(`https://${AuthAPI.BASE_URL}/add-bot-backup`, {
       ...credentials,
       bots: newRowData,
     });

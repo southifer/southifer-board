@@ -3,8 +3,6 @@ import React, { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import LoadingSpinner from './Loading';
 import axios from 'axios';
-import Swal from 'sweetalert2';
-import CONFIG from './config/Config.json'
 import { ToastContainer, toast } from 'react-toastify';
 
 const CodeEditor = ({serverData}) => {

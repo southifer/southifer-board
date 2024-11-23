@@ -7,7 +7,6 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import 'ag-grid-enterprise';
 import Swal from 'sweetalert2';
-import CONFIG from './config/Config.json'
 import { ToastContainer, toast } from 'react-toastify';
 
 const controller = new AbortController();

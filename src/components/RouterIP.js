@@ -7,6 +7,7 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import 'ag-grid-enterprise';
 import Swal from 'sweetalert2';
+import AuthAPI from "./config/Config.json";
 
 const RouterIP = ({usersCredential}) => {
     const [terminalLogs, setTerminalLogs] = useState([]);
@@ -24,13 +25,12 @@ const RouterIP = ({usersCredential}) => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(
-                    "http://31.56.39.143:3000/view-router-list",
-                    {
+                    `https://${AuthAPI.BASE_URL}/view-router-list`, {
                         params: credentials,
                     }
                 );
                 if (response.data.success) {
-                    const newData = response.data.routerList.map((item, index) => ({
+                    const newData = response.data.routerList.map((item) => ({
                         list: item
                     }))
                     setRouterConfig(newData)
@@ -242,7 +242,7 @@ const RouterIP = ({usersCredential}) => {
                 password: usersCredential.password,
             };
 
-            await axios.post("http://31.56.39.143:3000/add-router", {
+            await axios.post(`https://${AuthAPI.BASE_URL}/add-router`, {
                 ...credentials,
                 router
             });
@@ -326,7 +326,7 @@ const RouterIP = ({usersCredential}) => {
         };
     
         const fetchPromise = mapRemovedData.map((item) =>
-            axios.delete("http://31.56.39.143:3000/remove-router", {
+            axios.delete(`https://${AuthAPI.BASE_URL}/remove-router`, {
                 data: { ...credentials, router: item.list },
             })
         );

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import AuthAPI from "./config/Config.json";
 
 const LoginPage = ({ onLogin, serverData, isAdmin, credentials }) => {
   const [username, setUsername] = useState("");
@@ -10,7 +11,7 @@ const LoginPage = ({ onLogin, serverData, isAdmin, credentials }) => {
     e.preventDefault();
 
     const fetchPromise = axios.post(
-      "http://31.56.39.143:3000/login",
+      `https://${AuthAPI.BASE_URL}/login`,
       {
         username,
         password,
@@ -48,7 +49,7 @@ const LoginPage = ({ onLogin, serverData, isAdmin, credentials }) => {
   return (
     <section className="bg-mainBg">
       <div className="flex flex-col items-center justify-center min-h-screen px-6 py-8 mx-auto md:h-screen lg:py-0">
-        <div className="w-full bg-[#1F2937] rounded shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+        <div className="w-full bg-widgetBg rounded shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xs font-bold text-gray-400 uppercase">
               login to dashboard
