@@ -15,9 +15,7 @@ const Dashboard = ({ serverData, credentials, setServerList }) => {
         const fetchData = async () => {
             try {
                 const promises = serverData.map((server) =>
-                    axios.get(`http://${server}:8000/bot/get`).catch(error => {
-                        return;
-                    })
+                    axios.get(`http://${server}:8000/bot/get`)
                 );
                 
                 const responses = await Promise.all(promises);
@@ -38,14 +36,11 @@ const Dashboard = ({ serverData, credentials, setServerList }) => {
     
             const totals = serverResponse.data.reduce((acc, user) => {
                 const { status, gems } = user.details;
-    
-                // Increment the total gems
+
                 acc.totalGems += gems;
-    
-                // Increment totalBot for each user
+
                 acc.totalBot += 1;
-    
-                // Check user status and update totals accordingly
+
                 switch (status) {
                     case "connected":
                     case "changing_subserver":
@@ -69,7 +64,7 @@ const Dashboard = ({ serverData, credentials, setServerList }) => {
     useEffect(() => {
         document.title = 'Dashboard';
         setInputValue(serverData);
-    }, []);
+    }, [serverData]);
 
     const handleInputChange = (event, index) => {
         const updatedValues = [...inputValue];
@@ -242,7 +237,7 @@ const Dashboard = ({ serverData, credentials, setServerList }) => {
                     return (
                         <div key={index} className="bg-[#111827] p-4 rounded shadow-md mb-2">
                             <h3 className="text-sm uppercase mb-2 text-gray-300">🎯 - {server}</h3>
-                            <div className="font-sans select-none text-[10px] sm:text-lg md:text-lg lg:text-lg text-gray-300 rounded items-center space-x-2 p-1.5">
+                            <div className="font-sans select-none text-[13px] sm:text-lg md:text-lg lg:text-lg text-gray-300 rounded items-center space-x-2 p-1.5">
                                 <span>🤖 {FormatNumber(totals.totalBot || 0)}</span>
                                 <span>✅ {FormatNumber(totals.totalOnline || 0)}</span>
                                 <span>❌ {FormatNumber(totals.totalOffline || 0)}</span>

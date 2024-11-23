@@ -93,7 +93,7 @@ const CodeEditor = ({serverData}) => {
 
     return (
         <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
-            <div className="bg-[#1F2937] p-4 rounded shadow-md">
+            <div className="bg-widgetBg p-4 rounded shadow-md">
                 {code.map((item, index) => (
                     <div key={index} className="mb-2">
                         <button

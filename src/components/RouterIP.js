@@ -348,7 +348,7 @@ const RouterIP = ({usersCredential}) => {
     return (
         <div>
             <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
-                <div className="bg-[#1F2937] p-4 rounded shadow-md mb-4">
+                <div className="bg-widgetBg p-4 rounded shadow-md mb-4">
                     <div className='bg-[#0F1015] h-[500px] border border-[#424242] p-4 rounded-sm shadow-md'>
                         <h1 className="flex items-center text-xs font-bold text-gray-400 mb-2 uppercase">
                             terminal
@@ -370,7 +370,10 @@ const RouterIP = ({usersCredential}) => {
                             placeholder="Enter value"
                         />
                         <button
-                            onClick={() => setTerminalLogs([])}
+                            onClick={() => {
+                                localStorage.setItem('terminalLogs', JSON.stringify([]));
+                                setTerminalLogs([]);
+                            }}
                             className="px-2 py-2 bg-violet-500 text-white rounded hover:bg-violet-800"
                         >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
@@ -412,7 +415,7 @@ const RouterIP = ({usersCredential}) => {
                     </div>
                 </div>
                 <div className='ag-theme-quartz-dark h-[400px]'>
-                <ToastContainer 
+                    <ToastContainer
                         position='bottom-center'
                         autoClose={2000}
                         theme="dark"

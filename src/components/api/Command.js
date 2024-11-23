@@ -76,6 +76,7 @@ class Command {
 
     async reconnectBot() {
         const script = this.generateLoopScript(`
+            bot.auto_reconnect = true
             bot:disconnect()
             sleep(1000)
             bot:connect()
@@ -85,6 +86,7 @@ class Command {
 
     async disconnectBot() {
         const script = this.generateLoopScript(`
+            bot.auto_reconnect = false
             bot:disconnect()
         `);
         this.executeScriptRequest(script, 'Disconnecting bot');

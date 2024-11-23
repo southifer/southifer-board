@@ -77,7 +77,7 @@ const Config = ({ serverData }) => {
   return (
     <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
       <div className="gap-6 mb-4 flex items-center justify-center">
-        <div className="bg-[#1F2836] p-5 rounded-lg shadow-md w-full">
+        <div className="bg-widgetBg p-5 rounded-lg shadow-md w-full">
           <div id="accordion-arrow-icon" className="mb-4">
             {config.map((item, index) => (
               <div key={index}>
@@ -102,7 +102,7 @@ const Config = ({ serverData }) => {
                     <ul className="text-sm text-gray-300">
                       <form>
                         {/* Farming settings */}
-                        <div className="mb-8 p-6 bg-[#1F2836] border border-gray-600 text-white  overflow-x-hidden rounded-lg">
+                        <div className="mb-8 p-5 bg-mainBg text-white  overflow-x-hidden rounded-lg">
                           <p className="text-center text-lg font-bold text-gray-300 uppercase">
                             farming settings
                           </p>
@@ -852,7 +852,7 @@ const Config = ({ serverData }) => {
                           </div>
                         </div>
                         {/* Malady settings */}
-                        <div className="mb-8 p-6 bg-[#1F2836] border border-gray-600 text-white  overflow-x-hidden rounded-lg">
+                        <div className="mb-8 p-5 bg-mainBg text-white  overflow-x-hidden rounded-lg">
                           <p className="text-center text-lg font-bold text-gray-300 mb-4 uppercase">
                             malady settings
                           </p>
@@ -1164,7 +1164,7 @@ const Config = ({ serverData }) => {
                           </div>
                         </div>
                         {/* Auto rest settings */}
-                        <div className="mb-10 p-6 bg-[#1F2836] border border-gray-600 text-white overflow-x-hidden rounded-lg">
+                        <div className="mb-10 p-5 bg-mainBg text-white overflow-x-hidden rounded-lg">
                           <p className="text-center text-lg font-bold text-gray-300 mb-4 uppercase">
                             auto rest settings
                           </p>
@@ -1303,7 +1303,7 @@ const Config = ({ serverData }) => {
                         </div>
 
                         {/* Auto wear settings */}
-                        <div className="mb-10 p-6 bg-[#1F2836] border border-gray-600 text-white overflow-x-hidden rounded-lg">
+                        <div className="mb-10 p-5 bg-mainBg text-white overflow-x-hidden rounded-lg">
                           <p className="text-center text-lg font-bold text-gray-300 mb-4 uppercase">
                             auto wear settings
                           </p>
@@ -1451,7 +1451,7 @@ const Config = ({ serverData }) => {
                         </div>
 
                         {/* Purchase settings */}
-                        <div className="mb-10 p-6 bg-[#1F2836] border border-gray-600 text-white overflow-x-hidden rounded-lg">
+                        <div className="mb-10 p-5 bg-mainBg text-white overflow-x-hidden rounded-lg">
                           <p className="text-center text-lg font-bold text-gray-300 mb-4 uppercase">
                             purchase settings
                           </p>
@@ -1560,7 +1560,7 @@ const Config = ({ serverData }) => {
                         </div>
 
                         {/* Auto event settings */}
-                        <div className="mb-10 p-6 bg-[#1F2836] border border-gray-600 text-white overflow-x-hidden rounded-lg">
+                        <div className="mb-10 p-5 bg-mainBg text-white overflow-x-hidden rounded-lg">
                           <p className="text-center text-lg font-bold text-gray-300 mb-4 uppercase">
                             auto event settings
                           </p>
@@ -1840,7 +1840,7 @@ const Config = ({ serverData }) => {
                         </div>
 
                         {/* Webhook settings */}
-                        <div className="mb-10 p-6 bg-[#1F2836] border border-gray-600 text-white overflow-x-hidden rounded-lg">
+                        <div className="mb-10 p-5 bg-mainBg text-white overflow-x-hidden rounded-lg">
                           <p className="text-center text-lg font-bold text-gray-300 mb-4 uppercase">
                             webhook settings
                           </p>
@@ -1947,7 +1947,7 @@ const Config = ({ serverData }) => {
                         </div>
 
                         {/* Method settings */}
-                        <div className="mb-10 p-6 bg-[#1F2836] border border-gray-600 text-white overflow-x-hidden rounded-lg">
+                        <div className="mb-10 p-5 bg-mainBg text-white overflow-x-hidden rounded-lg">
                           <p className="text-center text-lg font-bold text-gray-300 mb-4 uppercase">
                             Method settings
                           </p>
@@ -2266,7 +2266,7 @@ const Config = ({ serverData }) => {
                         </div>
 
                         {/* Essential settings */}
-                        <div className="mb-4 p-6 bg-[#1F2836] border border-gray-600 text-white overflow-x-hidden rounded-lg">
+                        <div className="mb-4 p-5 bg-mainBg text-white overflow-x-hidden rounded-lg">
                           <p className="text-center text-lg font-bold text-gray-300 mb-4 uppercase">
                             essential settings
                           </p>

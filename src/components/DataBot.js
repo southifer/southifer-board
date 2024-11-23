@@ -287,7 +287,7 @@ const DataBot = ({ serverData, usersCredential }) => {
       username: usersCredential.username,
       password: usersCredential.password,
     };
-    const fetchPromise = mapUpdatedData.map((item) => {
+    const fetchPromise = rowData.map((item) => {
       return axios.put("http://31.56.39.143:3000/update-bot-backup", {
         ...credentials,
         botUsername: item.username,
@@ -569,7 +569,7 @@ const DataBot = ({ serverData, usersCredential }) => {
 
   return (
     <div className="p-6 bg-mainBg text-white min-h-screen overflow-x-hidden">
-      <div className="bg-[#1F2937] p-2 rounded shadow-md mb-4">
+      <div className="bg-widgetBg p-2 rounded shadow-md mb-4">
         <div className="flex flex-row-reverse mb-2">
           <select
             id="input-option"
@@ -594,7 +594,7 @@ const DataBot = ({ serverData, usersCredential }) => {
                 placeholder="Username"
                 value={formData.username}
                 onChange={handleChange}
-                className="w-full h-[60px] text-white bg-[#111827] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded px-2.5 py-2.5"
+                className="w-full h-[45px] text-white bg-[#111827] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded px-2.5 py-2.5"
                 required
               />
               <input
@@ -603,7 +603,7 @@ const DataBot = ({ serverData, usersCredential }) => {
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full h-[60px] text-white bg-[#111827] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
+                className="w-full h-[45px] text-white bg-[#111827] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
                 required
               />
               <input
@@ -612,7 +612,7 @@ const DataBot = ({ serverData, usersCredential }) => {
                 placeholder="Recovery"
                 value={formData.recovery}
                 onChange={handleChange}
-                className="w-full h-[60px] text-white bg-[#111827] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
+                className="w-full h-[45px] text-white bg-[#111827] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
               />
               <input
                 type="text"
@@ -620,7 +620,7 @@ const DataBot = ({ serverData, usersCredential }) => {
                 placeholder="MAC"
                 value={formData.mac}
                 onChange={handleChange}
-                className="w-full h-[60px] text-white bg-[#111827] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
+                className="w-full h-[45px] text-white bg-[#111827] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
               />
               <input
                 type="text"
@@ -628,7 +628,7 @@ const DataBot = ({ serverData, usersCredential }) => {
                 placeholder="RID"
                 value={formData.rid}
                 onChange={handleChange}
-                className="w-full h-[60px] text-white bg-[#111827] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
+                className="w-full h-[45px] text-white bg-[#111827] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
               />
               <input
                 type="text"
@@ -636,12 +636,12 @@ const DataBot = ({ serverData, usersCredential }) => {
                 placeholder="Proxy"
                 value={formData.proxy}
                 onChange={handleChange}
-                className="w-full h-[60px] text-white bg-[#111827] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
+                className="w-full h-[45px] text-white bg-[#111827] border border-[#424242] focus:ring-1 focus:outline-none font-medium rounded text-sm px-2.5 py-2.5"
               />
               <div className="flex flex-row-reverse md:col-span-2 w-full gap-2">
                 <button
                   type="submit"
-                  className="flex items-center gap-2 bg-violet-500 hover:bg-violet-700 text-white py-2 px-4 rounded-md"
+                  className="flex items-center gap-2 bg-violet-500 hover:bg-violet-700 text-white text-sm py-1 px-2 rounded"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
